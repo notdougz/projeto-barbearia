@@ -1,0 +1,66 @@
+{% extends 'agendamentos/base.html' %}
+
+{% block title %}Barbearia - Sistema de Agendamento{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 40px 20px;">
+    {% if user.is_authenticated %}
+        <h1>Bem-vindo, {{ user.first_name|default:user.username }}!</h1>
+        <p style="font-size: 18px; color: #555; margin: 20px 0;">
+            Seu sistema de agendamentos está pronto para uso.
+        </p>
+        
+        <div style="margin-top: 30px;">
+            <a href="/agendar/">
+                <button style="font-size: 18px; padding: 15px 30px; margin: 10px;">
+                    ✂️ Fazer Novo Agendamento
+                </button>
+            </a>
+        </div>
+        
+        <p style="margin-top: 30px;">
+            <a href="/admin/" style="color: #333;">Acessar Painel Admin</a>
+        </p>
+        
+    {% else %}
+        <h1>Bem-vindo à Barbearia!</h1>
+        <p style="font-size: 18px; color: #555; margin: 20px 0;">
+            Sistema de agendamento de cortes a domicílio
+        </p>
+        
+        <div style="margin-top: 40px; padding: 30px; background: #f9f9f9; border-radius: 8px;">
+            <h2 style="margin-bottom: 20px;">Já tem um perfil?</h2>
+            <a href="/login/">
+                <button style="font-size: 18px; padding: 15px 40px; margin: 10px; background: #28a745; border: none;">
+                    🔐 Fazer Login
+                </button>
+            </a>
+            
+            <div style="margin: 30px 0;">
+                <p style="font-size: 16px; color: #666;">— ou —</p>
+            </div>
+            
+            <h2 style="margin-bottom: 20px;">Primeira vez aqui?</h2>
+            <a href="/registro/">
+                <button style="font-size: 18px; padding: 15px 40px; margin: 10px; background: #007bff; border: none;">
+                    📝 Cadastre-se Agora
+                </button>
+            </a>
+            
+            <p style="margin-top: 20px; font-size: 14px; color: #888;">
+                É rápido e gratuito!
+            </p>
+        </div>
+        
+        <div style="margin-top: 40px; padding: 20px; background: #fff3cd; border-radius: 8px;">
+            <h3>Como funciona:</h3>
+            <ol style="text-align: left; display: inline-block; margin: 20px auto;">
+                <li style="margin: 10px 0;">Cadastre-se informando seu endereço</li>
+                <li style="margin: 10px 0;">Escolha o serviço desejado</li>
+                <li style="margin: 10px 0;">Selecione data e horário</li>
+                <li style="margin: 10px 0;">Receba confirmação por notificação</li>
+            </ol>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
