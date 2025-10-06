@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib import messages
+from django.core.mail import send_mail
 from .models import Servico, Agendamento, PerfilCliente
 from .forms import RegistroComEmailForm, PerfilClienteForm
 
@@ -79,3 +80,31 @@ def agendar(request):
         return redirect('meus_agendamentos')
     
     return render(request, 'agendamentos/agendar.html', {'servicos': servicos})
+
+def enviar_notificacao_agendamento(agendamento):
+    # Email para o cliente
+    send_mail(
+        'Agendamento Confirmado - Barbearia',
+        f'Seu agendamento de {agendamento.servico.nome} foi marcado para {agendamento.data} às {agendamento.hora}',
+        'barbearia@exemplo.com',
+        [agendamento.cliente.email],
+    )
+    
+# Nova view para painel do barbeiro
+@login_required
+def painel_barbeiro(request):
+    agendamentos_hoje = Agendamento.objects.filter(
+        data=date.today(),
+        status__in=['pendente', 'confirmado']
+    ).order_by('hora')
+    return render(request, 'agendamentos/painel_barbeiro.html', {
+        'agendamentos': agendamentos_hoje
+    })
+
+@login_required 
+def cancelar_agendamento(request, agendamento_id):
+    agendamento = get_object_or_404(Agendamento, id=agendamento_id, cliente=request.user)
+    agendamento.status = 'cancelado'
+    agendamento.save()
+    messages.success(request, 'Agendamento cancelado com sucesso!')
+    return redirect('meus_agendamentos')
