@@ -1,0 +1,231 @@
+/* =================================
+   ESTILOS GERAIS (do base.html)
+   ================================= */
+   body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* Sombra suave */
+}
+
+/* --- Navegação --- */
+nav {
+    background: #333;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+nav a,
+nav button {
+    color: white;
+    text-decoration: none;
+    margin-right: 15px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 5px 0; /* Espaçamento vertical */
+}
+
+nav button:hover,
+nav a:hover {
+    color: #ddd;
+}
+
+.logout-form {
+    display: inline;
+}
+
+/* --- Formulários e Botões --- */
+button,
+input[type="submit"] {
+    background: #333;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+button:hover,
+input[type="submit"]:hover {
+    background: #555;
+}
+
+form input,
+form select,
+form textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 15px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* =================================
+   ESTILOS DA PÁGINA HOME
+   ================================= */
+.home-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.welcome-message {
+    font-size: 18px;
+    color: #555;
+    margin: 20px 0;
+}
+
+.btn-agendar {
+    font-size: 18px;
+    padding: 15px 30px;
+    margin: 10px;
+}
+
+.admin-link {
+    margin-top: 30px;
+}
+
+.admin-link a {
+    color: #333;
+    text-decoration: none;
+}
+.admin-link a:hover {
+    text-decoration: underline;
+}
+
+.login-register-box {
+    margin-top: 40px;
+    padding: 30px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.login-register-box h2 {
+    margin-bottom: 20px;
+}
+
+.btn-login {
+    font-size: 18px;
+    padding: 15px 40px;
+    background: #28a745;
+    border: none;
+}
+.btn-login:hover { background: #218838; }
+
+.divider {
+    margin: 30px 0;
+    color: #666;
+}
+
+.btn-register {
+    font-size: 18px;
+    padding: 15px 40px;
+    background: #007bff;
+    border: none;
+}
+.btn-register:hover { background: #0069d9; }
+
+.register-info {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #888;
+}
+
+.how-it-works {
+    margin-top: 40px;
+    padding: 20px;
+    background: #fff3cd;
+    border-radius: 8px;
+}
+
+.how-it-works ol {
+    text-align: left;
+    display: inline-block; /* Centraliza a lista */
+    margin: 0;
+    padding-left: 20px;
+}
+
+/* =================================
+   ESTILOS DA PÁGINA MEU PERFIL
+   ================================= */
+.profile-box {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    border: 1px solid #eee;
+}
+
+/* Usando classes do Bootstrap que já estão no projeto */
+.alert.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+/* =================================
+   ESTILOS DA PÁGINA MEUS AGENDAMENTOS
+   ================================= */
+.appointments-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.appointments-table thead tr {
+    background-color: #333;
+    color: white;
+}
+
+.appointments-table th, .appointments-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.status-pendente { color: orange; font-weight: bold; }
+.status-confirmado { color: green; font-weight: bold; }
+.status-concluido { color: blue; font-weight: bold; }
+.status-cancelado { color: red; font-weight: bold; }
+
+.total-appointments {
+    margin-top: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.no-appointments {
+    text-align: center;
+    padding: 40px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.no-appointments p {
+    font-size: 18px;
+    color: #666;
+}
+
+.no-appointments button {
+    margin-top: 20px;
+}
