@@ -11,7 +11,7 @@
         </p>
         
         <div class="action-buttons">
-            <a href="/agendar/">
+            <a href="{% url 'agendar' %}">
                 <button class="btn-agendar">
                     ✂️ Fazer Novo Agendamento
                 </button>
@@ -30,7 +30,7 @@
         
         <div class="login-register-box">
             <h2>Já tem um perfil?</h2>
-            <a href="/login/">
+            <a href="{% url 'login' %}">
                 <button class="btn-login">
                     🔐 Fazer Login
                 </button>
@@ -41,11 +41,26 @@
             </div>
             
             <h2>Primeira vez aqui?</h2>
-            <a href="/registro/">
+            <a href="{% url 'registro' %}">
                 <button class="btn-register">
                     📝 Cadastre-se Agora
                 </button>
             </a>
             
             <p class="register-info">
-                É rápido
+                É rápido e gratuito!
+            </p>
+        </div>
+        
+        <div class="how-it-works">
+            <h3>Como funciona:</h3>
+            <ol>
+                <li>Cadastre-se informando seu endereço</li>
+                <li>Escolha o serviço desejado</li>
+                <li>Selecione data e horário</li>
+                <li>Receba confirmação por notificação</li>
+            </ol>
+        </div>
+        {% endif %}
+</div>
+{% endblock %}
