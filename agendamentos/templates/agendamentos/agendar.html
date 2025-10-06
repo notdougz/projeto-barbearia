@@ -31,45 +31,43 @@
 {% block extra_js %}
 <script>
     // Pega os elementos do formulário que vamos usar
+    const servicoInput = document.getElementById('id_servico');
     const dataInput = document.getElementById('id_data');
     const horariosGrid = document.getElementById('horarios-grid');
     const horaInputHidden = document.getElementById('id_hora');
 
-    // Adiciona um "ouvinte" que dispara uma função quando a data é alterada
-    dataInput.addEventListener('change', function() {
-        const dataSelecionada = this.value;
+    // Cria uma função reutilizável para buscar os horários
+    function buscarHorarios() {
+        const dataSelecionada = dataInput.value;
+        const servicoId = servicoInput.value;
 
-        // Limpa os horários antigos e mostra uma mensagem de carregamento
+        // Limpa os horários e mostra uma mensagem
         horariosGrid.innerHTML = '<p>Carregando horários...</p>';
+        horaInputHidden.value = ''; // Limpa a hora selecionada
 
-        // Se nenhuma data for selecionada, não faz nada
-        if (!dataSelecionada) {
-            horariosGrid.innerHTML = '<p>Por favor, selecione uma data para ver os horários.</p>';
+        // Só busca se AMBOS, data e serviço, estiverem selecionados
+        if (!dataSelecionada || !servicoId) {
+            horariosGrid.innerHTML = '<p>Por favor, selecione um serviço e uma data.</p>';
             return;
         }
 
-        // Faz a chamada para a nossa API
-        fetch(`/api/horarios-disponiveis/?data=${dataSelecionada}`)
+        // Faz a chamada para a nossa API, agora enviando data E serviço
+        fetch(`/api/horarios-disponiveis/?data=${dataSelecionada}&servico_id=${servicoId}`)
             .then(response => response.json())
             .then(data => {
-                horariosGrid.innerHTML = ''; // Limpa a mensagem de carregamento
+                horariosGrid.innerHTML = ''; 
 
                 if (data.horarios.length === 0) {
-                    horariosGrid.innerHTML = '<p>Nenhum horário disponível para esta data.</p>';
+                    horariosGrid.innerHTML = '<p>Nenhum horário disponível para este serviço nesta data.</p>';
                 } else {
-                    // Para cada horário recebido da API, cria um botão
                     data.horarios.forEach(horario => {
                         const button = document.createElement('button');
-                        button.type = 'button'; // Importante para não submeter o formulário
+                        button.type = 'button';
                         button.className = 'horario-btn';
                         button.textContent = horario;
-                        
-                        // Adiciona um "ouvinte" para o clique no botão de horário
-                        button.addEventListener('click', function() {
-                            // Preenche o campo de hora escondido com o valor do botão
-                            horaInputHidden.value = horario;
 
-                            // Remove a seleção de outros botões e destaca o clicado
+                        button.addEventListener('click', function() {
+                            horaInputHidden.value = horario;
                             document.querySelectorAll('.horario-btn').forEach(btn => btn.classList.remove('selected'));
                             this.classList.add('selected');
                         });
@@ -80,8 +78,12 @@
             })
             .catch(error => {
                 console.error('Erro ao buscar horários:', error);
-                horariosGrid.innerHTML = '<p>Ocorreu um erro ao buscar os horários. Tente novamente.</p>';
+                horariosGrid.innerHTML = '<p>Ocorreu um erro ao buscar os horários.</p>';
             });
-    });
+    }
+
+    // Adiciona "ouvintes" que disparam a função quando a data OU o serviço são alterados
+    dataInput.addEventListener('change', buscarHorarios);
+    servicoInput.addEventListener('change', buscarHorarios);
 </script>
 {% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'agendamentos/base.html' %}
+
+{% block title %}Painel do Barbeiro{% endblock %}
+
+{% block content %}
+<h2>Agenda para Hoje <small>({{ hoje|date:"d/m/Y" }})</small></h2>
+
+{% if agendamentos %}
+    <table class="appointments-table">
+        <thead>
+            <tr>
+                <th>Hora</th>
+                <th>Cliente</th>
+                <th>Serviço</th>
+                <th>Endereço</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for agendamento in agendamentos %}
+            <tr>
+                <td>{{ agendamento.hora|time:"H:i" }}</td>
+                <td>{{ agendamento.cliente.first_name }}</td>
+                <td>{{ agendamento.servico.nome }}</td>
+                <td>{{ agendamento.cliente.perfil.rua }}, {{ agendamento.cliente.perfil.numero }} - {{ agendamento.cliente.perfil.bairro }}</td>
+                <td>
+                    {% if agendamento.status == 'pendente' %}
+                        <span class="status-pendente">⏳ Pendente</span>
+                    {% elif agendamento.status == 'confirmado' %}
+                        <span class="status-confirmado">✅ Confirmado</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <div class="no-appointments">
+        <p>Nenhum agendamento para hoje ainda.</p>
+    </div>
+{% endif %}
+
+{% endblock %}

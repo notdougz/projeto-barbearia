@@ -14,38 +14,39 @@
 {% endif %}
 
 {% if agendamentos %}
-    <table class="appointments-table">
-        <thead>
-            <tr>
-                <th>Data</th>
-                <th>Hora</th>
-                <th>Serviço</th>
-                <th>Valor</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for agendamento in agendamentos %}
-            <tr>
-                <td>{{ agendamento.data|date:"d/m/Y" }}</td>
-                <td>{{ agendamento.hora }}</td>
-                <td>{{ agendamento.servico.nome }}</td>
-                <td>R$ {{ agendamento.servico.preco }}</td>
-                <td>
-                    {% if agendamento.status == 'pendente' %}
-                        <span class="status-pendente">⏳ Pendente</span>
-                    {% elif agendamento.status == 'confirmado' %}
-                        <span class="status-confirmado">✅ Confirmado</span>
-                    {% elif agendamento.status == 'concluido' %}
-                        <span class="status-concluido">🎉 Concluído</span>
-                    {% elif agendamento.status == 'cancelado' %}
-                        <span class="status-cancelado">❌ Cancelado</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<table class="appointments-table">
+    <thead>
+        <tr>
+            <th>Data</th>
+            <th>Hora</th>
+            <th>Serviço</th>
+            <th>Valor</th>
+            <th>Status</th>
+            <th>Ações</th> {# <-- 1. ADICIONE ESTE CABEÇALHO #}
+        </tr>
+    </thead>
+    <tbody>
+        {% for agendamento in agendamentos %}
+        <tr>
+            <td>{{ agendamento.data|date:"d/m/Y" }}</td>
+            <td>{{ agendamento.hora|time:"H:i" }}</td>
+            <td>{{ agendamento.servico.nome }}</td>
+            <td>R$ {{ agendamento.servico.preco }}</td>
+            <td>
+                {% if agendamento.status == 'pendente' %}
+                    <span class="status-pendente">⏳ Pendente</span>
+                ... (resto dos status) ...
+                {% endif %}
+            </td>
+            <td> {# <-- 2. ADICIONE ESTA CÉLULA #}
+                {% if agendamento.status == 'pendente' or agendamento.status == 'confirmado' %}
+                    <a href="{% url 'cancelar_agendamento' agendamento.id %}">Cancelar</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
     <p class="total-appointments">
         <strong>Total de agendamentos:</strong> {{ agendamentos|length }}
     </p>
