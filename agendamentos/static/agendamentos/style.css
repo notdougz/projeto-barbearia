@@ -229,3 +229,34 @@ label {
 .no-appointments button {
     margin-top: 20px;
 }
+
+   .horarios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.horario-btn {
+    padding: 10px;
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.horario-btn:hover {
+    background-color: #e0e0e0;
+    border-color: #999;
+}
+
+.horario-btn.selected {
+    background-color: #333;
+    color: white;
+    border-color: #333;
+    font-weight: bold;
+}

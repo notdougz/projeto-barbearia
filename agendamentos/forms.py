@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
@@ -53,22 +53,33 @@ class AgendamentoForm(forms.ModelForm):
         servico = cleaned_data.get("servico")
 
         if data and hora and servico:
-            # Combina data e hora para criar um objeto datetime de início
-            horario_inicio = data.strftime('%Y-%m-%d') + ' ' + hora.strftime('%H:%M:%S')
-            
-            # Calcula o horário de término baseado na duração do serviço
+            # Combina a data e a hora para criar um objeto datetime completo
+            horario_inicio = datetime.combine(data, hora)
             duracao = timedelta(minutes=servico.duracao)
-            horario_fim = (hora.to_datetime() + duracao).time()
+            horario_fim = horario_inicio + duracao
 
-            # Verifica se algum agendamento existente se sobrepõe ao novo horário
-            # A lógica é: um agendamento conflita se ele começa antes do nosso terminar E termina depois do nosso começar
-            agendamentos_conflitantes = Agendamento.objects.filter(
-                data=data,
-                hora__lt=horario_fim, 
-                hora__gte=(hora.to_datetime() - timedelta(minutes=servico.duracao)).time()
-            )
+            # Pega todos os agendamentos no dia selecionado para verificar conflitos
+            agendamentos_no_dia = Agendamento.objects.filter(data=data)
 
-            if agendamentos_conflitantes.exists():
-                raise forms.ValidationError("Este período de tempo está em conflito com outro agendamento.")
+            # Se estivermos editando um agendamento, devemos excluí-lo da verificação
+            if self.instance.pk:
+                agendamentos_no_dia = agendamentos_no_dia.exclude(pk=self.instance.pk)
+
+            # Itera sobre os agendamentos existentes para checar sobreposição
+            for agendamento_existente in agendamentos_no_dia:
+                inicio_existente = datetime.combine(
+                    agendamento_existente.data, agendamento_existente.hora
+                )
+                duracao_existente = timedelta(
+                    minutes=agendamento_existente.servico.duracao
+                )
+                fim_existente = inicio_existente + duracao_existente
+
+                # A condição de sobreposição: se o início de um é antes do fim do outro, E vice-versa
+                if horario_inicio < fim_existente and inicio_existente < horario_fim:
+                    raise forms.ValidationError(
+                        f"Este horário conflita com um agendamento existente das "
+                        f"{inicio_existente.strftime('%H:%M')} às {fim_existente.strftime('%H:%M')}."
+                    )
 
         return cleaned_data
