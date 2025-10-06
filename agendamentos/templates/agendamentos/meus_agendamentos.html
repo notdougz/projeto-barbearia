@@ -1,0 +1,59 @@
+{% extends 'agendamentos/base.html' %}
+
+{% block title %}Meus Agendamentos{% endblock %}
+
+{% block content %}
+<h2>Meus Agendamentos</h2>
+
+{% if messages %}
+    <div style="padding: 10px; background-color: lightgreen; border-radius: 5px; margin-bottom: 20px;">
+        {% for message in messages %}
+            <p style="margin: 0;">{{ message }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% if agendamentos %}
+    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+        <thead>
+            <tr style="background-color: #333; color: white;">
+                <th style="padding: 10px; text-align: left;">Data</th>
+                <th style="padding: 10px; text-align: left;">Hora</th>
+                <th style="padding: 10px; text-align: left;">Serviço</th>
+                <th style="padding: 10px; text-align: left;">Valor</th>
+                <th style="padding: 10px; text-align: left;">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for agendamento in agendamentos %}
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px;">{{ agendamento.data|date:"d/m/Y" }}</td>
+                <td style="padding: 10px;">{{ agendamento.hora }}</td>
+                <td style="padding: 10px;">{{ agendamento.servico.nome }}</td>
+                <td style="padding: 10px;">R$ {{ agendamento.servico.preco }}</td>
+                <td style="padding: 10px;">
+                    {% if agendamento.status == 'pendente' %}
+                        <span style="color: orange;">⏳ Pendente</span>
+                    {% elif agendamento.status == 'confirmado' %}
+                        <span style="color: green;">✅ Confirmado</span>
+                    {% elif agendamento.status == 'concluido' %}
+                        <span style="color: blue;">🎉 Concluído</span>
+                    {% elif agendamento.status == 'cancelado' %}
+                        <span style="color: red;">❌ Cancelado</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p style="margin-top: 20px; text-align: center;">
+        <strong>Total de agendamentos:</strong> {{ agendamentos|length }}
+    </p>
+{% else %}
+    <div style="text-align: center; padding: 40px; background-color: #f9f9f9; border-radius: 8px;">
+        <p style="font-size: 18px; color: #666;">Você ainda não tem agendamentos.</p>
+        <a href="/agendar/"><button style="margin-top: 20px;">Fazer Primeiro Agendamento</button></a>
+    </div>
+{% endif %}
+
+{% endblock %}

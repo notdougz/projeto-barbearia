@@ -1,0 +1,38 @@
+{% extends 'agendamentos/base.html' %}
+
+{% block title %}Meu Perfil{% endblock %}
+
+{% block content %}
+<h2>Meu Perfil</h2>
+
+{% if messages %}
+    <div style="padding: 10px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 5px; margin-bottom: 20px;">
+        {% for message in messages %}
+            <p style="margin: 0; color: #155724;">{{ message }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+    <h3>Dados Cadastrais</h3>
+    <p><strong>Nome:</strong> {{ user.first_name }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Telefone:</strong> {{ perfil.telefone }}</p>
+    
+    <h3 style="margin-top: 20px;">Endereço</h3>
+    <p><strong>CEP:</strong> {{ perfil.cep }}</p>
+    <p><strong>Rua:</strong> {{ perfil.rua }}, {{ perfil.numero }}</p>
+    {% if perfil.complemento %}
+    <p><strong>Complemento:</strong> {{ perfil.complemento }}</p>
+    {% endif %}
+    <p><strong>Bairro:</strong> {{ perfil.bairro }}</p>
+    <p><strong>Cidade:</strong> {{ perfil.cidade }} - {{ perfil.estado }}</p>
+</div>
+
+<h3>Editar Informações</h3>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Atualizar Perfil</button>
+</form>
+{% endblock %}
