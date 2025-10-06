@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
@@ -49,11 +50,25 @@ class AgendamentoForm(forms.ModelForm):
         cleaned_data = super().clean()
         data = cleaned_data.get("data")
         hora = cleaned_data.get("hora")
+        servico = cleaned_data.get("servico")
 
-        # Verifica se já existe um agendamento nesse mesmo dia e hora
-        if data and hora:
-            if Agendamento.objects.filter(data=data, hora=hora).exists():
-                # Se existir, levanta um erro de validação
-                raise forms.ValidationError("Este horário já está ocupado. Por favor, escolha outro.")
-        
+        if data and hora and servico:
+            # Combina data e hora para criar um objeto datetime de início
+            horario_inicio = data.strftime('%Y-%m-%d') + ' ' + hora.strftime('%H:%M:%S')
+            
+            # Calcula o horário de término baseado na duração do serviço
+            duracao = timedelta(minutes=servico.duracao)
+            horario_fim = (hora.to_datetime() + duracao).time()
+
+            # Verifica se algum agendamento existente se sobrepõe ao novo horário
+            # A lógica é: um agendamento conflita se ele começa antes do nosso terminar E termina depois do nosso começar
+            agendamentos_conflitantes = Agendamento.objects.filter(
+                data=data,
+                hora__lt=horario_fim, 
+                hora__gte=(hora.to_datetime() - timedelta(minutes=servico.duracao)).time()
+            )
+
+            if agendamentos_conflitantes.exists():
+                raise forms.ValidationError("Este período de tempo está em conflito com outro agendamento.")
+
         return cleaned_data
