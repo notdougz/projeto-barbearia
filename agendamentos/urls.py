@@ -12,4 +12,6 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='agendamentos/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
     path('api/horarios-disponiveis/', views.api_horarios_disponiveis, name='api_horarios_disponiveis'),
+    path('agendamento/cancelar/<int:agendamento_id>/', views.cancelar_agendamento, name='cancelar_agendamento'),
+    path('painel/', views.painel_barbeiro, name='painel_barbeiro'),
 ]
