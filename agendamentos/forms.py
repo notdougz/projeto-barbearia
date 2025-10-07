@@ -21,6 +21,15 @@ class RegistroComEmailForm(UserCreationForm):
             user.save()
         return user
 
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name']
+        labels = {
+            'first_name': 'Nome',
+            'last_name': 'Sobrenome',
+        }
+
 class PerfilClienteForm(forms.ModelForm):
     class Meta:
         model = PerfilCliente

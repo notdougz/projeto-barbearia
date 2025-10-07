@@ -15,24 +15,25 @@
 
 <div class="profile-box">
     <h3>Dados Cadastrais</h3>
-    <p><strong>Nome:</strong> {{ user.first_name }}</p>
+    <p><strong>Nome:</strong> {{ user.first_name }} {{ user.last_name }}</p>
     <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Telefone:</strong> {{ perfil.telefone }}</p>
-    
+    <p><strong>Telefone:</strong> {{ user.perfil.telefone }}</p>
+
     <h3 class="mt-4">Endereço</h3>
-    <p><strong>CEP:</strong> {{ perfil.cep }}</p>
-    <p><strong>Rua:</strong> {{ perfil.rua }}, {{ perfil.numero }}</p>
-    {% if perfil.complemento %}
-    <p><strong>Complemento:</strong> {{ perfil.complemento }}</p>
+    <p><strong>CEP:</strong> {{ user.perfil.cep }}</p>
+    <p><strong>Rua:</strong> {{ user.perfil.rua }}, {{ user.perfil.numero }}</p>
+    {% if user.perfil.complemento %}
+    <p><strong>Complemento:</strong> {{ user.perfil.complemento }}</p>
     {% endif %}
-    <p><strong>Bairro:</strong> {{ perfil.bairro }}</p>
-    <p><strong>Cidade:</strong> {{ perfil.cidade }} - {{ perfil.estado }}</p>
+    <p><strong>Bairro:</strong> {{ user.perfil.bairro }}</p>
+    <p><strong>Cidade:</strong> {{ user.perfil.cidade }} - {{ user.perfil.estado }}</p>
 </div>
 
 <h3>Editar Informações</h3>
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ user_form.as_p }}
+    {{ perfil_form.as_p }}
     <button type="submit">Atualizar Perfil</button>
 </form>
 {% endblock %}
