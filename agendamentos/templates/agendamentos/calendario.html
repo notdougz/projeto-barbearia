@@ -1,0 +1,45 @@
+{% extends 'agendamentos/base.html' %}
+{% block container_class %}container-wide{% endblock %}
+
+{% block title %}Calendário de Agendamentos{% endblock %}
+
+{% block content %}
+<h2>Calendário de Agendamentos</h2>
+
+<div id='calendar'></div>
+{% endblock %}
+
+
+{% block extra_js %}
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+
+<script>
+  // Espera o documento carregar para executar o script
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth', // Visão inicial de Mês
+      locale: 'pt-br', // Deixa os botões e títulos em português
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay' // Botões para trocar a visão
+      },
+      // AQUI ESTÁ A MÁGICA:
+      // O calendário vai automaticamente buscar os eventos na nossa API
+      events: '{% url "api_todos_agendamentos" %}',
+
+      // Deixa o evento com cor sólida
+      eventDisplay: 'block',
+
+      dayMaxEvents: 3, // Limita a 2 eventos por dia, e cria um link "+X a mais"
+      height: '80vh',
+
+    });
+
+    // Desenha o calendário na tela
+    calendar.render();
+  });
+</script>
+{% endblock %}

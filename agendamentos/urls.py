@@ -14,4 +14,6 @@ urlpatterns = [
     path('api/horarios-disponiveis/', views.api_horarios_disponiveis, name='api_horarios_disponiveis'),
     path('agendamento/cancelar/<int:agendamento_id>/', views.cancelar_agendamento, name='cancelar_agendamento'),
     path('painel/', views.painel_barbeiro, name='painel_barbeiro'),
+    path('calendario/', views.calendario_view, name='calendario'),
+    path('api/todos-agendamentos/', views.api_todos_agendamentos, name='api_todos_agendamentos'),
 ]
