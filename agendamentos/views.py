@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 from django.http import JsonResponse
 from datetime import date, datetime, time, timedelta
 from .models import Servico, Agendamento, PerfilCliente
-from .forms import RegistroComEmailForm, PerfilClienteForm, AgendamentoForm
+from .forms import RegistroComEmailForm, PerfilClienteForm, AgendamentoForm, UserForm
 
 def home(request):
     return render(request, 'agendamentos/home.html')
@@ -44,18 +44,33 @@ def completar_perfil(request):
 
 @login_required
 def meu_perfil(request):
-    perfil = request.user.perfil
-    
+    try:
+        perfil = request.user.perfil
+    except PerfilCliente.DoesNotExist:
+        # Se o perfil não existe por algum motivo, redireciona para a criação
+        return redirect('completar_perfil')
+
     if request.method == 'POST':
-        form = PerfilClienteForm(request.POST, instance=perfil)
-        if form.is_valid():
-            form.save()
+        # Cria instâncias dos dois formulários com os dados enviados
+        user_form = UserForm(request.POST, instance=request.user)
+        perfil_form = PerfilClienteForm(request.POST, instance=perfil)
+
+        # Verifica se ambos os formulários são válidos
+        if user_form.is_valid() and perfil_form.is_valid():
+            user_form.save()
+            perfil_form.save()
             messages.success(request, 'Perfil atualizado com sucesso!')
             return redirect('meu_perfil')
     else:
-        form = PerfilClienteForm(instance=perfil)
-    
-    return render(request, 'agendamentos/meu_perfil.html', {'form': form, 'perfil': perfil})
+        # Se não for POST, cria formulários vazios preenchidos com os dados atuais
+        user_form = UserForm(instance=request.user)
+        perfil_form = PerfilClienteForm(instance=perfil)
+
+    context = {
+        'user_form': user_form,
+        'perfil_form': perfil_form,
+    }
+    return render(request, 'agendamentos/meu_perfil.html', context)
 
 @login_required
 def meus_agendamentos(request):
@@ -193,22 +208,40 @@ def painel_barbeiro(request):
     return render(request, 'agendamentos/painel_barbeiro.html', context)
 
 def api_todos_agendamentos(request):
-    # Pega todos os agendamentos que não estão cancelados
-    todos_agendamentos = Agendamento.objects.exclude(status='cancelado')
-    
+    todos_agendamentos = Agendamento.objects.exclude(status='cancelado').select_related('cliente', 'servico')
+
     eventos = []
     for agendamento in todos_agendamentos:
-        # Calcula o início e o fim de cada agendamento
         inicio = datetime.combine(agendamento.data, agendamento.hora)
         fim = inicio + timedelta(minutes=agendamento.servico.duracao)
-        
-        # Cria um dicionário no formato que o FullCalendar entende
+
+        nome_cliente = f"{agendamento.cliente.first_name} {agendamento.cliente.last_name}".strip()
+        if not nome_cliente:
+            nome_cliente = agendamento.cliente.username
+
+        # Tenta pegar o perfil para buscar o endereço
+        try:
+            perfil = agendamento.cliente.perfil
+            endereco = f"{perfil.rua}, {perfil.numero} - {perfil.bairro}"
+        except PerfilCliente.DoesNotExist:
+            endereco = "Endereço não cadastrado."
+
         eventos.append({
-            'title': f'{agendamento.cliente.first_name} - {agendamento.servico.nome}',
-            'start': inicio.isoformat(), # Formato: 2025-10-07T14:00:00
+            # 1. Título do evento 
+            'title': f"{inicio.strftime('%H:%M')} - {fim.strftime('%H:%M')} / {nome_cliente}",
+            'start': inicio.isoformat(),
             'end': fim.isoformat(),
+
+            # 2. Adicionando "extendedProps" com os detalhes extras
+            'extendedProps': {
+                'servico_nome': agendamento.servico.nome,
+                'servico_preco': f'R$ {agendamento.servico.preco}',
+                'cliente_nome': nome_cliente,
+                'endereco': endereco,
+                'observacoes': agendamento.observacoes or 'Nenhuma observação.'
+            }
         })
-        
+
     return JsonResponse(eventos, safe=False)
 
 @staff_member_required(login_url='login')
