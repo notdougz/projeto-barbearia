@@ -96,25 +96,39 @@ def cancelar_agendamento(request, agendamento_id):
 
 @staff_member_required(login_url='login')
 def painel_barbeiro(request):
-    # Pega a data da URL (ex: /painel/?data=2025-10-08), se não existir, usa a data de hoje.
     data_selecionada_str = request.GET.get('data')
-
     if data_selecionada_str:
         data_selecionada = datetime.strptime(data_selecionada_str, '%Y-%m-%d').date()
     else:
         data_selecionada = date.today()
-
-    # Filtra os agendamentos pela data selecionada
     agendamentos = Agendamento.objects.filter(
         data=data_selecionada,
         status__in=['pendente', 'confirmado']
     ).order_by('hora').select_related('cliente', 'servico', 'cliente__perfil')
-
-    context = {
-        'agendamentos': agendamentos,
-        'data_selecionada': data_selecionada,
-    }
+    context = {'agendamentos': agendamentos, 'data_selecionada': data_selecionada}
     return render(request, 'agendamentos/painel_barbeiro.html', context)
+
+@staff_member_required(login_url='login')
+def calendario_view(request):
+    return render(request, 'agendamentos/calendario.html')
+
+@staff_member_required(login_url='login')
+def confirmar_agendamento(request, agendamento_id):
+    if request.method == 'POST':
+        agendamento = get_object_or_404(Agendamento, id=agendamento_id)
+        agendamento.status = 'confirmado'
+        agendamento.save()
+        messages.success(request, 'Agendamento confirmado!')
+    return redirect('painel_barbeiro')
+
+@staff_member_required(login_url='login')
+def concluir_agendamento(request, agendamento_id):
+    if request.method == 'POST':
+        agendamento = get_object_or_404(Agendamento, id=agendamento_id)
+        agendamento.status = 'concluido'
+        agendamento.save()
+        messages.success(request, 'Agendamento concluído!')
+    return redirect('painel_barbeiro')
 
 # --- APIs PARA O FRONT-END ---
 
@@ -128,7 +142,7 @@ def api_horarios_disponiveis(request):
         data = datetime.strptime(data_str, '%Y-%m-%d').date()
     except (Servico.DoesNotExist, ValueError):
         return JsonResponse({'horarios': []})
-
+    # ... (resto da lógica da API de horários)
     horario_inicio_trabalho = time(9, 0)
     horario_fim_trabalho = time(18, 0)
     intervalo_minutos = 30
@@ -155,33 +169,32 @@ def api_horarios_disponiveis(request):
         slot_atual += timedelta(minutes=intervalo_minutos)
     return JsonResponse({'horarios': horarios_disponiveis})
 
+
 def api_todos_agendamentos(request):
     todos_agendamentos = Agendamento.objects.exclude(status='cancelado').select_related('cliente', 'servico', 'cliente__perfil')
     eventos = []
     for agendamento in todos_agendamentos:
-        
-        # Define a cor baseada no status
-        cor = '#5a5a5a' # Padrão cinza
-        if agendamento.status == 'confirmado':
-            cor = '#28a745' # Verde para confirmado
-        elif agendamento.status == 'concluido':
-            cor = '#007bff' # Azul para concluído
-            
         inicio = datetime.combine(agendamento.data, agendamento.hora)
         fim = inicio + timedelta(minutes=agendamento.servico.duracao)
         nome_cliente = f"{agendamento.cliente.first_name} {agendamento.cliente.last_name}".strip() or agendamento.cliente.username
-        
+
         try:
             perfil = agendamento.cliente.perfil
             endereco = f"{perfil.rua}, {perfil.numero} - {perfil.bairro}"
         except PerfilCliente.DoesNotExist:
             endereco = "Endereço não cadastrado."
 
+        cor = '#5a5a5a'
+        if agendamento.status == 'confirmado':
+            cor = '#28a745'
+        elif agendamento.status == 'concluido':
+            cor = '#007bff'
+
         eventos.append({
             'title': f"{inicio.strftime('%H:%M')} - {fim.strftime('%H:%M')} / {nome_cliente}",
             'start': inicio.isoformat(),
             'end': fim.isoformat(),
-            'color':cor,
+            'color': cor,
             'extendedProps': {
                 'servico_nome': agendamento.servico.nome,
                 'servico_preco': f'R$ {agendamento.servico.preco}',
@@ -191,21 +204,3 @@ def api_todos_agendamentos(request):
             }
         })
     return JsonResponse(eventos, safe=False)
-
-@staff_member_required(login_url='login')
-def confirmar_agendamento(request, agendamento_id):
-    if request.method == 'POST':
-        agendamento = get_object_or_404(Agendamento, id=agendamento_id)
-        agendamento.status = 'confirmado'
-        agendamento.save()
-        messages.success(request, 'Agendamento confirmado!')
-    return redirect('painel_barbeiro')
-
-@staff_member_required(login_url='login')
-def concluir_agendamento(request, agendamento_id):
-    if request.method == 'POST':
-        agendamento = get_object_or_404(Agendamento, id=agendamento_id)
-        agendamento.status = 'concluido'
-        agendamento.save()
-        messages.success(request, 'Agendamento concluído!')
-    return redirect('painel_barbeiro')
