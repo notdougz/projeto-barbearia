@@ -35,10 +35,15 @@
             <td>
                 {% if agendamento.status == 'pendente' %}
                     <span class="status-pendente">⏳ Pendente</span>
-                ... (resto dos status) ...
+                {% elif agendamento.status == 'confirmado' %}
+                    <span class="status-confirmado">✅ Confirmado</span>
+                {% elif agendamento.status == 'concluido' %}
+                    <span class="status-concluido">🎉 Concluído</span>
+                {% elif agendamento.status == 'cancelado' %}
+                    <span class="status-cancelado">❌ Cancelado</span>
                 {% endif %}
             </td>
-            <td> {# <-- 2. ADICIONE ESTA CÉLULA #}
+            <td> {# #}
                 {% if agendamento.status == 'pendente' or agendamento.status == 'confirmado' %}
                     <a href="{% url 'cancelar_agendamento' agendamento.id %}">Cancelar</a>
                 {% endif %}

@@ -3,7 +3,15 @@
 {% block title %}Painel do Barbeiro{% endblock %}
 
 {% block content %}
-<h2>Agenda para Hoje <small>({{ hoje|date:"d/m/Y" }})</small></h2>
+
+<div class="date-selector">
+    <form method="GET" action="{% url 'painel_barbeiro' %}" id="date-form">
+        <label for="data">Selecionar outra data:</label>
+        <input type="date" name="data" id="id_data" value="{{ data_selecionada|date:'Y-m-d' }}">
+    </form>
+</div>
+
+<h2>Agenda para {{ data_selecionada|date:"d/m/Y" }}</h2>
 
 {% if agendamentos %}
     <table class="appointments-table">
@@ -11,23 +19,43 @@
             <tr>
                 <th>Hora</th>
                 <th>Cliente</th>
+                <th>Telefone</th>
                 <th>Serviço</th>
                 <th>Endereço</th>
                 <th>Status</th>
+                <th>Ações</th>
             </tr>
         </thead>
         <tbody>
             {% for agendamento in agendamentos %}
             <tr>
                 <td>{{ agendamento.hora|time:"H:i" }}</td>
-                <td>{{ agendamento.cliente.first_name }}</td>
+                <td>{{ agendamento.cliente.first_name }} {{ agendamento.cliente.last_name }}</td>
+                <td>{{ agendamento.cliente.perfil.telefone }}</td>
                 <td>{{ agendamento.servico.nome }}</td>
-                <td>{{ agendamento.cliente.perfil.rua }}, {{ agendamento.cliente.perfil.numero }} - {{ agendamento.cliente.perfil.bairro }}</td>
+                <td>
+                    <a href="https://www.google.com/maps/search/?api=1&query={{ agendamento.cliente.perfil.rua }}, {{ agendamento.cliente.perfil.numero }}, {{ agendamento.cliente.perfil.bairro }}, {{ agendamento.cliente.perfil.cidade }}" target="_blank">
+                        {{ agendamento.cliente.perfil.rua }}, {{ agendamento.cliente.perfil.numero }}
+                    </a>
+                </td>
                 <td>
                     {% if agendamento.status == 'pendente' %}
                         <span class="status-pendente">⏳ Pendente</span>
                     {% elif agendamento.status == 'confirmado' %}
                         <span class="status-confirmado">✅ Confirmado</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if agendamento.status == 'pendente' %}
+                        <form action="{% url 'confirmar_agendamento' agendamento.id %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-sm btn-success">Confirmar</button>
+                        </form>
+                    {% elif agendamento.status == 'confirmado' %}
+                        <form action="{% url 'concluir_agendamento' agendamento.id %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-sm btn-primary">Concluir</button>
+                        </form>
                     {% endif %}
                 </td>
             </tr>
@@ -36,8 +64,17 @@
     </table>
 {% else %}
     <div class="no-appointments">
-        <p>Nenhum agendamento para hoje ainda.</p>
+        <p>Nenhum agendamento para a data selecionada.</p>
     </div>
 {% endif %}
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Script para submeter o formulário automaticamente quando a data mudar
+    document.getElementById('id_data').addEventListener('change', function() {
+        document.getElementById('date-form').submit();
+    });
+</script>
 {% endblock %}
