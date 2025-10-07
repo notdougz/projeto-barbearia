@@ -191,3 +191,26 @@ def painel_barbeiro(request):
         'hoje': hoje,
     }
     return render(request, 'agendamentos/painel_barbeiro.html', context)
+
+def api_todos_agendamentos(request):
+    # Pega todos os agendamentos que não estão cancelados
+    todos_agendamentos = Agendamento.objects.exclude(status='cancelado')
+    
+    eventos = []
+    for agendamento in todos_agendamentos:
+        # Calcula o início e o fim de cada agendamento
+        inicio = datetime.combine(agendamento.data, agendamento.hora)
+        fim = inicio + timedelta(minutes=agendamento.servico.duracao)
+        
+        # Cria um dicionário no formato que o FullCalendar entende
+        eventos.append({
+            'title': f'{agendamento.cliente.first_name} - {agendamento.servico.nome}',
+            'start': inicio.isoformat(), # Formato: 2025-10-07T14:00:00
+            'end': fim.isoformat(),
+        })
+        
+    return JsonResponse(eventos, safe=False)
+
+@staff_member_required(login_url='login')
+def calendario_view(request):
+    return render(request, 'agendamentos/calendario.html')
