@@ -16,4 +16,6 @@ urlpatterns = [
     path('painel/', views.painel_barbeiro, name='painel_barbeiro'),
     path('calendario/', views.calendario_view, name='calendario'),
     path('api/todos-agendamentos/', views.api_todos_agendamentos, name='api_todos_agendamentos'),
+    path('painel/confirmar/<int:agendamento_id>/', views.confirmar_agendamento, name='confirmar_agendamento'),
+    path('painel/concluir/<int:agendamento_id>/', views.concluir_agendamento, name='concluir_agendamento'),
 ]

@@ -5,75 +5,50 @@
 
 {% block content %}
 <h2>Calendário de Agendamentos</h2>
-
 <div id='calendar'></div>
 {% endblock %}
 
-
+{% block extra_js %}
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var calendarEl = document.getElementById('calendar');
-  
-      var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        locale: 'pt-br',
-        headerToolbar: {
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
-        },
-        events: '{% url "api_todos_agendamentos" %}',
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      locale: 'pt-br',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      },
+      events: '{% url "api_todos_agendamentos" %}',
+      aspectRatio: 1.8,
+      dayMaxEvents: 2,
+      eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
+      moreLinkContent: function(args) { return `Mostrar mais (+${args.num})`; },
+      
+      eventClick: function(info) {
+        info.jsEvent.preventDefault();
+        const props = info.event.extendedProps;
+        const modal = document.getElementById('eventoModal');
         
-        // --- CONFIGURAÇÕES VISUAIS ---
-        aspectRatio: 1.8,       // Proporção largura/altura
-        dayMaxEvents: 2,        // Número de eventos antes de mostrar "+ a mais"
+        document.getElementById('modalTitulo').innerText = info.event.title;
+        document.getElementById('modalServico').innerText = props.servico_nome;
+        document.getElementById('modalValor').innerText = props.servico_preco;
+        document.getElementById('modalEndereco').innerText = props.endereco;
+        document.getElementById('modalObservacoes').innerText = props.observacoes;
         
-        // Formata a hora do evento para HH:mm (ex: 12:00)
-        eventTimeFormat: {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false
-        },
-  
-        // Customiza e traduz o link "+ more"
-        moreLinkContent: function(args) {
-          return `Mostrar mais (+${args.num})`;
-        },
-  
-        // --- A MÁGICA DO CLIQUE ACONTECE AQUI ---
-        eventClick: function(info) {
-          info.jsEvent.preventDefault(); // Impede qualquer ação padrão do clique
-          
-          const props = info.event.extendedProps;
-          const modal = document.getElementById('eventoModal');
-          
-          // Preenche o modal com os dados do evento clicado
-          document.getElementById('modalTitulo').innerText = info.event.title;
-          document.getElementById('modalServico').innerText = props.servico_nome;
-          document.getElementById('modalValor').innerText = props.servico_preco;
-          document.getElementById('modalEndereco').innerText = props.endereco;
-          document.getElementById('modalObservacoes').innerText = props.observacoes;
-          
-          // Exibe o modal
-          modal.style.display = 'flex';
-        }
-      });
-  
-      calendar.render();
-  
-      // --- LÓGICA PARA FECHAR O MODAL ---
-      const modal = document.getElementById('eventoModal');
-      const closeBtn = document.querySelector('.modal-close-btn');
-  
-      // Fecha ao clicar no 'X'
-      closeBtn.onclick = function() {
-        modal.style.display = 'none';
-      }
-      // Fecha ao clicar fora da caixa do modal
-      window.onclick = function(event) {
-        if (event.target == modal) {
-          modal.style.display = 'none';
-        }
+        modal.style.display = 'flex';
       }
     });
-  </script>
+    calendar.render();
+
+    const modal = document.getElementById('eventoModal');
+    const closeBtn = document.querySelector('.modal-close-btn');
+    if(modal && closeBtn) {
+        closeBtn.onclick = function() { modal.style.display = 'none'; }
+        window.onclick = function(event) { if (event.target == modal) { modal.style.display = 'none'; } }
+    }
+  });
+</script>
+{% endblock %}
