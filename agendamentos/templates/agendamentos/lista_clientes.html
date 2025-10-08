@@ -1,0 +1,33 @@
+{% extends 'agendamentos/base.html' %}
+{% block title %}Lista de Clientes{% endblock %}
+
+{% block content %}
+  <h2>Meus Clientes</h2>
+  <a href="{% url 'criar_cliente' %}" class="btn btn-primary mb-3">Adicionar Novo Cliente</a>
+
+  <table class="table table-dark table-striped">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Telefone</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cliente in clientes %}
+        <tr>
+          <td>{{ cliente.nome }}</td>
+          <td>{{ cliente.telefone }}</td>
+          <td>
+            <a href="{% url 'editar_cliente' cliente.pk %}" class="btn btn-sm btn-secondary">Editar</a>
+            <a href="{% url 'deletar_cliente' cliente.pk %}" class="btn btn-sm btn-danger">Excluir</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="3">Nenhum cliente cadastrado ainda.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
