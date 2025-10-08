@@ -409,3 +409,15 @@ label {
     margin-top: 0;
     color: #fff;
 }
+
+/* =================================
+   ESTILOS DA PÁGINA DE LOGIN
+   ================================= */
+   .login-box {
+    background-color: #f9f9f9;
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    max-width: 400px;
+    margin: 40px auto;
+}
