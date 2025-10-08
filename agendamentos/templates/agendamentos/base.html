@@ -8,8 +8,8 @@
 </head>
 <body>
     <nav>
+        <a href="{% url 'home' %}">Painel</a>
         {% if user.is_authenticated %}
-            <a href="{% url 'home' %}">Painel</a>
             <a href="{% url 'lista_clientes' %}">Clientes</a>
             <a href="{% url 'agendar' %}">Novo Agendamento</a>
     
