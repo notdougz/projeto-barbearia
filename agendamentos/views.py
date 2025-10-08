@@ -1,24 +1,27 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Agendamento
+from django.contrib import messages
+from .models import Agendamento, Cliente, Servico
 from datetime import date, datetime
 from .forms import ClienteForm, AgendamentoForm
-from .models import Cliente
-
-@login_required
-def home(request):
-    # A home para um usuário logado é sempre o painel
-    return redirect('painel_barbeiro')
 
 @login_required
 def painel_barbeiro(request):
-    # Lógica simples para mostrar a agenda de hoje, que iremos expandir depois
-    hoje = date.today()
-    agendamentos = Agendamento.objects.filter(data=hoje).order_by('hora')
+    # Verificar se foi selecionada uma data específica
+    data_selecionada = request.GET.get('data')
+    if data_selecionada:
+        try:
+            data_selecionada = datetime.strptime(data_selecionada, '%Y-%m-%d').date()
+        except ValueError:
+            data_selecionada = date.today()
+    else:
+        data_selecionada = date.today()
+    
+    agendamentos = Agendamento.objects.filter(data=data_selecionada).order_by('hora')
     
     context = {
         'agendamentos': agendamentos,
-        'data_selecionada': hoje,
+        'data_selecionada': data_selecionada,
     }
     return render(request, 'agendamentos/painel_barbeiro.html', context)
 
@@ -57,3 +60,69 @@ def deletar_cliente(request, pk):
         cliente.delete()
         return redirect('lista_clientes')
     return render(request, 'agendamentos/cliente_confirm_delete.html', {'cliente': cliente})
+
+@login_required
+def agendar(request):
+    """
+    View para criar novos agendamentos.
+    O barbeiro deve selecionar um cliente existente.
+    """
+    if request.method == 'POST':
+        form = AgendamentoForm(request.POST)
+        if form.is_valid():
+            agendamento = form.save(commit=False)
+            agendamento.status = 'confirmado'
+            agendamento.save()
+            
+            messages.success(request, f'Agendamento criado com sucesso para {agendamento.cliente.nome}!')
+            return redirect('painel_barbeiro')
+    else:
+        form = AgendamentoForm()
+    
+    return render(request, 'agendamentos/agendar.html', {'form': form})
+
+@login_required
+def editar_agendamento(request, pk):
+    """Editar um agendamento existente"""
+    agendamento = get_object_or_404(Agendamento, pk=pk)
+    
+    if request.method == 'POST':
+        form = AgendamentoForm(request.POST, instance=agendamento)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Agendamento atualizado com sucesso!')
+            return redirect('painel_barbeiro')
+    else:
+        form = AgendamentoForm(instance=agendamento)
+    
+    return render(request, 'agendamentos/agendar.html', {'form': form, 'agendamento': agendamento})
+
+@login_required
+def deletar_agendamento(request, pk):
+    """Deletar um agendamento"""
+    agendamento = get_object_or_404(Agendamento, pk=pk)
+    
+    if request.method == 'POST':
+        agendamento.delete()
+        messages.success(request, 'Agendamento deletado com sucesso!')
+        return redirect('painel_barbeiro')
+    
+    return render(request, 'agendamentos/agendamento_confirm_delete.html', {'agendamento': agendamento})
+
+@login_required
+def confirmar_agendamento(request, pk):
+    """Confirmar um agendamento"""
+    agendamento = get_object_or_404(Agendamento, pk=pk)
+    agendamento.status = 'confirmado'
+    agendamento.save()
+    messages.success(request, f'Agendamento de {agendamento.cliente.nome} confirmado!')
+    return redirect('painel_barbeiro')
+
+@login_required
+def concluir_agendamento(request, pk):
+    """Marcar um agendamento como concluído"""
+    agendamento = get_object_or_404(Agendamento, pk=pk)
+    agendamento.status = 'concluido'
+    agendamento.save()
+    messages.success(request, f'Agendamento de {agendamento.cliente.nome} marcado como concluído!')
+    return redirect('painel_barbeiro')

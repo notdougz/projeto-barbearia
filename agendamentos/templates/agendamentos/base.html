@@ -3,28 +3,164 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
-    <title>{% block title %}Painel da Barbearia{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard - Sistema Profissional{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'agendamentos/style.css' %}">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFD700'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E">
 </head>
 <body>
-    <nav>
-        <a href="{% url 'home' %}">Painel</a>
-        {% if user.is_authenticated %}
-            <a href="{% url 'lista_clientes' %}">Clientes</a>
-            <a href="{% url 'agendar' %}">Novo Agendamento</a>
+    <header class="main-header">
+        <div class="header-container">
+            <!-- Logo/Brand -->
+            <div class="header-brand">
+                <a href="{% url 'home' %}" class="brand-link">
+                    <span class="icon icon-home brand-icon"></span>
+                    <span class="brand-text">Dashboard</span>
+                </a>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="header-nav">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="{% url 'home' %}" class="nav-link {% if request.resolver_match.url_name == 'painel_barbeiro' %}active{% endif %}">
+                            <span class="icon icon-home"></span>
+                            <span class="nav-text">Home</span>
+                        </a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a href="{% url 'lista_clientes' %}" class="nav-link {% if request.resolver_match.url_name == 'lista_clientes' %}active{% endif %}">
+                                <span class="icon icon-user"></span>
+                                <span class="nav-text">Clientes</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'agendar' %}" class="nav-link {% if request.resolver_match.url_name == 'agendar' %}active{% endif %}">
+                                <span class="icon icon-calendar"></span>
+                                <span class="nav-text">Novo Agendamento</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+
+            <!-- User Actions -->
+            <div class="header-actions">
+                {% if user.is_authenticated %}
+                    <div class="user-info">
+                        <span class="user-avatar">
+                            <span class="icon icon-user"></span>
+                        </span>
+                        <span class="user-name">Olá, {{ user.first_name|default:user.username|truncatechars:8 }}</span>
+                    </div>
+                    <form class="logout-form" action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="logout-btn">
+                            <span class="icon icon-logout"></span>
+                            <span class="logout-text">Sair</span>
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="login-btn">
+                        <span class="icon icon-lock"></span>
+                        <span class="login-text">Entrar</span>
+                    </a>
+                {% endif %}
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobile-menu">
+            <div class="mobile-menu-content">
+                <a href="{% url 'home' %}" class="mobile-nav-link {% if request.resolver_match.url_name == 'painel_barbeiro' %}active{% endif %}">
+                    <span class="icon icon-home"></span>Home
+                </a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'lista_clientes' %}" class="mobile-nav-link {% if request.resolver_match.url_name == 'lista_clientes' %}active{% endif %}">
+                        <span class="icon icon-user"></span>Clientes
+                    </a>
+                    <a href="{% url 'agendar' %}" class="mobile-nav-link {% if request.resolver_match.url_name == 'agendar' %}active{% endif %}">
+                        <span class="icon icon-calendar"></span>Novo Agendamento
+                    </a>
+                    <div class="mobile-user-section">
+                        <div class="mobile-user-info">
+                            <span class="icon icon-user"></span>
+                            <span>Olá, {{ user.first_name|default:user.username|truncatechars:8 }}</span>
+                        </div>
+                        <form class="mobile-logout-form" action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="mobile-logout-btn">
+                                <span class="icon icon-logout"></span>Sair
+                            </button>
+                        </form>
+                    </div>
+                {% else %}
+                    <a href="{% url 'login' %}" class="mobile-nav-link">
+                        <span class="icon icon-lock"></span>Entrar
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
     
-            <form class="logout-form" action="{% url 'logout' %}" method="post">
-                {% csrf_token %}
-                <button type="submit">Sair ({{ user.username }})</button>
-            </form>
-        {% else %}
-            <a href="{% url 'login' %}">Entrar</a>
-        {% endif %}
-    </nav>
     <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <span class="icon icon-{% if message.tags == 'success' %}barber{% elif message.tags == 'error' %}delete{% else %}note{% endif %}"></span>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
         {% block content %}{% endblock %}
     </div>
 
     {% block extra_js %}{% endblock %}
+    
+    <script>
+        // Menu mobile toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (mobileMenuToggle && mobileMenu) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('active');
+                    
+                    // Animar hamburger
+                    const lines = mobileMenuToggle.querySelectorAll('.hamburger-line');
+                    if (mobileMenu.classList.contains('active')) {
+                        lines[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+                        lines[1].style.opacity = '0';
+                        lines[2].style.transform = 'rotate(-45deg) translate(7px, -6px)';
+                    } else {
+                        lines[0].style.transform = 'none';
+                        lines[1].style.opacity = '1';
+                        lines[2].style.transform = 'none';
+                    }
+                });
+                
+                // Fechar menu ao clicar fora
+                document.addEventListener('click', function(e) {
+                    if (!mobileMenuToggle.contains(e.target) && !mobileMenu.contains(e.target)) {
+                        mobileMenu.classList.remove('active');
+                        const lines = mobileMenuToggle.querySelectorAll('.hamburger-line');
+                        lines[0].style.transform = 'none';
+                        lines[1].style.opacity = '1';
+                        lines[2].style.transform = 'none';
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
