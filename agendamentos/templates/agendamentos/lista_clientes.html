@@ -1,33 +1,66 @@
 {% extends 'agendamentos/base.html' %}
-{% block title %}Lista de Clientes{% endblock %}
+{% block title %}👥 Clientes Fiéis - Dashboard{% endblock %}
 
 {% block content %}
-  <h2>Meus Clientes</h2>
-  <a href="{% url 'criar_cliente' %}" class="btn btn-primary mb-3">Adicionar Novo Cliente</a>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>👥 Meus Clientes Fiéis</h2>
+    <a href="{% url 'criar_cliente' %}" class="btn btn-success">➕ Adicionar Novo Cliente</a>
+</div>
 
-  <table class="table table-dark table-striped">
-    <thead>
-      <tr>
-        <th>Nome</th>
-        <th>Telefone</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for cliente in clientes %}
-        <tr>
-          <td>{{ cliente.nome }}</td>
-          <td>{{ cliente.telefone }}</td>
-          <td>
-            <a href="{% url 'editar_cliente' cliente.pk %}" class="btn btn-sm btn-secondary">Editar</a>
-            <a href="{% url 'deletar_cliente' cliente.pk %}" class="btn btn-sm btn-danger">Excluir</a>
-          </td>
-        </tr>
-      {% empty %}
-        <tr>
-          <td colspan="3">Nenhum cliente cadastrado ainda.</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+{% if clientes %}
+  <div class="mobile-appointments">
+    {% for cliente in clientes %}
+    <div class="appointment-card">
+      <div class="appointment-header">
+        <div class="appointment-main-info">
+          <div class="appointment-client-name">{{ cliente.nome }}</div>
+        </div>
+      </div>
+      
+      <div class="appointment-info">
+        <div class="appointment-info-row">
+          <span class="appointment-info-label">
+            <span class="icon icon-phone"></span>Telefone:
+          </span>
+          <span class="appointment-info-value">
+            {% if cliente.telefone %}
+              <a href="tel:{{ cliente.telefone }}">{{ cliente.telefone }}</a>
+            {% else %}
+              -
+            {% endif %}
+          </span>
+        </div>
+        
+        {% if cliente.endereco %}
+        <div class="appointment-info-row">
+          <span class="appointment-info-label">
+            <span class="icon icon-location"></span>Endereço:
+          </span>
+          <span class="appointment-info-value">
+            <a href="https://www.google.com/maps/search/?api=1&query={{ cliente.endereco }}" target="_blank">
+              {{ cliente.endereco|truncatechars:40 }}
+            </a>
+          </span>
+        </div>
+        {% endif %}
+      </div>
+      
+      <div class="appointment-actions">
+        <a href="{% url 'editar_cliente' cliente.pk %}" class="btn btn-sm btn-secondary" style="flex: 1;">
+          <span class="icon icon-edit"></span>Editar
+        </a>
+        <a href="{% url 'deletar_cliente' cliente.pk %}" class="btn btn-sm btn-danger" style="flex: 1;">
+          <span class="icon icon-delete"></span>Excluir
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="no-appointments" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+    <div style="font-size: 3rem; margin-bottom: 1rem;">👥</div>
+    <p>Nenhum cliente fiel cadastrado ainda.</p>
+    <a href="{% url 'criar_cliente' %}" class="btn btn-success">➕ Cadastrar Primeiro Cliente</a>
+  </div>
+{% endif %}
 {% endblock %}

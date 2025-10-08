@@ -1,0 +1,57 @@
+[
+  {
+    "model": "agendamentos.servico",
+    "pk": 1,
+    "fields": {
+      "nome": "Corte Masculino",
+      "descricao": "Corte de cabelo masculino tradicional",
+      "duracao": 30,
+      "preco": "25.00",
+      "ativo": true
+    }
+  },
+  {
+    "model": "agendamentos.servico",
+    "pk": 2,
+    "fields": {
+      "nome": "Barba",
+      "descricao": "Aparar e modelar barba",
+      "duracao": 20,
+      "preco": "15.00",
+      "ativo": true
+    }
+  },
+  {
+    "model": "agendamentos.servico",
+    "pk": 3,
+    "fields": {
+      "nome": "Corte + Barba",
+      "descricao": "Corte de cabelo e barba completo",
+      "duracao": 45,
+      "preco": "35.00",
+      "ativo": true
+    }
+  },
+  {
+    "model": "agendamentos.servico",
+    "pk": 4,
+    "fields": {
+      "nome": "Sobrancelha",
+      "descricao": "Design de sobrancelha",
+      "duracao": 15,
+      "preco": "10.00",
+      "ativo": true
+    }
+  },
+  {
+    "model": "agendamentos.servico",
+    "pk": 5,
+    "fields": {
+      "nome": "Pézinho",
+      "descricao": "Aparar o cabelo na nuca",
+      "duracao": 10,
+      "preco": "8.00",
+      "ativo": true
+    }
+  }
+]

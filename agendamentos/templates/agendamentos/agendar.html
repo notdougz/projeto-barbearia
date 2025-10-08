@@ -1,89 +1,93 @@
 {% extends 'agendamentos/base.html' %}
 
-{% block title %}Novo Agendamento{% endblock %}
+{% block title %}{% if agendamento %}✏️ Editar Agendamento{% else %}📅 Novo Agendamento{% endif %} - Dashboard{% endblock %}
 
 {% block content %}
-<h2>Novo Agendamento</h2>
-<form method="post" id="agendamento-form">
-    {% csrf_token %}
-
-    {{ form.servico.label_tag }}
-    {{ form.servico }}
-
-    {{ form.data.label_tag }}
-    {{ form.data }}
-
-    {{ form.hora.as_hidden }}
-
-    <div id="horarios-disponiveis-container">
-        <label>Horários disponíveis:</label>
-        <div id="horarios-grid" class="horarios-grid">
-            <p>Por favor, selecione uma data para ver os horários.</p>
+<div style="display: flex; justify-content: center;">
+    <div class="card" style="max-width: 600px; width: 100%;">
+        <div class="card-header">
+            <h3>{% if agendamento %}✏️ Editar Agendamento{% else %}📅 Novo Agendamento{% endif %}</h3>
+        </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="form-group">
+                            <label for="{{ form.cliente.id_for_label }}">👤 {{ form.cliente.label }}</label>
+                            {{ form.cliente }}
+                            {% if form.cliente.errors %}
+                                <div class="text-danger">
+                                    {{ form.cliente.errors }}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">
+                                Não encontrou o cliente? <a href="{% url 'criar_cliente' %}">➕ Cadastre um novo cliente fiel</a>
+                            </small>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label for="{{ form.servico.id_for_label }}">✂️ {{ form.servico.label }}</label>
+                                {{ form.servico }}
+                                {% if form.servico.errors %}
+                                    <div class="text-danger">
+                                        {{ form.servico.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.data.id_for_label }}">📅 {{ form.data.label }}</label>
+                                {{ form.data }}
+                                {% if form.data.errors %}
+                                    <div class="text-danger">
+                                        {{ form.data.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.hora.id_for_label }}">🕐 {{ form.hora.label }}</label>
+                            {{ form.hora }}
+                            {% if form.hora.errors %}
+                                <div class="text-danger">
+                                    {{ form.hora.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.observacoes.id_for_label }}">📝 {{ form.observacoes.label }}</label>
+                            {{ form.observacoes }}
+                            {% if form.observacoes.errors %}
+                                <div class="text-danger">
+                                    {{ form.observacoes.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group" style="display: flex; gap: 1rem; margin-top: 2rem;">
+                            <button type="submit" class="btn btn-primary" style="flex: 1;">
+                                {% if agendamento %}💾 Atualizar Agendamento{% else %}✅ Criar Agendamento{% endif %}
+                            </button>
+                            <a href="{% url 'painel_barbeiro' %}" class="btn btn-secondary">❌ Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
-    <button type="submit">Confirmar Agendamento</button>
-</form>
-{% endblock %} {# <--- ESTA LINHA ESTAVA FALTANDO ANTES DO BLOCO DE JAVASCRIPT #}
-
-
-{# Bloco para adicionar nosso JavaScript no final da página #}
-{% block extra_js %}
 <script>
-    // Pega os elementos do formulário que vamos usar
-    const servicoInput = document.getElementById('id_servico');
-    const dataInput = document.getElementById('id_data');
-    const horariosGrid = document.getElementById('horarios-grid');
-    const horaInputHidden = document.getElementById('id_hora');
-
-    // Cria uma função reutilizável para buscar os horários
-    function buscarHorarios() {
-        const dataSelecionada = dataInput.value;
-        const servicoId = servicoInput.value;
-
-        // Limpa os horários e mostra uma mensagem
-        horariosGrid.innerHTML = '<p>Carregando horários...</p>';
-        horaInputHidden.value = ''; // Limpa a hora selecionada
-
-        // Só busca se AMBOS, data e serviço, estiverem selecionados
-        if (!dataSelecionada || !servicoId) {
-            horariosGrid.innerHTML = '<p>Por favor, selecione um serviço e uma data.</p>';
-            return;
-        }
-
-        // Faz a chamada para a nossa API, agora enviando data E serviço
-        fetch(`/api/horarios-disponiveis/?data=${dataSelecionada}&servico_id=${servicoId}`)
-            .then(response => response.json())
-            .then(data => {
-                horariosGrid.innerHTML = ''; 
-
-                if (data.horarios.length === 0) {
-                    horariosGrid.innerHTML = '<p>Nenhum horário disponível para este serviço nesta data.</p>';
-                } else {
-                    data.horarios.forEach(horario => {
-                        const button = document.createElement('button');
-                        button.type = 'button';
-                        button.className = 'horario-btn';
-                        button.textContent = horario;
-
-                        button.addEventListener('click', function() {
-                            horaInputHidden.value = horario;
-                            document.querySelectorAll('.horario-btn').forEach(btn => btn.classList.remove('selected'));
-                            this.classList.add('selected');
-                        });
-
-                        horariosGrid.appendChild(button);
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Erro ao buscar horários:', error);
-                horariosGrid.innerHTML = '<p>Ocorreu um erro ao buscar os horários.</p>';
-            });
+// JavaScript para melhorar a experiência do usuário
+document.addEventListener('DOMContentLoaded', function() {
+    // Definir data padrão como hoje
+    const dataField = document.getElementById('{{ form.data.id_for_label }}');
+    if (!dataField.value) {
+        const hoje = new Date().toISOString().split('T')[0];
+        dataField.value = hoje;
     }
-
-    // Adiciona "ouvintes" que disparam a função quando a data OU o serviço são alterados
-    dataInput.addEventListener('change', buscarHorarios);
-    servicoInput.addEventListener('change', buscarHorarios);
+});
 </script>
 {% endblock %}

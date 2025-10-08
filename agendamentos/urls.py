@@ -7,10 +7,17 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='agendamentos/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
 
+    # PAINEL PRINCIPAL
     path('painel/', views.painel_barbeiro, name='painel_barbeiro'),
+    
+    # AGENDAMENTOS
     path('agendar/', views.agendar, name='agendar'),
+    path('agendar/editar/<int:pk>/', views.editar_agendamento, name='editar_agendamento'),
+    path('agendar/deletar/<int:pk>/', views.deletar_agendamento, name='deletar_agendamento'),
+    path('agendar/confirmar/<int:pk>/', views.confirmar_agendamento, name='confirmar_agendamento'),
+    path('agendar/concluir/<int:pk>/', views.concluir_agendamento, name='concluir_agendamento'),
 
-    # NOVAS URLs PARA CLIENTES (AGORA ESTÃO ATIVAS)
+    # CLIENTES
     path('clientes/', views.lista_clientes, name='lista_clientes'),
     path('clientes/novo/', views.criar_cliente, name='criar_cliente'),
     path('clientes/editar/<int:pk>/', views.editar_cliente, name='editar_cliente'),

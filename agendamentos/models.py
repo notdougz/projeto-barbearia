@@ -3,6 +3,7 @@ from django.db import models
 class Cliente(models.Model):
     nome = models.CharField(max_length=100)
     telefone = models.CharField(max_length=15, unique=True, blank=True, null=True)
+    endereco = models.TextField(blank=True, null=True, help_text="Endereço completo do cliente")
     observacoes = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -20,7 +21,7 @@ class Servico(models.Model):
     
 class Agendamento(models.Model):
     STATUS_CHOICES = [
-        ('confirmado', 'Confirmado'),
+        ('confirmado', 'Pendente'),
         ('concluido', 'Concluído'),
         ('cancelado', 'Cancelado'),
     ]

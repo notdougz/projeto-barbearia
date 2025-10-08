@@ -1,69 +1,106 @@
 {% extends 'agendamentos/base.html' %}
 
-{% block title %}Painel do Barbeiro{% endblock %}
+{% block title %}Dashboard - {{ data_selecionada|date:"d/m/Y" }}{% endblock %}
 
 {% block content %}
 
 <div class="date-selector">
     <form method="GET" action="{% url 'painel_barbeiro' %}" id="date-form">
-        <label for="data">Selecionar outra data:</label>
+        <label for="data">
+            <span class="icon icon-calendar"></span>Selecionar outra data:
+        </label>
         <input type="date" name="data" id="id_data" value="{{ data_selecionada|date:'Y-m-d' }}">
     </form>
 </div>
 
-<h2>Agenda para {{ data_selecionada|date:"d/m/Y" }}</h2>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>
+        <span class="icon icon-calendar"></span>Agenda para {{ data_selecionada|date:"d/m/Y" }}
+    </h2>
+    <a href="{% url 'criar_cliente' %}" class="btn btn-success">
+        <span class="icon icon-add"></span>Novo Cliente
+    </a>
+</div>
 
 {% if agendamentos %}
-    <table class="appointments-table">
-        <thead>
-            <tr>
-                <th>Hora</th>
-                <th>Cliente</th>
-                <th>Telefone</th>
-                <th>Serviço</th>
-                <th>Endereço</th>
-                <th>Status</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for agendamento in agendamentos %}
-            <tr>
-                <td>{{ agendamento.hora|time:"H:i" }}</td>
-                <td>{{ agendamento.cliente.first_name }} {{ agendamento.cliente.last_name }}</td>
-                <td>{{ agendamento.cliente.perfil.telefone }}</td>
-                <td>{{ agendamento.servico.nome }}</td>
-                <td>
-                    <a href="https://www.google.com/maps/search/?api=1&query={{ agendamento.cliente.perfil.rua }}, {{ agendamento.cliente.perfil.numero }}, {{ agendamento.cliente.perfil.bairro }}, {{ agendamento.cliente.perfil.cidade }}" target="_blank">
-                        {{ agendamento.cliente.perfil.rua }}, {{ agendamento.cliente.perfil.numero }}
-                    </a>
-                </td>
-                <td>
-                    {% if agendamento.status == 'pendente' %}
-                        <span class="status-pendente">⏳ Pendente</span>
-                    {% elif agendamento.status == 'confirmado' %}
-                        <span class="status-confirmado">✅ Confirmado</span>
+    <!-- CARDS DE AGENDAMENTOS -->
+    <div class="mobile-appointments">
+        {% for agendamento in agendamentos %}
+        <div class="appointment-card">
+            <div class="appointment-header">
+                <div class="appointment-main-info">
+                    <div class="appointment-time">{{ agendamento.hora|time:"H:i" }}</div>
+                    <div class="appointment-client-name">{{ agendamento.cliente.nome }}</div>
+                </div>
+                <div class="appointment-status 
+                    {% if agendamento.status == 'confirmado' %}status-confirmado
+                    {% elif agendamento.status == 'concluido' %}status-concluido
+                    {% elif agendamento.status == 'cancelado' %}status-cancelado
+                    {% endif %}">
+                    {% if agendamento.status == 'confirmado' %}PENDENTE
+                    {% elif agendamento.status == 'concluido' %}CONCLUÍDO
+                    {% elif agendamento.status == 'cancelado' %}CANCELADO
                     {% endif %}
-                </td>
-                <td>
-                    {% if agendamento.status == 'pendente' %}
-                        <form action="{% url 'confirmar_agendamento' agendamento.id %}" method="post" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn-sm btn-success">Confirmar</button>
-                        </form>
-                    {% elif agendamento.status == 'confirmado' %}
-                        <form action="{% url 'concluir_agendamento' agendamento.id %}" method="post" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn-sm btn-primary">Concluir</button>
-                        </form>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                </div>
+            </div>
+            
+            <div class="appointment-info">
+                <div class="appointment-info-row">
+                    <span class="appointment-info-label">
+                        <span class="icon icon-phone"></span>Telefone:
+                    </span>
+                    <span class="appointment-info-value">
+                        {% if agendamento.cliente.telefone %}
+                            <a href="tel:{{ agendamento.cliente.telefone }}">{{ agendamento.cliente.telefone }}</a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </span>
+                </div>
+                
+                <div class="appointment-info-row">
+                    <span class="appointment-info-label">
+                        <span class="icon icon-scissors"></span>Serviço:
+                    </span>
+                    <span class="appointment-info-value">{{ agendamento.servico.nome }}</span>
+                </div>
+                
+                {% if agendamento.cliente.endereco %}
+                <div class="appointment-info-row">
+                    <span class="appointment-info-label">
+                        <span class="icon icon-location"></span>Endereço:
+                    </span>
+                    <span class="appointment-info-value">
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ agendamento.cliente.endereco }}" target="_blank">
+                            {{ agendamento.cliente.endereco|truncatechars:40 }}
+                        </a>
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="appointment-actions">
+                {% if agendamento.status == 'confirmado' %}
+                    <form action="{% url 'concluir_agendamento' agendamento.id %}" method="post" style="display: inline; flex: 1;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-success">
+                            <span class="icon icon-barber"></span>Concluir
+                        </button>
+                    </form>
+                {% endif %}
+                <a href="{% url 'editar_agendamento' agendamento.id %}" class="btn btn-sm btn-secondary" style="flex: 1;">
+                    <span class="icon icon-edit"></span>Editar
+                </a>
+                <a href="{% url 'deletar_agendamento' agendamento.id %}" class="btn btn-sm btn-danger" style="flex: 1;">
+                    <span class="icon icon-delete"></span>Deletar
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 {% else %}
-    <div class="no-appointments">
+    <div class="no-appointments" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">📅</div>
         <p>Nenhum agendamento para a data selecionada.</p>
     </div>
 {% endif %}
