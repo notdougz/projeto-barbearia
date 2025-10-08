@@ -16,7 +16,7 @@
             {# Link visível apenas para o admin #}
             {% if user.is_staff %}
                 <a href="{% url 'painel_barbeiro' %}">Painel</a>
-                <a href="{% url 'calendario' %}">Calendário</a> {# <-- ADICIONE ESTA LINHA #}
+                <a href="{% url 'calendario' %}">Calendário</a> {# #}
             {% endif %}
     
             <a href="{% url 'meus_agendamentos' %}">Meus Agendamentos</a>
