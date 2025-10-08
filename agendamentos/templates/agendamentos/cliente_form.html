@@ -1,0 +1,12 @@
+{% extends 'agendamentos/base.html' %}
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+  <h2>{{ titulo }}</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a href="{% url 'lista_clientes' %}" class="btn btn-secondary">Cancelar</a>
+  </form>
+{% endblock %}
