@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Agendamento, Cliente, Servico
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from .forms import ClienteForm, AgendamentoForm
 
 @login_required
@@ -119,6 +119,15 @@ def confirmar_agendamento(request, pk):
     return redirect('painel_barbeiro')
 
 @login_required
+def on_the_way_agendamento(request, pk):
+    """Marcar um agendamento como 'À caminho'"""
+    agendamento = get_object_or_404(Agendamento, pk=pk)
+    agendamento.status = 'a_caminho'
+    agendamento.save()
+    messages.success(request, f'Status de {agendamento.cliente.nome} alterado para "À caminho"!')
+    return redirect('painel_barbeiro')
+
+@login_required
 def concluir_agendamento(request, pk):
     """Marcar um agendamento como concluído"""
     agendamento = get_object_or_404(Agendamento, pk=pk)
@@ -126,3 +135,110 @@ def concluir_agendamento(request, pk):
     agendamento.save()
     messages.success(request, f'Agendamento de {agendamento.cliente.nome} marcado como concluído!')
     return redirect('painel_barbeiro')
+
+@login_required
+def agendamentos_mensais(request):
+    """Visualizar agendamentos do mês em formato de calendário"""
+    # Obter parâmetros de data (mês/ano)
+    ano = request.GET.get('ano', datetime.now().year)
+    mes = request.GET.get('mes', datetime.now().month)
+    
+    try:
+        ano = int(ano)
+        mes = int(mes)
+        data_inicio = datetime(ano, mes, 1).date()
+        if mes == 12:
+            data_fim = datetime(ano + 1, 1, 1).date()
+        else:
+            data_fim = datetime(ano, mes + 1, 1).date()
+    except (ValueError, TypeError):
+        # Se houver erro, usar mês atual
+        hoje = datetime.now().date()
+        data_inicio = datetime(hoje.year, hoje.month, 1).date()
+        if hoje.month == 12:
+            data_fim = datetime(hoje.year + 1, 1, 1).date()
+        else:
+            data_fim = datetime(hoje.year, hoje.month + 1, 1).date()
+        ano = hoje.year
+        mes = hoje.month
+    
+    # Buscar agendamentos do mês
+    agendamentos = Agendamento.objects.filter(
+        data__gte=data_inicio,
+        data__lt=data_fim
+    ).order_by('data', 'hora')
+    
+    # Organizar agendamentos por data
+    agendamentos_por_data = {}
+    for agendamento in agendamentos:
+        data_str = agendamento.data.strftime('%Y-%m-%d')
+        if data_str not in agendamentos_por_data:
+            agendamentos_por_data[data_str] = []
+        agendamentos_por_data[data_str].append(agendamento)
+    
+    # Calcular informações do calendário
+    primeiro_dia = datetime(ano, mes, 1)
+    ultimo_dia = datetime(ano, mes + 1, 1) - timedelta(days=1) if mes < 12 else datetime(ano + 1, 1, 1) - timedelta(days=1)
+    
+    # Gerar semanas do calendário
+    calendar_weeks = []
+    current_date = primeiro_dia - timedelta(days=primeiro_dia.weekday())  # Começar no domingo da primeira semana
+    
+    for week in range(6):  # Máximo 6 semanas
+        week_days = []
+        for day in range(7):  # 7 dias por semana
+            day_date = current_date + timedelta(days=week * 7 + day)
+            is_current_month = day_date.month == mes and day_date.year == ano
+            is_today = day_date.date() == date.today()
+            date_str = day_date.strftime('%Y-%m-%d')
+            
+            week_days.append({
+                'day': day_date.day,
+                'date': day_date.date(),
+                'date_str': date_str,
+                'is_current_month': is_current_month,
+                'is_today': is_today,
+            })
+        
+        calendar_weeks.append(week_days)
+        
+        # Parar se já cobrimos todo o mês e chegamos ao final
+        if week_days[-1]['date'] >= ultimo_dia.date():
+            break
+    
+    # Mês anterior e próximo
+    mes_anterior = mes - 1 if mes > 1 else 12
+    ano_anterior = ano if mes > 1 else ano - 1
+    mes_proximo = mes + 1 if mes < 12 else 1
+    ano_proximo = ano if mes < 12 else ano + 1
+    
+    # Nome do mês
+    nomes_meses = [
+        '', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+        'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+    ]
+    
+    # Estatísticas do mês
+    total_agendamentos = len(agendamentos)
+    concluidos = len([a for a in agendamentos if a.status == 'concluido'])
+    pendentes = len([a for a in agendamentos if a.status in ['confirmado', 'a_caminho']])
+    
+    context = {
+        'agendamentos': agendamentos,
+        'agendamentos_por_data': agendamentos_por_data,
+        'calendar_weeks': calendar_weeks,
+        'ano': ano,
+        'mes': mes,
+        'mes_nome': nomes_meses[mes],
+        'primeiro_dia': primeiro_dia,
+        'ultimo_dia': ultimo_dia,
+        'mes_anterior': mes_anterior,
+        'ano_anterior': ano_anterior,
+        'mes_proximo': mes_proximo,
+        'ano_proximo': ano_proximo,
+        'total_agendamentos': total_agendamentos,
+        'concluidos': concluidos,
+        'pendentes': pendentes,
+    }
+    
+    return render(request, 'agendamentos/agendamentos_mensais.html', context)

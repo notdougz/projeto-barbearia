@@ -1,10 +1,10 @@
 {% extends 'agendamentos/base.html' %}
-{% block title %}👥 Clientes Fiéis - Dashboard{% endblock %}
+{% block title %}Meus Clientes - Dashboard{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>👥 Meus Clientes Fiéis</h2>
-    <a href="{% url 'criar_cliente' %}" class="btn btn-success">➕ Adicionar Novo Cliente</a>
+    <h2><span class="icon icon-users"></span>Meus Clientes</h2>
+    <a href="{% url 'criar_cliente' %}" class="btn btn-success"><span class="icon icon-add"></span>Adicionar Novo Cliente</a>
 </div>
 
 {% if clientes %}
@@ -58,9 +58,9 @@
   </div>
 {% else %}
   <div class="no-appointments" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-    <div style="font-size: 3rem; margin-bottom: 1rem;">👥</div>
-    <p>Nenhum cliente fiel cadastrado ainda.</p>
-    <a href="{% url 'criar_cliente' %}" class="btn btn-success">➕ Cadastrar Primeiro Cliente</a>
+    <div style="font-size: 3rem; margin-bottom: 1rem;"><span class="icon icon-users" style="font-size: 3rem; color: var(--text-secondary);"></span></div>
+    <p>Nenhum cliente cadastrado ainda.</p>
+    <a href="{% url 'criar_cliente' %}" class="btn btn-success"><span class="icon icon-add"></span>Cadastrar Primeiro Cliente</a>
   </div>
 {% endif %}
 {% endblock %}

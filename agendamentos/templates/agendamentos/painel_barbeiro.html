@@ -13,13 +13,18 @@
     </form>
 </div>
 
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="dashboard-header mb-3">
     <h2>
         <span class="icon icon-calendar"></span>Agenda para {{ data_selecionada|date:"d/m/Y" }}
     </h2>
-    <a href="{% url 'criar_cliente' %}" class="btn btn-success">
-        <span class="icon icon-add"></span>Novo Cliente
-    </a>
+    <div class="dashboard-actions">
+        <a href="{% url 'agendamentos_mensais' %}" class="btn btn-primary">
+            <span class="icon icon-calendar"></span><span class="btn-text">Agendamentos Mensais</span>
+        </a>
+        <a href="{% url 'criar_cliente' %}" class="btn btn-success">
+            <span class="icon icon-add"></span><span class="btn-text">Novo Cliente</span>
+        </a>
+    </div>
 </div>
 
 {% if agendamentos %}
@@ -34,10 +39,12 @@
                 </div>
                 <div class="appointment-status 
                     {% if agendamento.status == 'confirmado' %}status-confirmado
+                    {% elif agendamento.status == 'a_caminho' %}status-a-caminho
                     {% elif agendamento.status == 'concluido' %}status-concluido
                     {% elif agendamento.status == 'cancelado' %}status-cancelado
                     {% endif %}">
                     {% if agendamento.status == 'confirmado' %}PENDENTE
+                    {% elif agendamento.status == 'a_caminho' %}À CAMINHO
                     {% elif agendamento.status == 'concluido' %}CONCLUÍDO
                     {% elif agendamento.status == 'cancelado' %}CANCELADO
                     {% endif %}
@@ -81,6 +88,19 @@
             
             <div class="appointment-actions">
                 {% if agendamento.status == 'confirmado' %}
+                    <form action="{% url 'on_the_way_agendamento' agendamento.id %}" method="post" style="display: inline; flex: 1;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-info">
+                            <span class="icon icon-on-the-way"></span>À caminho
+                        </button>
+                    </form>
+                    <form action="{% url 'concluir_agendamento' agendamento.id %}" method="post" style="display: inline; flex: 1;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-success">
+                            <span class="icon icon-barber"></span>Concluir
+                        </button>
+                    </form>
+                {% elif agendamento.status == 'a_caminho' %}
                     <form action="{% url 'concluir_agendamento' agendamento.id %}" method="post" style="display: inline; flex: 1;">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-sm btn-success">

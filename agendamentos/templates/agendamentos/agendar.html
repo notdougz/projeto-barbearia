@@ -1,19 +1,19 @@
 {% extends 'agendamentos/base.html' %}
 
-{% block title %}{% if agendamento %}✏️ Editar Agendamento{% else %}📅 Novo Agendamento{% endif %} - Dashboard{% endblock %}
+{% block title %}{% if agendamento %}Editar Agendamento{% else %}Novo Agendamento{% endif %} - Dashboard{% endblock %}
 
 {% block content %}
 <div style="display: flex; justify-content: center;">
     <div class="card" style="max-width: 600px; width: 100%;">
         <div class="card-header">
-            <h3>{% if agendamento %}✏️ Editar Agendamento{% else %}📅 Novo Agendamento{% endif %}</h3>
+            <h3>{% if agendamento %}<span class="icon icon-edit"></span>Editar Agendamento{% else %}<span class="icon icon-calendar"></span>Novo Agendamento{% endif %}</h3>
         </div>
                 <div class="card-body">
                     <form method="post">
                         {% csrf_token %}
                         
                         <div class="form-group">
-                            <label for="{{ form.cliente.id_for_label }}">👤 {{ form.cliente.label }}</label>
+                            <label for="{{ form.cliente.id_for_label }}"><span class="icon icon-user"></span>{{ form.cliente.label }}</label>
                             {{ form.cliente }}
                             {% if form.cliente.errors %}
                                 <div class="text-danger">
@@ -21,13 +21,14 @@
                                 </div>
                             {% endif %}
                             <small class="form-text text-muted">
-                                Não encontrou o cliente? <a href="{% url 'criar_cliente' %}">➕ Cadastre um novo cliente fiel</a>
+                                Não encontrou o cliente? <a href="{% url 'criar_cliente' %}"><span class="icon icon-add"></span> Cadastre um novo 
+                                </a>
                             </small>
                         </div>
                         
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                             <div class="form-group">
-                                <label for="{{ form.servico.id_for_label }}">✂️ {{ form.servico.label }}</label>
+                                <label for="{{ form.servico.id_for_label }}"><span class="icon icon-scissors"></span>{{ form.servico.label }}</label>
                                 {{ form.servico }}
                                 {% if form.servico.errors %}
                                     <div class="text-danger">
@@ -36,7 +37,7 @@
                                 {% endif %}
                             </div>
                             <div class="form-group">
-                                <label for="{{ form.data.id_for_label }}">📅 {{ form.data.label }}</label>
+                                <label for="{{ form.data.id_for_label }}"><span class="icon icon-calendar"></span>{{ form.data.label }}</label>
                                 {{ form.data }}
                                 {% if form.data.errors %}
                                     <div class="text-danger">
@@ -47,7 +48,7 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="{{ form.hora.id_for_label }}">🕐 {{ form.hora.label }}</label>
+                            <label for="{{ form.hora.id_for_label }}"><span class="icon icon-time"></span>{{ form.hora.label }}</label>
                             {{ form.hora }}
                             {% if form.hora.errors %}
                                 <div class="text-danger">
@@ -57,7 +58,7 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="{{ form.observacoes.id_for_label }}">📝 {{ form.observacoes.label }}</label>
+                            <label for="{{ form.observacoes.id_for_label }}"><span class="icon icon-note"></span>{{ form.observacoes.label }}</label>
                             {{ form.observacoes }}
                             {% if form.observacoes.errors %}
                                 <div class="text-danger">
@@ -68,9 +69,9 @@
                         
                         <div class="form-group" style="display: flex; gap: 1rem; margin-top: 2rem;">
                             <button type="submit" class="btn btn-primary" style="flex: 1;">
-                                {% if agendamento %}💾 Atualizar Agendamento{% else %}✅ Criar Agendamento{% endif %}
+                                {% if agendamento %}<span class="icon icon-edit"></span>Atualizar Agendamento{% else %}<span class="icon icon-add"></span>Criar Agendamento{% endif %}
                             </button>
-                            <a href="{% url 'painel_barbeiro' %}" class="btn btn-secondary">❌ Cancelar</a>
+                            <a href="{% url 'painel_barbeiro' %}" class="btn btn-secondary"><span class="icon icon-delete"></span>Cancelar</a>
                         </div>
                     </form>
                 </div>
