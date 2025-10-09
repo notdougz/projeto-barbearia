@@ -1,0 +1,331 @@
+{% extends 'agendamentos/base.html' %}
+
+{% block title %}Agendamentos Mensais - {{ mes_nome }}/{{ ano }}{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>
+        <span class="icon icon-calendar"></span>Agendamentos Mensais - {{ mes_nome }}/{{ ano }}
+    </h2>
+    <div class="d-flex gap-2">
+        <a href="{% url 'painel_barbeiro' %}" class="btn btn-secondary">
+            <span class="icon icon-home"></span>Voltar ao Painel
+        </a>
+        <a href="{% url 'agendar' %}" class="btn btn-primary">
+            <span class="icon icon-add"></span>Novo Agendamento
+        </a>
+    </div>
+</div>
+
+<!-- Navegação do Calendário -->
+<div class="month-navigation">
+    <div class="month-nav-simple">
+        <a href="?mes={{ mes_anterior }}&ano={{ ano_anterior }}" class="nav-btn" title="Mês anterior">
+            ←
+        </a>
+        
+        <h3 class="month-title">
+            {{ mes_nome }} de {{ ano }}
+        </h3>
+        
+        <a href="?mes={{ mes_proximo }}&ano={{ ano_proximo }}" class="nav-btn" title="Próximo mês">
+            →
+        </a>
+    </div>
+</div>
+
+<!-- Mobile Calendar View -->
+<div class="mobile-calendar-view">
+    <!-- Navegação de dias da semana (similar à imagem) -->
+    <div class="mobile-week-navigation">
+        <div class="week-days">
+            {% for week in calendar_weeks %}
+                {% for day_data in week %}
+                    {% if day_data.is_current_month %}
+                        <div class="mobile-day {% if day_data.is_today %}today{% endif %}" 
+                             data-date="{{ day_data.date_str }}">
+                            <div class="day-abbrev">
+                                {% if day_data.date.weekday == 0 %}Dom
+                                {% elif day_data.date.weekday == 1 %}Seg
+                                {% elif day_data.date.weekday == 2 %}Ter
+                                {% elif day_data.date.weekday == 3 %}Qua
+                                {% elif day_data.date.weekday == 4 %}Qui
+                                {% elif day_data.date.weekday == 5 %}Sex
+                                {% elif day_data.date.weekday == 6 %}Sáb
+                                {% endif %}
+                            </div>
+                            <div class="day-number">{{ day_data.day }}</div>
+                            <div class="appointment-indicator">
+                                {% for key, appointments in agendamentos_por_data.items %}
+                                    {% if key == day_data.date_str and appointments %}
+                                        <div class="dot-indicator"></div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Lista de agendamentos do dia selecionado -->
+    <div class="mobile-appointments-list">
+        <div class="selected-day-header">
+            <h3 id="selected-day-title">Selecione um dia</h3>
+            <div class="day-stats" id="day-stats"></div>
+        </div>
+        
+        <div class="appointments-container" id="appointments-container">
+            <div class="empty-state">
+                <span class="icon icon-calendar"></span>
+                <p>Selecione um dia para ver os agendamentos</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Calendário -->
+<div class="calendar-wrapper">
+<div class="monthly-calendar">
+    <!-- Cabeçalho dos dias da semana -->
+    <div class="calendar-header">
+        <div class="day-header">Dom</div>
+        <div class="day-header">Seg</div>
+        <div class="day-header">Ter</div>
+        <div class="day-header">Qua</div>
+        <div class="day-header">Qui</div>
+        <div class="day-header">Sex</div>
+        <div class="day-header">Sáb</div>
+    </div>
+    
+    <!-- Dias do calendário -->
+    <div class="calendar-grid">
+        {% for week in calendar_weeks %}
+            {% for day_data in week %}
+                <div class="calendar-day {% if day_data.is_current_month %}current-month{% else %}other-month{% endif %} {% if day_data.is_today %}today{% endif %}">
+                    <div class="day-number">{{ day_data.day }}</div>
+                    
+                    {% if day_data.is_current_month %}
+                        {% for key, appointments in agendamentos_por_data.items %}
+                            {% if key == day_data.date_str %}
+                                <div class="appointments-summary" onclick="event.stopPropagation();">
+                                    <div class="appointment-count">{{ appointments|length }} agendamento{{ appointments|length|pluralize }}</div>
+                                    {% for agendamento in appointments %}
+                                        {% if forloop.counter <= 3 %}
+                                            <div class="mini-appointment 
+                                                {% if agendamento.status == 'confirmado' or agendamento.status == 'a_caminho' %}status-pendente
+                                                {% elif agendamento.status == 'concluido' %}status-concluido
+                                                {% elif agendamento.status == 'cancelado' %}status-cancelado
+                                                {% endif %}" onclick="event.stopPropagation();">
+                                                <span class="mini-time">{{ agendamento.hora|time:"H:i" }}</span>
+                                                <span class="mini-client">{{ agendamento.cliente.nome }}</span>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if appointments|length > 3 %}
+                                        <div class="more-appointments" onclick="event.stopPropagation(); toggleMoreAppointments(this, '{{ day_data.date_str }}')">
+                                            exibir mais
+                                        </div>
+                                        <div class="expanded-appointments" id="expanded-{{ day_data.date_str }}" onclick="event.stopPropagation();" style="display: none;">
+                                            {% for agendamento in appointments %}
+                                                {% if forloop.counter > 3 %}
+                                                    <div class="mini-appointment 
+                                                        {% if agendamento.status == 'confirmado' or agendamento.status == 'a_caminho' %}status-pendente
+                                                        {% elif agendamento.status == 'concluido' %}status-concluido
+                                                        {% elif agendamento.status == 'cancelado' %}status-cancelado
+                                                        {% endif %}" onclick="event.stopPropagation();">
+                                                        <span class="mini-time">{{ agendamento.hora|time:"H:i" }}</span>
+                                                        <span class="mini-client">{{ agendamento.cliente.nome }}</span>
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <div class="more-appointments expanded-btn" onclick="event.stopPropagation(); toggleMoreAppointments(this, '{{ day_data.date_str }}')">
+                                                exibir menos
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+</div>
+</div>
+
+<!-- Resumo do Mês -->
+<div class="month-summary mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h4>Resumo de {{ mes_nome }}/{{ ano }}</h4>
+        </div>
+        <div class="card-body">
+            <div class="summary-stats">
+                <div class="stat-item">
+                    <div class="stat-number">{{ total_agendamentos }}</div>
+                    <div class="stat-label">Total de Agendamentos</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ concluidos }}</div>
+                    <div class="stat-label">Agendamentos Concluídos</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ pendentes }}</div>
+                    <div class="stat-label">Agendamentos Pendentes</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script type="application/json" id="appointments-data">
+{
+    {% for key, appointments in agendamentos_por_data.items %}
+    "{{ key }}": [
+        {% for agendamento in appointments %}
+        {
+            "id": {{ agendamento.id }},
+            "hora": "{{ agendamento.hora|time:'H:i' }}",
+            "cliente": "{{ agendamento.cliente.nome|escapejs }}",
+            "servico": "{{ agendamento.servico|escapejs }}",
+            "status": "{{ agendamento.status }}",
+            "observacoes": "{{ agendamento.observacoes|default:''|escapejs }}"
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ]{% if not forloop.last %},{% endif %}
+    {% endfor %}
+}
+</script>
+<script>
+    // Carregar dados dos agendamentos
+    const appointmentsData = JSON.parse(document.getElementById('appointments-data').textContent);
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Funcionalidade do calendário desktop
+        document.querySelectorAll('.calendar-day.current-month').forEach(function(day) {
+            day.addEventListener('click', function() {
+                const dayNumber = this.querySelector('.day-number').textContent;
+                if (dayNumber) {
+                    const url = `{% url 'painel_barbeiro' %}?data={{ ano }}-{{ mes|stringformat:"02d" }}-${dayNumber.padStart(2, '0')}`;
+                    window.location.href = url;
+                }
+            });
+        });
+
+        // Funcionalidade mobile - seleção de dias
+        let selectedDay = null;
+        
+        document.querySelectorAll('.mobile-day').forEach(function(day) {
+            day.addEventListener('click', function() {
+                // Remove seleção anterior
+                document.querySelectorAll('.mobile-day').forEach(d => d.classList.remove('selected'));
+                
+                // Adiciona seleção atual
+                this.classList.add('selected');
+                selectedDay = this.dataset.date;
+                
+                // Atualiza a interface
+                updateMobileAppointments(selectedDay);
+            });
+        });
+
+        function updateMobileAppointments(date) {
+            const appointments = appointmentsData[date] || [];
+            const container = document.getElementById('appointments-container');
+            const title = document.getElementById('selected-day-title');
+            const stats = document.getElementById('day-stats');
+            
+            // Atualiza título
+            const dayNames = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+            const dateObj = new Date(date);
+            const dayName = dayNames[dateObj.getDay()];
+            const dayNumber = dateObj.getDate();
+            
+            title.textContent = `${dayName}, ${dayNumber} de {{ mes_nome }}`;
+            
+            // Atualiza estatísticas
+            const total = appointments.length;
+            const concluidos = appointments.filter(a => a.status === 'concluido').length;
+            const pendentes = appointments.filter(a => a.status === 'confirmado' || a.status === 'a_caminho').length;
+            
+            stats.innerHTML = `
+                <div class="stat">
+                    <span class="stat-number">${total}</span>
+                    <span class="stat-label">Total</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">${concluidos}</span>
+                    <span class="stat-label">Concluídos</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">${pendentes}</span>
+                    <span class="stat-label">Pendentes</span>
+                </div>
+            `;
+            
+            // Atualiza lista de agendamentos
+            if (appointments.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <span class="icon icon-calendar"></span>
+                        <p>Nenhum agendamento para este dia</p>
+                    </div>
+                `;
+            } else {
+                // Ordena por hora
+                appointments.sort((a, b) => a.hora.localeCompare(b.hora));
+                
+                container.innerHTML = appointments.map(appointment => `
+                    <div class="mobile-appointment-card ${appointment.status === 'a_caminho' ? 'confirmado' : appointment.status}">
+                        <div class="appointment-time">${appointment.hora}</div>
+                        <div class="appointment-info">
+                            <div class="client-name">${appointment.cliente}</div>
+                            <div class="service-name">${appointment.servico}</div>
+                            ${appointment.observacoes ? `<div class="observations">${appointment.observacoes}</div>` : ''}
+                        </div>
+                        <div class="appointment-status">
+                            <span class="status-badge ${appointment.status === 'a_caminho' ? 'confirmado' : appointment.status}">${getStatusText(appointment.status)}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function getStatusText(status) {
+            const statusMap = {
+                'confirmado': 'Pendente',
+                'a_caminho': 'Pendente',
+                'concluido': 'Concluído',
+                'cancelado': 'Cancelado'
+            };
+            return statusMap[status] || status;
+        }
+        
+        // Função global para alternar agendamentos expandidos
+        window.toggleMoreAppointments = function(button, dateStr) {
+            const expandedDiv = document.getElementById('expanded-' + dateStr);
+            const moreBtn = expandedDiv.parentElement.querySelector('.more-appointments:not(.expanded-btn)');
+            const lessBtn = expandedDiv.querySelector('.expanded-btn');
+            
+            if (expandedDiv) {
+                if (expandedDiv.style.display === 'none' || expandedDiv.style.display === '') {
+                    // Mostrar agendamentos expandidos
+                    expandedDiv.style.display = 'block';
+                    if (moreBtn) moreBtn.style.display = 'none';
+                } else {
+                    // Esconder agendamentos expandidos
+                    expandedDiv.style.display = 'none';
+                    if (moreBtn) moreBtn.style.display = 'block';
+                }
+            }
+        };
+    });
+</script>
+{% endblock %}

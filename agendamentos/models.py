@@ -22,6 +22,7 @@ class Servico(models.Model):
 class Agendamento(models.Model):
     STATUS_CHOICES = [
         ('confirmado', 'Pendente'),
+        ('a_caminho', 'À caminho'),
         ('concluido', 'Concluído'),
         ('cancelado', 'Cancelado'),
     ]

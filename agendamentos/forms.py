@@ -7,7 +7,7 @@ class ClienteForm(forms.ModelForm):
         fields = ['nome', 'telefone', 'endereco', 'observacoes']
         widgets = {
             'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome completo'}),
-            'telefone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '(11) 99999-9999'}),
+            'telefone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+5511999999999'}),
             'endereco': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Endereço completo (rua, número, bairro, cidade)...'}),
             'observacoes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Observações sobre o cliente...'}),
         }
@@ -31,5 +31,5 @@ class AgendamentoForm(forms.ModelForm):
         self.fields['servico'].empty_label = "Selecione um serviço..."
         # Configurar campo de cliente
         self.fields['cliente'].queryset = Cliente.objects.all().order_by('nome')
-        self.fields['cliente'].empty_label = "Selecione um cliente fiel..."
-        self.fields['cliente'].label = "Cliente Fiel"
+        self.fields['cliente'].empty_label = "Selecione um cliente"
+        self.fields['cliente'].label = "Cliente"

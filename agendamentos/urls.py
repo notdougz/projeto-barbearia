@@ -9,12 +9,14 @@ urlpatterns = [
 
     # PAINEL PRINCIPAL
     path('painel/', views.painel_barbeiro, name='painel_barbeiro'),
+    path('agendamentos-mensais/', views.agendamentos_mensais, name='agendamentos_mensais'),
     
     # AGENDAMENTOS
     path('agendar/', views.agendar, name='agendar'),
     path('agendar/editar/<int:pk>/', views.editar_agendamento, name='editar_agendamento'),
     path('agendar/deletar/<int:pk>/', views.deletar_agendamento, name='deletar_agendamento'),
     path('agendar/confirmar/<int:pk>/', views.confirmar_agendamento, name='confirmar_agendamento'),
+    path('agendar/a-caminho/<int:pk>/', views.on_the_way_agendamento, name='on_the_way_agendamento'),
     path('agendar/concluir/<int:pk>/', views.concluir_agendamento, name='concluir_agendamento'),
 
     # CLIENTES
