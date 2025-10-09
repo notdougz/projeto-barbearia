@@ -1,18 +1,18 @@
 {% extends 'agendamentos/base.html' %}
-{% block title %}{% if 'Novo' in titulo %}👤 Novo Cliente{% else %}✏️ Editar Cliente{% endif %} - Dashboard{% endblock %}
+{% block title %}{% if 'Novo' in titulo %}Novo Cliente{% else %}Editar Cliente{% endif %} - Dashboard{% endblock %}
 
 {% block content %}
 <div style="display: flex; justify-content: center;">
     <div class="card" style="max-width: 600px; width: 100%;">
         <div class="card-header">
-            <h3>{% if 'Novo' in titulo %}👤 Novo Cliente{% else %}✏️ Editar Cliente{% endif %}</h3>
+            <h3>{% if 'Novo' in titulo %}<span class="icon icon-user"></span>Novo Cliente{% else %}<span class="icon icon-edit"></span>Editar Cliente{% endif %}</h3>
         </div>
         <div class="card-body">
             <form method="post">
                 {% csrf_token %}
                 
                 <div class="form-group">
-                    <label for="{{ form.nome.id_for_label }}">👤 Nome Completo</label>
+                    <label for="{{ form.nome.id_for_label }}"><span class="icon icon-user"></span>Nome Completo</label>
                     {{ form.nome }}
                     {% if form.nome.errors %}
                         <div class="text-danger">{{ form.nome.errors }}</div>
@@ -20,7 +20,7 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="{{ form.telefone.id_for_label }}">📞 Telefone</label>
+                    <label for="{{ form.telefone.id_for_label }}"><span class="icon icon-phone"></span>Telefone</label>
                     {{ form.telefone }}
                     {% if form.telefone.errors %}
                         <div class="text-danger">{{ form.telefone.errors }}</div>
@@ -28,32 +28,32 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="{{ form.endereco.id_for_label }}">📍 Endereço Completo</label>
+                    <label for="{{ form.endereco.id_for_label }}"><span class="icon icon-location"></span>Endereço Completo</label>
                     {{ form.endereco }}
                     {% if form.endereco.errors %}
                         <div class="text-danger">{{ form.endereco.errors }}</div>
                     {% endif %}
                     <small class="form-text text-muted">
-                        💡 Inclua rua, número, bairro e cidade para facilitar a localização
+                        <span class="icon icon-info"></span> Inclua rua, número, bairro e cidade para facilitar a localização
                     </small>
                 </div>
                 
                 <div class="form-group">
-                    <label for="{{ form.observacoes.id_for_label }}">📝 Observações</label>
+                    <label for="{{ form.observacoes.id_for_label }}"><span class="icon icon-note"></span>Observações</label>
                     {{ form.observacoes }}
                     {% if form.observacoes.errors %}
                         <div class="text-danger">{{ form.observacoes.errors }}</div>
                     {% endif %}
                     <small class="form-text text-muted">
-                        💡 Informações adicionais sobre o cliente (preferências, histórico, etc.)
+                        <span class="icon icon-info"></span> Informações adicionais sobre o cliente (preferências, histórico, etc.)
                     </small>
                 </div>
                 
                 <div class="form-group" style="display: flex; gap: 1rem; margin-top: 2rem;">
                     <button type="submit" class="btn btn-success" style="flex: 1;">
-                        {% if 'Novo' in titulo %}✅ Cadastrar Cliente{% else %}💾 Salvar Alterações{% endif %}
+                        {% if 'Novo' in titulo %}<span class="icon icon-add"></span>Cadastrar Cliente{% else %}<span class="icon icon-edit"></span>Salvar Alterações{% endif %}
                     </button>
-                    <a href="{% url 'lista_clientes' %}" class="btn btn-secondary">❌ Cancelar</a>
+                    <a href="{% url 'lista_clientes' %}" class="btn btn-secondary"><span class="icon icon-delete"></span>Cancelar</a>
                 </div>
             </form>
         </div>
