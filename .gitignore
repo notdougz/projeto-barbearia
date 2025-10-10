@@ -1,0 +1,49 @@
+# Python
+*.py[cod]
+*$py.class
+*.so
+.Python
+__pycache__/
+*.pyc
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+/media
+/staticfiles
+
+# Ambiente Virtual
+venv/
+env/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Arquivos de sistema
+Thumbs.db
+
+# Migrations (opcional - descomente se não quiser versionar migrations)
+# */migrations/*
+# !*/migrations/__init__.py
+
+# Variáveis de ambiente
+.env
+.env.local
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
