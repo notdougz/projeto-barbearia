@@ -266,3 +266,151 @@ def agendamentos_mensais(request):
     }
     
     return render(request, 'agendamentos/agendamentos_mensais.html', context)
+
+@login_required
+def financeiro(request):
+    """Visualizar relatório financeiro com status de pagamento dos clientes"""
+    # Obter data selecionada
+    data_selecionada = request.GET.get('data')
+    if data_selecionada:
+        try:
+            data_selecionada = datetime.strptime(data_selecionada, '%Y-%m-%d').date()
+        except ValueError:
+            data_selecionada = date.today()
+    else:
+        data_selecionada = date.today()
+    
+    # Obter filtro de status de pagamento
+    filtro_pagamento = request.GET.get('filtro', 'todos')  # todos, pendente, pago, visao_geral
+    
+    # Buscar agendamentos do dia
+    agendamentos = Agendamento.objects.filter(data=data_selecionada).order_by('hora')
+    
+    # Aplicar filtro de pagamento
+    if filtro_pagamento == 'pendente':
+        agendamentos = agendamentos.filter(status_pagamento='pendente')
+    elif filtro_pagamento == 'pago':
+        agendamentos = agendamentos.filter(status_pagamento='pago')
+    # Se for 'todos' ou 'visao_geral', não precisa filtrar
+    
+    # Calcular estatísticas do dia
+    todos_agendamentos = Agendamento.objects.filter(data=data_selecionada)
+    total_pendente = todos_agendamentos.filter(status_pagamento='pendente').count()
+    total_pago = todos_agendamentos.filter(status_pagamento='pago').count()
+    total_geral = todos_agendamentos.count()
+    
+    # Calcular valores monetários do dia
+    valor_pendente = sum([a.servico.preco for a in todos_agendamentos.filter(status_pagamento='pendente')])
+    valor_recebido = sum([a.servico.preco for a in todos_agendamentos.filter(status_pagamento='pago')])
+    valor_total = valor_pendente + valor_recebido
+    
+    # Calcular estatísticas mensais baseadas na data selecionada
+    mes_atual = data_selecionada.month
+    ano_atual = data_selecionada.year
+    data_inicio_mes = datetime(ano_atual, mes_atual, 1).date()
+    if mes_atual == 12:
+        data_fim_mes = datetime(ano_atual + 1, 1, 1).date()
+    else:
+        data_fim_mes = datetime(ano_atual, mes_atual + 1, 1).date()
+    
+    agendamentos_mes = Agendamento.objects.filter(
+        data__gte=data_inicio_mes,
+        data__lt=data_fim_mes
+    )
+    
+    total_mes = sum([a.servico.preco for a in agendamentos_mes])
+    recebido_mes = sum([a.servico.preco for a in agendamentos_mes.filter(status_pagamento='pago')])
+    pendente_mes = sum([a.servico.preco for a in agendamentos_mes.filter(status_pagamento='pendente')])
+    pagos_mes = agendamentos_mes.filter(status_pagamento='pago').count()
+    pendentes_mes = agendamentos_mes.filter(status_pagamento='pendente').count()
+    agendamentos_mes_count = agendamentos_mes.count()
+    
+    # Taxa de recebimento mensal
+    taxa_recebimento_mes = (recebido_mes / total_mes * 100) if total_mes > 0 else 0
+    
+    # Calcular estatísticas anuais
+    data_inicio_ano = datetime(ano_atual, 1, 1).date()
+    data_fim_ano = datetime(ano_atual + 1, 1, 1).date()
+    
+    agendamentos_ano = Agendamento.objects.filter(
+        data__gte=data_inicio_ano,
+        data__lt=data_fim_ano
+    )
+    
+    total_ano = sum([a.servico.preco for a in agendamentos_ano])
+    recebido_ano = sum([a.servico.preco for a in agendamentos_ano.filter(status_pagamento='pago')])
+    pendente_ano = sum([a.servico.preco for a in agendamentos_ano.filter(status_pagamento='pendente')])
+    pagos_ano = agendamentos_ano.filter(status_pagamento='pago').count()
+    pendentes_ano = agendamentos_ano.filter(status_pagamento='pendente').count()
+    agendamentos_ano_count = agendamentos_ano.count()
+    
+    # Taxa de recebimento anual
+    taxa_recebimento_ano = (recebido_ano / total_ano * 100) if total_ano > 0 else 0
+    
+    # Percentuais para gráfico
+    percentual_recebido_mes = (recebido_mes / total_mes * 100) if total_mes > 0 else 0
+    percentual_pendente_mes = (pendente_mes / total_mes * 100) if total_mes > 0 else 0
+    
+    # Buscar cortes detalhados mensais
+    cortes_pagos_mes = agendamentos_mes.filter(status_pagamento='pago').order_by('-data', 'hora')
+    cortes_pendentes_mes = agendamentos_mes.filter(status_pagamento='pendente').order_by('-data', 'hora')
+    
+    # Buscar cortes detalhados anuais
+    cortes_pagos_ano = agendamentos_ano.filter(status_pagamento='pago').order_by('-data', 'hora')
+    cortes_pendentes_ano = agendamentos_ano.filter(status_pagamento='pendente').order_by('-data', 'hora')
+    
+    context = {
+        'agendamentos': agendamentos,
+        'data_selecionada': data_selecionada,
+        'filtro_pagamento': filtro_pagamento,
+        'total_pendente': total_pendente,
+        'total_pago': total_pago,
+        'total_geral': total_geral,
+        'valor_pendente': valor_pendente,
+        'valor_recebido': valor_recebido,
+        'valor_total': valor_total,
+        # Estatísticas mensais
+        'total_mes': total_mes,
+        'recebido_mes': recebido_mes,
+        'pendente_mes': pendente_mes,
+        'pagos_mes': pagos_mes,
+        'pendentes_mes': pendentes_mes,
+        'agendamentos_mes': agendamentos_mes_count,
+        'taxa_recebimento_mes': taxa_recebimento_mes,
+        # Estatísticas anuais
+        'total_ano': total_ano,
+        'recebido_ano': recebido_ano,
+        'pendente_ano': pendente_ano,
+        'pagos_ano': pagos_ano,
+        'pendentes_ano': pendentes_ano,
+        'agendamentos_ano': agendamentos_ano_count,
+        'taxa_recebimento_ano': taxa_recebimento_ano,
+        # Percentuais para gráfico
+        'percentual_recebido_mes': percentual_recebido_mes,
+        'percentual_pendente_mes': percentual_pendente_mes,
+        # Cortes detalhados
+        'cortes_pagos_mes': cortes_pagos_mes,
+        'cortes_pendentes_mes': cortes_pendentes_mes,
+        'cortes_pagos_ano': cortes_pagos_ano,
+        'cortes_pendentes_ano': cortes_pendentes_ano,
+    }
+    
+    return render(request, 'agendamentos/financeiro.html', context)
+
+@login_required
+def alterar_status_pagamento(request, pk):
+    """Alternar status de pagamento de um agendamento"""
+    agendamento = get_object_or_404(Agendamento, pk=pk)
+    
+    # Alternar entre pendente e pago
+    if agendamento.status_pagamento == 'pendente':
+        agendamento.status_pagamento = 'pago'
+        messages.success(request, f'Pagamento de {agendamento.cliente.nome} marcado como PAGO!')
+    else:
+        agendamento.status_pagamento = 'pendente'
+        messages.success(request, f'Pagamento de {agendamento.cliente.nome} marcado como PENDENTE!')
+    
+    agendamento.save()
+    
+    # Redirecionar de volta para a página financeiro mantendo a data
+    return redirect(f"{request.META.get('HTTP_REFERER', 'financeiro')}")

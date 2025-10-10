@@ -27,11 +27,17 @@ class Agendamento(models.Model):
         ('cancelado', 'Cancelado'),
     ]
     
+    PAGAMENTO_CHOICES = [
+        ('pendente', 'Pendente'),
+        ('pago', 'Pago'),
+    ]
+    
     cliente = models.ForeignKey(Cliente, on_delete=models.SET_NULL, null=True, blank=True, related_name='agendamentos')
     servico = models.ForeignKey(Servico, on_delete=models.PROTECT)
     data = models.DateField()
     hora = models.TimeField()
     status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='confirmado')
+    status_pagamento = models.CharField(max_length=10, choices=PAGAMENTO_CHOICES, default='pendente')
     observacoes = models.TextField(blank=True, null=True)
     previsao_chegada = models.IntegerField(blank=True, null=True, help_text="Previsão de chegada em minutos")
     criado_em = models.DateTimeField(auto_now_add=True)
