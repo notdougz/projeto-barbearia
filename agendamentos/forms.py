@@ -17,10 +17,10 @@ class AgendamentoForm(forms.ModelForm):
         model = Agendamento
         fields = ['cliente', 'servico', 'data', 'hora', 'observacoes']
         widgets = {
-            'cliente': forms.Select(attrs={'class': 'form-control'}),
+            'cliente': forms.HiddenInput(),
             'servico': forms.Select(attrs={'class': 'form-control'}),
             'data': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            'hora': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+            'hora': forms.Select(attrs={'class': 'form-control', 'id': 'hora-select'}),
             'observacoes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Observações sobre o agendamento...'}),
         }
     
@@ -33,6 +33,16 @@ class AgendamentoForm(forms.ModelForm):
         self.fields['cliente'].queryset = Cliente.objects.all().order_by('nome')
         self.fields['cliente'].empty_label = "Selecione um cliente"
         self.fields['cliente'].label = "Cliente"
+        
+        # Gerar opções de horário de 10 em 10 minutos
+        from datetime import time
+        horarios = []
+        for hora in range(6, 22):  # Das 6h às 21h50
+            for minuto in [0, 10, 20, 30, 40, 50]:
+                horario = time(hora, minuto)
+                horarios.append((horario.strftime('%H:%M'), horario.strftime('%H:%M')))
+        
+        self.fields['hora'].choices = [('', 'Selecione um horário...')] + horarios
 
 class PrevisaoChegadaForm(forms.Form):
     """Formulário para capturar a previsão de chegada"""

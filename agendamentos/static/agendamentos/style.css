@@ -253,10 +253,10 @@ h4 {
     align-items: center;
     gap: var(--spacing-sm);
     padding: var(--spacing-sm) var(--spacing-lg);
-    border: 2px solid var(--primary);
+    border: 2px solid var(--text-primary);
     border-radius: var(--radius-sm);
-    background: var(--primary);
-    color: var(--text-primary);
+    background: red;
+    color: var(--bg-card);
     font-family: var(--font-family);
     font-size: 14px;
     font-weight: 700;
@@ -267,10 +267,9 @@ h4 {
 
 .logout-btn:hover,
 .login-btn:hover {
-    background: transparent;
-    color: var(--primary);
     transform: translateY(-1px);
     box-shadow: var(--shadow);
+    text-decoration: underline;
 }
 
 /* Menu Mobile */
@@ -483,6 +482,106 @@ textarea::placeholder {
     color: var(--text-muted);
 }
 
+/* Seletor customizado de clientes com busca */
+.custom-client-selector {
+    position: relative;
+    width: 100%;
+}
+
+.client-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--bg-secondary);
+    border: 1px solid var(--text-primary);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-sm);
+    transition: var(--transition);
+    cursor: text;
+}
+
+.client-input:focus-within {
+    border-color: var(--primary);
+    background: var(--bg-hover);
+}
+
+.client-input.has-selection {
+    border-color: var(--success);
+    background: var(--bg-hover);
+}
+
+.client-input input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    color: var(--text-primary);
+    font-family: inherit;
+}
+
+.client-input input::placeholder {
+    color: var(--text-muted);
+}
+
+.client-input .icon {
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    margin-left: 0.5rem;
+}
+
+.client-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-top: none;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+}
+
+.client-dropdown.active {
+    display: block;
+}
+
+.client-options {
+    padding: 0.5rem 0;
+}
+
+.client-option {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.client-option:last-child {
+    border-bottom: none;
+}
+
+.client-option:hover {
+    background: var(--bg-hover);
+    color: var(--primary);
+}
+
+.client-option.no-results {
+    color: var(--text-muted);
+    font-style: italic;
+    cursor: default;
+}
+
+.client-option.no-results:hover {
+    background: transparent;
+    color: var(--text-muted);
+}
+
 textarea {
     min-height: 100px;
     resize: vertical;
@@ -628,6 +727,30 @@ select {
 
 .date-selector input[type="date"] {
     max-width: 200px;
+}
+
+/* Calendário customizado no dashboard - formato quadrado */
+.date-selector .custom-date-picker .date-input {
+    width: 300px;
+    max-width: 300px;
+}
+
+.date-selector .custom-date-picker .date-dropdown {
+    width: 300px;
+    max-width: 300px;
+    left: 0;
+    right: auto;
+}
+
+.date-selector .custom-date-picker .date-grid {
+    max-height: 200px;
+    padding: var(--spacing-sm);
+}
+
+.date-selector .custom-date-picker .date-day {
+    min-height: 28px;
+    max-height: 32px;
+    font-size: 12px;
 }
 
 /* ===== CARDS DE AGENDAMENTO (HORIZONTAL) ===== */
@@ -1089,6 +1212,20 @@ a:hover {
         flex-direction: column;
     }
 
+    /* Ajustes para seletor de horário em tablets */
+    .time-dropdown {
+        max-height: 300px;
+    }
+
+    .time-columns {
+        max-height: 250px;
+    }
+
+    .time-options {
+        max-height: 200px;
+        padding-bottom: var(--spacing-md);
+    }
+
     /* Header responsivo para páginas de clientes */
     .d-flex.justify-content-between {
         flex-direction: column;
@@ -1130,6 +1267,18 @@ a:hover {
 
     .action-buttons .btn {
         width: 100%;
+    }
+
+    /* Ajustes para botões do formulário em tablets */
+    .form-group[style*="display: flex"] {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+
+    .form-group[style*="display: flex"] .btn {
+        width: 100%;
+        flex: none;
+        justify-content: center;
     }
 
     /* Tabela se torna lista no mobile */
@@ -1181,8 +1330,111 @@ a:hover {
         padding: var(--spacing-md);
     }
 
+    /* Ajustes específicos para botões do formulário no mobile */
+    .form-group[style*="display: flex"] {
+        flex-direction: column !important;
+        gap: var(--spacing-sm) !important;
+    }
+
+    .form-group[style*="display: flex"] .btn {
+        width: 100% !important;
+        flex: none !important;
+        justify-content: center;
+        padding: 12px var(--spacing-md);
+        font-size: 14px;
+    }
+
     .date-selector input[type="date"] {
         max-width: 100%;
+    }
+
+    /* Calendário customizado no dashboard - mobile */
+    .date-selector .custom-date-picker .date-input {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .date-selector .custom-date-picker .date-dropdown {
+        width: 100%;
+        max-width: 100%;
+        left: 0;
+        right: 0;
+        position: absolute;
+        top: 100%;
+        transform: none;
+        z-index: 1000;
+        margin-top: 4px;
+    }
+
+    .date-selector .custom-date-picker .date-grid {
+        max-height: 280px;
+        padding: var(--spacing-sm);
+    }
+
+    .date-selector .custom-date-picker .date-day {
+        min-height: 32px;
+        max-height: 36px;
+        font-size: 14px;
+    }
+
+    /* Ajustes para seletor de horário no mobile */
+    .time-dropdown {
+        max-height: 320px;
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        top: auto;
+        background: var(--bg-card) !important;
+        border: 2px solid var(--primary) !important;
+        border-radius: var(--radius-sm) !important;
+        box-shadow: var(--shadow-lg) !important;
+        z-index: 9999;
+    }
+
+    .time-columns {
+        max-height: 270px;
+        background: var(--bg-card) !important;
+    }
+
+    /* Seletor de clientes no mobile */
+    .custom-client-selector .client-dropdown {
+        position: fixed;
+        top: auto;
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        max-height: 300px;
+        border-radius: var(--radius-sm);
+        border: 2px solid var(--primary);
+        box-shadow: var(--shadow-lg);
+        z-index: 9999;
+    }
+
+    .custom-client-selector .client-options {
+        max-height: 260px;
+    }
+
+    .time-options {
+        max-height: 220px;
+        padding-bottom: var(--spacing-lg);
+        background: var(--bg-card) !important;
+    }
+
+    .time-option {
+        padding: var(--spacing-sm);
+        font-size: 14px;
+        margin-bottom: 1px;
+    }
+
+    .hours-column .time-option {
+        font-size: 16px;
+        padding: var(--spacing-md) var(--spacing-sm);
+    }
+
+    .minutes-column .time-option {
+        font-size: 14px;
+        padding: var(--spacing-sm);
     }
 
     /* Dashboard header para telas muito pequenas */
@@ -1990,6 +2242,358 @@ a:hover {
 .appointment-card,
 .card {
     animation: fadeIn 0.3s ease;
+}
+
+/* ===== CALENDÁRIO CUSTOMIZADO ===== */
+.custom-date-picker {
+    position: relative;
+}
+
+.date-input {
+    width: 100%;
+    padding: 12px var(--spacing-lg);
+    border: 1px solid var(--text-primary);
+    border-radius: var(--radius-sm);
+    background: var(--bg-secondary);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: var(--transition);
+}
+
+.date-input:hover {
+    border-color: var(--primary);
+    background: var(--bg-hover);
+}
+
+.date-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg-card);
+    border: 2px solid var(--primary);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    display: none;
+    margin-top: 4px;
+}
+
+.date-dropdown.active {
+    display: block;
+}
+
+.date-nav {
+    background: var(--primary);
+    padding: var(--spacing-sm);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--text-primary);
+}
+
+.date-nav button {
+    background: var(--bg-card);
+    border: 2px solid var(--text-primary);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    color: var(--text-primary);
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 10px;
+}
+
+.date-nav button:hover {
+    background: var(--text-primary);
+    color: var(--bg-card);
+}
+
+.date-nav span {
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.date-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    gap: 0px;
+    padding: var(--spacing-sm);
+    max-height: 180px;
+    overflow: hidden;
+}
+
+.date-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+    transition: var(--transition);
+    min-height: 22px;
+    max-height: 26px;
+    overflow: hidden;
+}
+
+.date-day:hover {
+    background: var(--bg-hover);
+    border-color: var(--primary);
+}
+
+.date-day.other-month {
+    opacity: 0.3;
+    cursor: default;
+}
+
+.date-day.today {
+    background: var(--primary-light);
+    border-color: var(--primary);
+    font-weight: 700;
+}
+
+.date-day.selected {
+    background: var(--primary);
+    color: var(--text-primary);
+    border-color: var(--text-primary);
+    font-weight: 700;
+}
+
+.date-actions {
+    padding: var(--spacing-sm);
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: var(--spacing-sm);
+    background: var(--bg-secondary);
+}
+
+.date-actions button {
+    flex: 1;
+    padding: 4px var(--spacing-sm);
+    border: 2px solid var(--text-primary);
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 11px;
+}
+
+.date-actions button:hover {
+    background: var(--text-primary);
+    color: var(--bg-card);
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .date-dropdown {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 320px;
+        z-index: 9999;
+    }
+    
+    .date-grid {
+        max-height: 320px;
+        padding: var(--spacing-sm);
+    }
+    
+    .date-day {
+        min-height: 40px;
+        max-height: 48px;
+        font-size: 15px;
+    }
+    
+    .date-nav button {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* ===== SELETOR DE HORÁRIO CUSTOMIZADO ===== */
+.time-selector-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.time-display {
+    width: 100%;
+    padding: 12px var(--spacing-lg);
+    border: 1px solid var(--text-primary);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    transition: var(--transition);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.time-display:hover {
+    border-color: var(--primary);
+    background: var(--bg-hover);
+}
+
+.time-display.has-selection {
+    color: var(--text-primary);
+}
+
+.time-icon {
+    width: 20px;
+    height: 20px;
+    opacity: 0.7;
+    transition: var(--transition);
+}
+
+.time-display:hover .time-icon {
+    opacity: 1;
+}
+
+.time-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg-card);
+    border: 2px solid var(--primary);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    display: none;
+    margin-top: 4px;
+    backdrop-filter: none;
+}
+
+.time-dropdown.active {
+    display: block;
+    animation: fadeIn 0.2s ease;
+}
+
+.time-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-height: 300px;
+    overflow: hidden;
+    background: var(--bg-card);
+}
+
+.time-column {
+    border-right: 1px solid var(--border);
+    background: var(--bg-card);
+}
+
+.time-column:last-child {
+    border-right: none;
+    background: var(--bg-card);
+}
+
+.column-header {
+    background: var(--primary);
+    color: var(--text-primary);
+    padding: var(--spacing-md);
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--text-primary);
+}
+
+.time-options {
+    max-height: 250px;
+    overflow-y: auto;
+    padding: var(--spacing-sm);
+    background: var(--bg-card);
+}
+
+.time-option {
+    padding: var(--spacing-md);
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    margin-bottom: 2px;
+}
+
+.time-option:hover {
+    background: var(--bg-hover);
+    transform: translateY(-1px);
+}
+
+.time-option.selected {
+    background: var(--primary);
+    color: var(--text-primary);
+    border: 2px solid var(--text-primary);
+    box-shadow: var(--shadow);
+}
+
+.time-option.selected:hover {
+    background: var(--primary);
+    color: var(--text-primary);
+}
+
+/* Estilização específica para as colunas */
+.hours-column .time-option {
+    font-size: 18px;
+    padding: var(--spacing-lg) var(--spacing-md);
+}
+
+.minutes-column .time-option {
+    font-size: 16px;
+    padding: var(--spacing-md);
+}
+
+/* Scrollbar customizada para o dropdown */
+.time-options::-webkit-scrollbar {
+    width: 8px;
+}
+
+.time-options::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-full);
+}
+
+.time-options::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: var(--radius-full);
+    border: 1px solid var(--bg-card);
+}
+
+.time-options::-webkit-scrollbar-thumb:hover {
+    background: var(--text-primary);
+}
+
+/* Melhorar visibilidade do scrollbar no mobile */
+@media (max-width: 480px) {
+    .time-options::-webkit-scrollbar {
+        width: 10px;
+    }
+    
+    .time-options::-webkit-scrollbar-thumb {
+        background: var(--primary);
+        border: 2px solid var(--bg-card);
+    }
 }
 
 /* ===== SCROLLBAR ===== */
