@@ -9,7 +9,7 @@
     --bg-primary: #E0E0E0;
     --bg-secondary: #D0D0D0;
     --bg-card: #FFFFFF;
-    --bg-hover: #FFFACD;
+    --bg-hover: #E8F5E9;
     
     --text-primary: #000000;
     --text-secondary: #333333;
@@ -18,11 +18,11 @@
     --border: #CCCCCC;
     --border-light: #999999;
     
-    --primary: #FFD700;
-    --primary-hover: #FFC107;
-    --primary-light: rgba(255, 215, 0, 0.1);
+    --primary: #22C55E;
+    --primary-hover: #16A34A;
+    --primary-light: rgba(34, 197, 94, 0.1);
     
-    /* Usando branco, preto, amarelo e verde para status */
+    /* Usando branco, preto, verde para status; amarelo apenas para PENDENTE */
     --success: #22C55E;
     --success-hover: #16A34A;
     --success-light: rgba(34, 197, 94, 0.1);
@@ -31,8 +31,13 @@
     --danger-hover: #333333;
     --danger-light: rgba(0, 0, 0, 0.1);
     
-    --warning: #FFD700;
-    --info: #FFD700;
+    --warning: #22C55E;
+    --info: #22C55E;
+    
+    /* Cor específica para status PENDENTE - mantém amarelo */
+    --pendente-color: #FFD700;
+    --pendente-hover: #FFC107;
+    --pendente-light: rgba(255, 215, 0, 0.1);
     
     /* Tipografia */
     --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -77,7 +82,7 @@ body {
     font-weight: 400;
     line-height: 1.6;
     color: var(--text-primary);
-    background: linear-gradient(135deg, #E0E0E0 0%, #D0D0D0 50%, #D8D8D8 100%);
+    background: linear-gradient(135deg, #a8a8a8 0%, #5e5e5e 50%, #494949 100%);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -141,9 +146,9 @@ h2 {
     color: var(--primary);
 }
 
-/* Ícones amarelos no header */
+/* Ícones verdes no header */
 .brand-icon {
-    filter: brightness(0) saturate(100%) invert(85%) sepia(100%) saturate(1000%) hue-rotate(0deg) brightness(1.2) contrast(1);
+    filter: brightness(0) saturate(100%) invert(58%) sepia(93%) saturate(425%) hue-rotate(89deg) brightness(98%) contrast(89%);
 }
 
 .brand-icon {
@@ -190,16 +195,16 @@ h2 {
 
 .nav-link.active {
     color: var(--primary);
-    background: rgba(255, 215, 0, 0.2);
+    background: rgba(34, 197, 94, 0.2);
 }
 
-/* Ícones amarelos na navegação */
+/* Ícones verdes na navegação */
 .nav-link .icon {
-    filter: brightness(0) saturate(100%) invert(85%) sepia(100%) saturate(1000%) hue-rotate(0deg) brightness(1.2) contrast(1);
+    filter: brightness(0) saturate(100%) invert(58%) sepia(93%) saturate(425%) hue-rotate(89deg) brightness(98%) contrast(89%);
 }
 
 .nav-link.active .icon {
-    filter: brightness(0) saturate(100%) invert(85%) sepia(100%) saturate(1000%) hue-rotate(0deg) brightness(1.2) contrast(1);
+    filter: brightness(0) saturate(100%) invert(58%) sepia(93%) saturate(425%) hue-rotate(89deg) brightness(98%) contrast(89%);
 }
 
 /* User Actions */
@@ -288,7 +293,7 @@ h2 {
 .hamburger-line {
     width: 100%;
     height: 2px;
-    background: var(--text-primary);
+    background: var(--bg-card);
     border-radius: 2px;
     transition: var(--transition);
 }
@@ -325,12 +330,12 @@ h2 {
 .mobile-nav-link:hover,
 .mobile-nav-link.active {
     color: var(--primary);
-    background: rgba(255, 215, 0, 0.2);
+    background: rgba(34, 197, 94, 0.2);
 }
 
-/* Ícones amarelos no menu mobile */
+/* Ícones verdes no menu mobile */
 .mobile-nav-link .icon {
-    filter: brightness(0) saturate(100%) invert(85%) sepia(100%) saturate(1000%) hue-rotate(0deg) brightness(1.2) contrast(1);
+    filter: brightness(0) saturate(100%) invert(58%) sepia(93%) saturate(425%) hue-rotate(89deg) brightness(98%) contrast(89%);
 }
 
 .mobile-user-section {
@@ -499,10 +504,10 @@ select {
     box-shadow: var(--shadow);
 }
 
-/* Variações de Botões - Paleta Branco, Preto e Amarelo */
+/* Variações de Botões - Paleta Branco, Preto e Verde */
 .btn-primary {
     background: var(--primary);
-    color: var(--text-primary);
+    color: var(--bg-card);
     border: 2px solid var(--text-primary);
     font-weight: 700;
 }
@@ -527,13 +532,13 @@ select {
 .btn-success {
     background: var(--success);
     color: white;
-    border: 2px solid var(--success);
+    border: 2px solid var(--text-primary);
     font-weight: 700;
 }
 
 .btn-success:hover {
-    background: var(--success-hover);
-    color: white;
+    background: var(--text-primary);
+    color: var(--success);
     border-color: var(--success-hover);
 }
 
@@ -562,7 +567,7 @@ select {
 .btn-info {
     background: #3B82F6;
     color: white;
-    border: 2px solid #3B82F6;
+    border: 2px solid var(--text-primary);
     font-weight: 700;
 }
 
@@ -734,35 +739,35 @@ select {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border: 2px solid;
 }
 
+/* Status PENDENTE mantém amarelo */
 .status-confirmado,
 .appointment-status.status-confirmado {
-    background: var(--primary);
+    background: var(--pendente-color);
     color: var(--text-primary);
-    border-color: var(--text-primary);
+    border: 2px solid var(--text-primary);
 }
 
 .status-a-caminho,
 .appointment-status.status-a-caminho {
     background: #3B82F6;
-    color: white;
-    border-color: #3B82F6;
+    color: var(--text-primary);
+    border: 2px solid var(--text-primary);
 }
 
 .status-concluido,
 .appointment-status.status-concluido {
     background: var(--success);
-    color: white;
-    border-color: var(--success);
+    color: var(--text-primary);
+    border: 2px solid var(--text-primary);
 }
 
 .status-cancelado,
 .appointment-status.status-cancelado {
     background: var(--text-primary);
     color: var(--bg-card);
-    border-color: var(--text-primary);
+    border: 2px solid var(--text-primary);
 }
 
 /* ===== TABELA DE CLIENTES ===== */
@@ -865,7 +870,7 @@ select {
 .icon-lg { width: 24px; height: 24px; }
 .icon-xl { width: 32px; height: 32px; }
 
-/* Ícones em botões com fundo amarelo - solução inteligente para hover */
+/* Ícones em botões com fundo verde - solução inteligente para hover */
 .btn-success .icon,
 .btn-primary .icon,
 .btn-warning .icon,
@@ -882,33 +887,33 @@ select {
     filter: brightness(0) invert(1);
 }
 
-/* SVG Icons - Paleta Branco, Preto e Amarelo */
+/* SVG Icons - Paleta Branco, Preto e Verde */
 .icon-barber {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000000'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E");
 }
 
 .icon-user {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFD700'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322C55E'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E");
 }
 
 .icon-calendar {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFD700'%3E%3Cpath d='M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322C55E'%3E%3Cpath d='M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z'/%3E%3C/svg%3E");
 }
 
 .icon-scissors {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFD700'%3E%3Cpath d='M9.64 7.64c.23-.5.36-1.05.36-1.64 0-2.21-1.79-4-4-4S2 3.79 2 6s1.79 4 4 4c.59 0 1.14-.13 1.64-.36L10 12l-2.36 2.36C7.14 14.13 6.59 14 6 14c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4c0-.59-.13-1.14-.36-1.64L12 14l7 7h3v-1L9.64 7.64zM6 8c-1.1 0-2-.89-2-2s.9-2 2-2 2 .89 2 2-.9 2-2 2zm0 12c-1.1 0-2-.89-2-2s.9-2 2-2 2 .89 2 2-.9 2-2 2zm6-7.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5zM19 3l-6 6 2 2 7-7V3z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322C55E'%3E%3Cpath d='M9.64 7.64c.23-.5.36-1.05.36-1.64 0-2.21-1.79-4-4-4S2 3.79 2 6s1.79 4 4 4c.59 0 1.14-.13 1.64-.36L10 12l-2.36 2.36C7.14 14.13 6.59 14 6 14c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4c0-.59-.13-1.14-.36-1.64L12 14l7 7h3v-1L9.64 7.64zM6 8c-1.1 0-2-.89-2-2s.9-2 2-2 2 .89 2 2-.9 2-2 2zm0 12c-1.1 0-2-.89-2-2s.9-2 2-2 2 .89 2 2-.9 2-2 2zm6-7.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5zM19 3l-6 6 2 2 7-7V3z'/%3E%3C/svg%3E");
 }
 
 .icon-phone {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFD700'%3E%3Cpath d='M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322C55E'%3E%3Cpath d='M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z'/%3E%3C/svg%3E");
 }
 
 .icon-location {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFD700'%3E%3Cpath d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322C55E'%3E%3Cpath d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z'/%3E%3C/svg%3E");
 }
 
 .icon-edit {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFD700'%3E%3Cpath d='M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322C55E'%3E%3Cpath d='M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z'/%3E%3C/svg%3E");
 }
 
 .icon-delete {
@@ -916,15 +921,15 @@ select {
 }
 
 .icon-lock {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFD700'%3E%3Cpath d='M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322C55E'%3E%3Cpath d='M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z'/%3E%3C/svg%3E");
 }
 
 .icon-time {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFD700'%3E%3Cpath d='M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z'/%3E%3Cpath d='M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322C55E'%3E%3Cpath d='M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z'/%3E%3Cpath d='M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z'/%3E%3C/svg%3E");
 }
 
 .icon-note {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFD700'%3E%3Cpath d='M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 2 2h8c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322C55E'%3E%3Cpath d='M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 2 2h8c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z'/%3E%3C/svg%3E");
 }
 
 .icon-logout {
@@ -1315,6 +1320,13 @@ a:hover {
     box-shadow: var(--shadow);
 }
 
+.mobile-day.today.selected {
+    background: var(--primary);
+    border-color: var(--text-primary);
+    border-width: 3px;
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+}
+
 .day-abbrev {
     font-size: 12px;
     font-weight: 600;
@@ -1452,6 +1464,7 @@ a:hover {
     box-shadow: var(--shadow);
 }
 
+/* Barra lateral do card de agendamento - amarelo para PENDENTE */
 .mobile-appointment-card::before {
     content: '';
     position: absolute;
@@ -1459,7 +1472,7 @@ a:hover {
     top: 0;
     bottom: 0;
     width: 4px;
-    background: var(--primary);
+    background: var(--pendente-color);
     border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
@@ -1530,31 +1543,31 @@ a:hover {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border: 2px solid;
 }
 
+/* Status badge PENDENTE mantém amarelo */
 .status-badge.confirmado {
-    background: var(--primary);
+    background: var(--pendente-color);
     color: var(--text-primary);
-    border-color: var(--text-primary);
+    border: 2px solid var(--text-primary);
 }
 
 .status-badge.a_caminho {
     background: #3B82F6;
     color: white;
-    border-color: #3B82F6;
+    border: 2px solid #3B82F6;
 }
 
 .status-badge.concluido {
     background: var(--success);
     color: white;
-    border-color: var(--success);
+    border: 2px solid var(--success);
 }
 
 .status-badge.cancelado {
     background: var(--text-primary);
     color: var(--bg-card);
-    border-color: var(--text-primary);
+    border: 2px solid var(--text-primary);
 }
 
 .calendar-wrapper {
@@ -1667,7 +1680,7 @@ a:hover {
     font-weight: 700;
     color: var(--text-primary);
     font-size: 12px;
-    background: rgba(255, 215, 0, 0.3);
+    background: rgba(34, 197, 94, 0.3);
     padding: 2px 6px;
     border-radius: 3px;
     display: inline-block;
@@ -1687,10 +1700,11 @@ a:hover {
     max-width: 100%;
 }
 
+/* Status PENDENTE no calendário mantém amarelo */
 .status-pendente {
-    background: rgba(255, 215, 0, 0.15);
-    border: 2px solid var(--primary);
-    box-shadow: 0 2px 4px rgba(255, 215, 0, 0.2);
+    background: var(--pendente-light);
+    border: 2px solid var(--pendente-color);
+    box-shadow: 0 2px 4px var(--pendente-light);
 }
 
 .status-a-caminho {
