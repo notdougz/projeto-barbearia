@@ -222,31 +222,74 @@
         // Funcionalidade mobile - seleção de dias
         let selectedDay = null;
         
+        // Função para selecionar um dia
+        function selectDay(dayElement) {
+            console.log('selectDay called with element:', dayElement);
+            console.log('Element data-date:', dayElement.dataset.date);
+            
+            // Remove seleção anterior
+            document.querySelectorAll('.mobile-day').forEach(d => d.classList.remove('selected'));
+            
+            // Adiciona seleção atual
+            dayElement.classList.add('selected');
+            selectedDay = dayElement.dataset.date;
+            
+            console.log('Selected day set to:', selectedDay);
+            
+            // Atualiza a interface
+            updateMobileAppointments(selectedDay);
+        }
+        
+        // Adicionar event listeners para seleção manual
         document.querySelectorAll('.mobile-day').forEach(function(day) {
             day.addEventListener('click', function() {
-                // Remove seleção anterior
-                document.querySelectorAll('.mobile-day').forEach(d => d.classList.remove('selected'));
-                
-                // Adiciona seleção atual
-                this.classList.add('selected');
-                selectedDay = this.dataset.date;
-                
-                // Atualiza a interface
-                updateMobileAppointments(selectedDay);
+                selectDay(this);
             });
         });
+        
+        // Auto-selecionar o dia atual no mobile
+        function autoSelectCurrentDay() {
+            const today = new Date();
+            // Usar formato local para evitar problemas de timezone
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const currentDateStr = `${year}-${month}-${day}`; // Formato YYYY-MM-DD
+            
+            // Procurar pelo dia atual na lista de dias disponíveis
+            const currentDayElement = document.querySelector(`.mobile-day[data-date="${currentDateStr}"]`);
+            
+            if (currentDayElement) {
+                selectDay(currentDayElement);
+            } else {
+                // Se não encontrar o dia atual, selecionar o primeiro dia disponível
+                const firstDay = document.querySelector('.mobile-day');
+                if (firstDay) {
+                    selectDay(firstDay);
+                }
+            }
+        }
 
         function updateMobileAppointments(date) {
+            console.log('updateMobileAppointments called with date:', date);
+            console.log('Available appointments data keys:', Object.keys(appointmentsData));
+            
             const appointments = appointmentsData[date] || [];
+            console.log('Found appointments for date', date, ':', appointments);
+            
             const container = document.getElementById('appointments-container');
             const title = document.getElementById('selected-day-title');
             const stats = document.getElementById('day-stats');
             
             // Atualiza título
             const dayNames = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-            const dateObj = new Date(date);
+            // Parse da data no formato YYYY-MM-DD sem problemas de timezone
+            const [year, month, day] = date.split('-');
+            const dateObj = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
             const dayName = dayNames[dateObj.getDay()];
             const dayNumber = dateObj.getDate();
+            
+            console.log('Parsed date:', { year, month, day, dayName, dayNumber });
             
             title.textContent = `${dayName}, ${dayNumber} de {{ mes_nome }}`;
             
@@ -326,6 +369,9 @@
                 }
             }
         };
+        
+        // Auto-selecionar o dia atual quando a página carregar
+        autoSelectCurrentDay();
     });
 </script>
 {% endblock %}
