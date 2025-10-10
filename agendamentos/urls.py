@@ -11,6 +11,10 @@ urlpatterns = [
     path('painel/', views.painel_barbeiro, name='painel_barbeiro'),
     path('agendamentos-mensais/', views.agendamentos_mensais, name='agendamentos_mensais'),
     
+    # FINANCEIRO
+    path('financeiro/', views.financeiro, name='financeiro'),
+    path('financeiro/alterar-pagamento/<int:pk>/', views.alterar_status_pagamento, name='alterar_status_pagamento'),
+    
     # AGENDAMENTOS
     path('agendar/', views.agendar, name='agendar'),
     path('agendar/editar/<int:pk>/', views.editar_agendamento, name='editar_agendamento'),

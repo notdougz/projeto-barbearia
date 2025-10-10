@@ -41,6 +41,12 @@
                                 <span class="nav-text">Novo Agendamento</span>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{% url 'financeiro' %}" class="nav-link {% if request.resolver_match.url_name == 'financeiro' %}active{% endif %}">
+                                <span class="icon icon-money"></span>
+                                <span class="nav-text">Financeiro</span>
+                            </a>
+                        </li>
                     {% endif %}
                 </ul>
             </nav>
@@ -89,6 +95,9 @@
                     </a>
                     <a href="{% url 'agendar' %}" class="mobile-nav-link {% if request.resolver_match.url_name == 'agendar' %}active{% endif %}">
                         <span class="icon icon-calendar"></span>Novo Agendamento
+                    </a>
+                    <a href="{% url 'financeiro' %}" class="mobile-nav-link {% if request.resolver_match.url_name == 'financeiro' %}active{% endif %}">
+                        <span class="icon icon-money"></span>Financeiro
                     </a>
                     <div class="mobile-user-section">
                         <div class="mobile-user-info">

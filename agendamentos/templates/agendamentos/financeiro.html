@@ -1,0 +1,614 @@
+{% extends 'agendamentos/base.html' %}
+
+{% block title %}Financeiro - {{ data_selecionada|date:"d/m/Y" }}{% endblock %}
+
+{% block content %}
+
+<div class="date-selector">
+    <form method="GET" action="{% url 'financeiro' %}" id="date-form">
+        <label for="data">
+            <span class="icon icon-calendar"></span>Selecionar outra data:
+        </label>
+        <div class="custom-date-picker">
+            <div class="date-input" id="date-input">
+                <span id="date-text">{{ data_selecionada|date:"d/m/Y" }}</span>
+                <span class="icon icon-calendar"></span>
+            </div>
+            <div class="date-dropdown" id="date-dropdown">
+                <div class="date-nav">
+                    <button type="button" id="prev-month">&lt;</button>
+                    <span id="current-month"></span>
+                    <button type="button" id="next-month">&gt;</button>
+                </div>
+                <div class="date-grid" id="date-grid"></div>
+                <div class="date-actions">
+                    <button type="button" id="today-btn">Hoje</button>
+                    <button type="button" id="clear-btn">Limpar</button>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="data" id="id_data" value="{{ data_selecionada|date:'Y-m-d' }}">
+        <input type="hidden" name="filtro" id="id_filtro" value="{{ filtro_pagamento }}">
+    </form>
+</div>
+
+<div class="dashboard-header mb-3">
+    <h2>
+        <span class="icon icon-money"></span>Financeiro - {{ data_selecionada|date:"d/m/Y" }}
+    </h2>
+</div>
+
+<!-- Estatísticas Financeiras -->
+<div class="financeiro-stats">
+    <div class="stat-card stat-total">
+        <div class="stat-icon">💰</div>
+        <div class="stat-content">
+            <div class="stat-label">Total do Dia</div>
+            <div class="stat-value">R$ {{ valor_total|floatformat:2 }}</div>
+            <div class="stat-count">{{ total_geral }} agendamento{{ total_geral|pluralize }}</div>
+        </div>
+    </div>
+    
+    <div class="stat-card stat-recebido">
+        <div class="stat-icon">✅</div>
+        <div class="stat-content">
+            <div class="stat-label">Recebido</div>
+            <div class="stat-value">R$ {{ valor_recebido|floatformat:2 }}</div>
+            <div class="stat-count">{{ total_pago }} pagamento{{ total_pago|pluralize }}</div>
+        </div>
+    </div>
+    
+    <div class="stat-card stat-pendente">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-content">
+            <div class="stat-label">Pendente</div>
+            <div class="stat-value">R$ {{ valor_pendente|floatformat:2 }}</div>
+            <div class="stat-count">{{ total_pendente }} pendente{{ total_pendente|pluralize }}</div>
+        </div>
+    </div>
+</div>
+
+<!-- Filtros de Pagamento -->
+<div class="pagamento-filters">
+    <button class="filter-btn {% if filtro_pagamento == 'todos' %}active{% endif %}" onclick="aplicarFiltro('todos')">
+        <span class="icon icon-list"></span>Todos
+    </button>
+    <button class="filter-btn {% if filtro_pagamento == 'pendente' %}active{% endif %}" onclick="aplicarFiltro('pendente')">
+        <span class="icon icon-time"></span>Pendentes
+    </button>
+    <button class="filter-btn {% if filtro_pagamento == 'pago' %}active{% endif %}" onclick="aplicarFiltro('pago')">
+        <span class="icon icon-check"></span>Pagos
+    </button>
+    <button class="filter-btn {% if filtro_pagamento == 'visao_geral' %}active{% endif %}" onclick="aplicarFiltro('visao_geral')">
+        <span class="icon icon-info"></span>Visão Geral
+    </button>
+</div>
+
+{% if filtro_pagamento == 'visao_geral' %}
+    <!-- VISÃO GERAL -->
+    <div class="visao-geral-container">
+        <div class="visao-geral-header">
+            <h3><span class="icon icon-info"></span>Relatório Financeiro</h3>
+            <div class="visao-geral-controls">
+                <div class="mes-selector">
+                    <button class="mes-btn" onclick="alterarMes(-1)" title="Mês anterior">
+                        <span class="icon icon-arrow-left"></span>
+                    </button>
+                    <span class="mes-atual" id="mes-atual">{{ data_selecionada|date:"F/Y" }}</span>
+                    <button class="mes-btn" onclick="alterarMes(1)" title="Próximo mês">
+                        <span class="icon icon-arrow-right"></span>
+                    </button>
+                </div>
+                <div class="periodo-selector">
+                    <button class="periodo-btn active" onclick="alterarPeriodo('mes')">Mensal</button>
+                    <button class="periodo-btn" onclick="alterarPeriodo('ano')">Anual</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Estatísticas Mensais -->
+        <div id="estatisticas-mes" class="estatisticas-periodo">
+            <h4>📅 {{ data_selecionada|date:"F/Y" }}</h4>
+            <div class="visao-geral-stats">
+                <div class="visao-stat-card">
+                    <div class="visao-stat-icon">💰</div>
+                    <div class="visao-stat-content">
+                        <div class="visao-stat-label">Total do Mês</div>
+                        <div class="visao-stat-value">R$ {{ total_mes|floatformat:2 }}</div>
+                        <div class="visao-stat-count">{{ agendamentos_mes }} agendamento{{ agendamentos_mes|pluralize }}</div>
+                    </div>
+                </div>
+                
+                <div class="visao-stat-card">
+                    <div class="visao-stat-icon">✅</div>
+                    <div class="visao-stat-content">
+                        <div class="visao-stat-label">Recebido</div>
+                        <div class="visao-stat-value">R$ {{ recebido_mes|floatformat:2 }}</div>
+                        <div class="visao-stat-count">{{ pagos_mes }} pagamento{{ pagos_mes|pluralize }}</div>
+                    </div>
+                </div>
+                
+                <div class="visao-stat-card">
+                    <div class="visao-stat-icon">⏳</div>
+                    <div class="visao-stat-content">
+                        <div class="visao-stat-label">Pendente</div>
+                        <div class="visao-stat-value">R$ {{ pendente_mes|floatformat:2 }}</div>
+                        <div class="visao-stat-count">{{ pendentes_mes }} pendente{{ pendentes_mes|pluralize }}</div>
+                    </div>
+                </div>
+                
+                <div class="visao-stat-card">
+                    <div class="visao-stat-icon">📊</div>
+                    <div class="visao-stat-content">
+                        <div class="visao-stat-label">Taxa de Recebimento</div>
+                        <div class="visao-stat-value">{{ taxa_recebimento_mes|floatformat:1 }}%</div>
+                        <div class="visao-stat-count">do total mensal</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Estatísticas Anuais -->
+        <div id="estatisticas-ano" class="estatisticas-periodo" style="display: none;">
+            <h4>📆 {{ data_selecionada|date:"Y" }}</h4>
+            <div class="visao-geral-stats">
+                <div class="visao-stat-card">
+                    <div class="visao-stat-icon">💰</div>
+                    <div class="visao-stat-content">
+                        <div class="visao-stat-label">Total do Ano</div>
+                        <div class="visao-stat-value">R$ {{ total_ano|floatformat:2 }}</div>
+                        <div class="visao-stat-count">{{ agendamentos_ano }} agendamento{{ agendamentos_ano|pluralize }}</div>
+                    </div>
+                </div>
+                
+                <div class="visao-stat-card">
+                    <div class="visao-stat-icon">✅</div>
+                    <div class="visao-stat-content">
+                        <div class="visao-stat-label">Recebido</div>
+                        <div class="visao-stat-value">R$ {{ recebido_ano|floatformat:2 }}</div>
+                        <div class="visao-stat-count">{{ pagos_ano }} pagamento{{ pagos_ano|pluralize }}</div>
+                    </div>
+                </div>
+                
+                <div class="visao-stat-card">
+                    <div class="visao-stat-icon">⏳</div>
+                    <div class="visao-stat-content">
+                        <div class="visao-stat-label">Pendente</div>
+                        <div class="visao-stat-value">R$ {{ pendente_ano|floatformat:2 }}</div>
+                        <div class="visao-stat-count">{{ pendentes_ano }} pendente{{ pendentes_ano|pluralize }}</div>
+                    </div>
+                </div>
+                
+                <div class="visao-stat-card">
+                    <div class="visao-stat-icon">📊</div>
+                    <div class="visao-stat-content">
+                        <div class="visao-stat-label">Taxa de Recebimento</div>
+                        <div class="visao-stat-value">{{ taxa_recebimento_ano|floatformat:1 }}%</div>
+                        <div class="visao-stat-count">do total anual</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lista Detalhada Anual -->
+            <div class="lista-detalhada-container">
+                <h4>📋 Detalhamento Anual</h4>
+                
+                <!-- Cortes Pagos do Ano -->
+                <div class="cortes-secao">
+                    <h5 class="secao-titulo pagos">
+                        <span class="icon icon-check"></span>
+                        Cortes Pagos ({{ pagos_ano }})
+                    </h5>
+                    {% if cortes_pagos_ano %}
+                        <div class="cortes-lista">
+                            {% for agendamento in cortes_pagos_ano %}
+                            <div class="corte-item pago">
+                                <div class="corte-data">{{ agendamento.data|date:"d/m" }}</div>
+                                <div class="corte-info">
+                                    <span class="corte-cliente">{{ agendamento.cliente.nome }}</span>
+                                    <span class="corte-servico">{{ agendamento.servico.nome }}</span>
+                                </div>
+                                <div class="corte-valor">R$ {{ agendamento.servico.preco|floatformat:2 }}</div>
+                                <div class="corte-acao">
+                                    <form action="{% url 'alterar_status_pagamento' agendamento.id %}" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-corte btn-corte-warning" title="Marcar como PENDENTE">
+                                            <span class="icon icon-time"></span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="sem-dados">Nenhum corte pago neste ano</div>
+                    {% endif %}
+                </div>
+                
+                <!-- Cortes Pendentes do Ano -->
+                <div class="cortes-secao">
+                    <h5 class="secao-titulo pendentes">
+                        <span class="icon icon-time"></span>
+                        Cortes Pendentes ({{ pendentes_ano }})
+                    </h5>
+                    {% if cortes_pendentes_ano %}
+                        <div class="cortes-lista">
+                            {% for agendamento in cortes_pendentes_ano %}
+                            <div class="corte-item pendente">
+                                <div class="corte-data">{{ agendamento.data|date:"d/m" }}</div>
+                                <div class="corte-info">
+                                    <span class="corte-cliente">{{ agendamento.cliente.nome }}</span>
+                                    <span class="corte-servico">{{ agendamento.servico.nome }}</span>
+                                </div>
+                                <div class="corte-valor">R$ {{ agendamento.servico.preco|floatformat:2 }}</div>
+                                <div class="corte-acao">
+                                    <form action="{% url 'alterar_status_pagamento' agendamento.id %}" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-corte btn-corte-success" title="Marcar como PAGO">
+                                            <span class="icon icon-check"></span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="sem-dados">Nenhum corte pendente neste ano</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Gráfico de Barras Simples -->
+        <div class="grafico-container">
+            <h4>📈 Comparativo de Recebimentos</h4>
+            <div class="grafico-barras">
+                <div class="barra-item">
+                    <span class="barra-label">Pendente</span>
+                    <div class="barra-container">
+                        <div class="barra" style="width: {{ percentual_pendente_mes }}%; background: var(--pendente-color);"></div>
+                        <span class="barra-valor">{{ percentual_pendente_mes|floatformat:1 }}%</span>
+                    </div>
+                </div>
+                <div class="barra-item">
+                    <span class="barra-label">Recebido</span>
+                    <div class="barra-container">
+                        <div class="barra" style="width: {{ percentual_recebido_mes }}%; background: var(--primary);"></div>
+                        <span class="barra-valor">{{ percentual_recebido_mes|floatformat:1 }}%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lista Detalhada Mensal -->
+        <div class="lista-detalhada-container">
+            <h4>📋 Detalhamento Mensal</h4>
+            
+            <!-- Cortes Pagos do Mês -->
+            <div class="cortes-secao">
+                <h5 class="secao-titulo pagos">
+                    <span class="icon icon-check"></span>
+                    Cortes Pagos ({{ pagos_mes }})
+                </h5>
+                {% if cortes_pagos_mes %}
+                    <div class="cortes-lista">
+                        {% for agendamento in cortes_pagos_mes %}
+                        <div class="corte-item pago">
+                            <div class="corte-data">{{ agendamento.data|date:"d/m" }}</div>
+                            <div class="corte-info">
+                                <span class="corte-cliente">{{ agendamento.cliente.nome }}</span>
+                                <span class="corte-servico">{{ agendamento.servico.nome }}</span>
+                            </div>
+                            <div class="corte-valor">R$ {{ agendamento.servico.preco|floatformat:2 }}</div>
+                            <div class="corte-acao">
+                                <form action="{% url 'alterar_status_pagamento' agendamento.id %}" method="post" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-corte btn-corte-warning" title="Marcar como PENDENTE">
+                                        <span class="icon icon-time"></span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="sem-dados">Nenhum corte pago neste mês</div>
+                {% endif %}
+            </div>
+            
+            <!-- Cortes Pendentes do Mês -->
+            <div class="cortes-secao">
+                <h5 class="secao-titulo pendentes">
+                    <span class="icon icon-time"></span>
+                    Cortes Pendentes ({{ pendentes_mes }})
+                </h5>
+                {% if cortes_pendentes_mes %}
+                    <div class="cortes-lista">
+                        {% for agendamento in cortes_pendentes_mes %}
+                        <div class="corte-item pendente">
+                            <div class="corte-data">{{ agendamento.data|date:"d/m" }}</div>
+                            <div class="corte-info">
+                                <span class="corte-cliente">{{ agendamento.cliente.nome }}</span>
+                                <span class="corte-servico">{{ agendamento.servico.nome }}</span>
+                            </div>
+                            <div class="corte-valor">R$ {{ agendamento.servico.preco|floatformat:2 }}</div>
+                            <div class="corte-acao">
+                                <form action="{% url 'alterar_status_pagamento' agendamento.id %}" method="post" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-corte btn-corte-success" title="Marcar como PAGO">
+                                        <span class="icon icon-check"></span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="sem-dados">Nenhum corte pendente neste mês</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% elif agendamentos %}
+    <!-- LISTA DE PAGAMENTOS -->
+    <div class="financeiro-table-container">
+        <table class="financeiro-table">
+            <thead>
+                <tr>
+                    <th>Hora</th>
+                    <th>Cliente</th>
+                    <th>Serviço</th>
+                    <th>Valor</th>
+                    <th>Status Pagamento</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for agendamento in agendamentos %}
+                <tr class="financeiro-row {% if agendamento.status_pagamento == 'pago' %}row-pago{% else %}row-pendente{% endif %}">
+                    <td class="col-hora">
+                        <span class="hora-badge">{{ agendamento.hora|time:"H:i" }}</span>
+                    </td>
+                    <td class="col-cliente">
+                        <div class="cliente-info">
+                            <span class="cliente-nome">{{ agendamento.cliente.nome }}</span>
+                            {% if agendamento.cliente.telefone %}
+                                <a href="tel:{{ agendamento.cliente.telefone }}" class="cliente-telefone">
+                                    <span class="icon icon-phone"></span>{{ agendamento.cliente.telefone }}
+                                </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td class="col-servico">{{ agendamento.servico.nome }}</td>
+                    <td class="col-valor">
+                        <span class="valor-badge">R$ {{ agendamento.servico.preco|floatformat:2 }}</span>
+                    </td>
+                    <td class="col-status">
+                        <span class="status-badge {% if agendamento.status_pagamento == 'pago' %}badge-pago{% else %}badge-pendente{% endif %}">
+                            {% if agendamento.status_pagamento == 'pago' %}
+                                ✓ PAGO
+                            {% else %}
+                                ⏳ PENDENTE
+                            {% endif %}
+                        </span>
+                    </td>
+                    <td class="col-acao">
+                        <form action="{% url 'alterar_status_pagamento' agendamento.id %}" method="post" class="form-inline">
+                            {% csrf_token %}
+                            {% if agendamento.status_pagamento == 'pendente' %}
+                                <button type="submit" class="btn-table btn-table-success" title="Marcar como PAGO">
+                                    <span class="icon icon-check"></span>
+                                    <span class="btn-table-text">Pagar</span>
+                                </button>
+                            {% else %}
+                                <button type="submit" class="btn-table btn-table-warning" title="Marcar como PENDENTE">
+                                    <span class="icon icon-time"></span>
+                                    <span class="btn-table-text">Desfazer</span>
+                                </button>
+                            {% endif %}
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="no-appointments" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">💰</div>
+        <p>Nenhum agendamento 
+            {% if filtro_pagamento == 'pendente' %}pendente
+            {% elif filtro_pagamento == 'pago' %}pago
+            {% endif %}
+            para a data selecionada.
+        </p>
+    </div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Função para aplicar filtro
+function aplicarFiltro(filtro) {
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('filtro', filtro);
+    
+    // Manter a data selecionada
+    const dataAtual = document.getElementById('id_data').value;
+    if (dataAtual) {
+        urlParams.set('data', dataAtual);
+    }
+    
+    window.location.href = '{% url "financeiro" %}?' + urlParams.toString();
+}
+
+// Função para alterar período na visão geral
+function alterarPeriodo(periodo) {
+    const mesDiv = document.getElementById('estatisticas-mes');
+    const anoDiv = document.getElementById('estatisticas-ano');
+    const botoes = document.querySelectorAll('.periodo-btn');
+    
+    // Remover classe active de todos os botões
+    botoes.forEach(btn => btn.classList.remove('active'));
+    
+    if (periodo === 'mes') {
+        mesDiv.style.display = 'block';
+        anoDiv.style.display = 'none';
+        botoes[0].classList.add('active');
+    } else {
+        mesDiv.style.display = 'none';
+        anoDiv.style.display = 'block';
+        botoes[1].classList.add('active');
+    }
+}
+
+// Função para alterar mês na visão geral
+function alterarMes(direcao) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const dataAtual = urlParams.get('data') || '{{ data_selecionada|date:"Y-m-d" }}';
+    
+    // Converter data atual para objeto Date
+    const data = new Date(dataAtual);
+    
+    // Alterar o mês
+    data.setMonth(data.getMonth() + direcao);
+    
+    // Formatar nova data
+    const novaData = data.toISOString().split('T')[0];
+    
+    // Atualizar parâmetros da URL
+    urlParams.set('data', novaData);
+    urlParams.set('filtro', 'visao_geral');
+    
+    // Recarregar página com nova data
+    window.location.href = '{% url "financeiro" %}?' + urlParams.toString();
+}
+
+// JavaScript para o calendário customizado
+document.addEventListener('DOMContentLoaded', function() {
+    // Calendário customizado
+    const dateInput = document.getElementById('date-input');
+    const dateDropdown = document.getElementById('date-dropdown');
+    const dateText = document.getElementById('date-text');
+    const hiddenDateField = document.getElementById('id_data');
+    const currentMonthSpan = document.getElementById('current-month');
+    const dateGrid = document.getElementById('date-grid');
+    const prevMonthBtn = document.getElementById('prev-month');
+    const nextMonthBtn = document.getElementById('next-month');
+    const todayBtn = document.getElementById('today-btn');
+    const clearBtn = document.getElementById('clear-btn');
+    const dateForm = document.getElementById('date-form');
+
+    let currentDate = new Date();
+    // Corrigir inicialização da data selecionada para evitar problemas de fuso horário
+    const selectedDateString = '{{ data_selecionada|date:"Y-m-d" }}';
+    const [year, month, day] = selectedDateString.split('-').map(Number);
+    let selectedDate = new Date(year, month - 1, day);
+
+    const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+
+    function updateCalendar() {
+        currentMonthSpan.textContent = `${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+        
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        const firstDay = new Date(year, month, 1);
+        const startDate = new Date(firstDay);
+        startDate.setDate(startDate.getDate() - firstDay.getDay());
+        
+        dateGrid.innerHTML = '';
+        
+        // Gerar exatamente 42 dias (6 semanas)
+        for (let i = 0; i < 42; i++) {
+            const date = new Date(startDate);
+            date.setDate(startDate.getDate() + i);
+            
+            const dayElement = document.createElement('div');
+            dayElement.className = 'date-day';
+            dayElement.textContent = date.getDate();
+            
+            if (date.getMonth() !== month) {
+                dayElement.classList.add('other-month');
+            }
+            
+            if (isToday(date)) {
+                dayElement.classList.add('today');
+            }
+            
+            if (selectedDate && isSameDate(date, selectedDate)) {
+                dayElement.classList.add('selected');
+            }
+            
+            if (date.getMonth() === month) {
+                dayElement.addEventListener('click', () => selectDate(date));
+            }
+            
+            dateGrid.appendChild(dayElement);
+        }
+    }
+
+    function selectDate(date) {
+        selectedDate = date;
+        // Corrigir problema de fuso horário usando getFullYear, getMonth e getDate
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const dateString = `${year}-${month}-${day}`;
+        const formattedDate = `${day}/${month}/${year}`;
+        
+        dateText.textContent = formattedDate;
+        hiddenDateField.value = dateString;
+        dateDropdown.classList.remove('active');
+        updateCalendar();
+        
+        // Submeter o formulário automaticamente
+        dateForm.submit();
+    }
+
+    function isToday(date) {
+        const today = new Date();
+        return date.toDateString() === today.toDateString();
+    }
+
+    function isSameDate(date1, date2) {
+        if (!date1 || !date2) return false;
+        return date1.getFullYear() === date2.getFullYear() &&
+               date1.getMonth() === date2.getMonth() &&
+               date1.getDate() === date2.getDate();
+    }
+
+    // Event listeners
+    dateInput.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dateDropdown.classList.toggle('active');
+    });
+
+    prevMonthBtn.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        updateCalendar();
+    });
+
+    nextMonthBtn.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        updateCalendar();
+    });
+
+    todayBtn.addEventListener('click', () => selectDate(new Date()));
+    clearBtn.addEventListener('click', () => {
+        selectedDate = null;
+        dateText.textContent = 'Selecione uma data';
+        hiddenDateField.value = '';
+        dateDropdown.classList.remove('active');
+        updateCalendar();
+    });
+
+    document.addEventListener('click', () => dateDropdown.classList.remove('active'));
+    dateDropdown.addEventListener('click', (e) => e.stopPropagation());
+    
+    // Inicializar
+    updateCalendar();
+});
+</script>
+{% endblock %}
+
