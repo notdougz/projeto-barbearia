@@ -84,6 +84,19 @@
                     </span>
                 </div>
                 {% endif %}
+                
+                <div class="appointment-info-row">
+                    <span class="appointment-info-label">
+                        <span class="icon icon-note"></span>Observações:
+                    </span>
+                    <span class="appointment-info-value observations-text">
+                        {% if agendamento.observacoes %}
+                            {{ agendamento.observacoes }}
+                        {% else %}
+                            <span class="no-observations">-</span>
+                        {% endif %}
+                    </span>
+                </div>
             </div>
             
             <div class="appointment-actions">
