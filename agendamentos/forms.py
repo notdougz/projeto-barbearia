@@ -33,3 +33,18 @@ class AgendamentoForm(forms.ModelForm):
         self.fields['cliente'].queryset = Cliente.objects.all().order_by('nome')
         self.fields['cliente'].empty_label = "Selecione um cliente"
         self.fields['cliente'].label = "Cliente"
+
+class PrevisaoChegadaForm(forms.Form):
+    """Formulário para capturar a previsão de chegada"""
+    previsao_minutos = forms.IntegerField(
+        label="Previsão de Chegada (minutos)",
+        min_value=1,
+        max_value=180,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Ex: 15',
+            'min': '1',
+            'max': '180'
+        }),
+        help_text="Quantos minutos até chegar ao cliente?"
+    )

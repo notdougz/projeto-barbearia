@@ -33,6 +33,7 @@ class Agendamento(models.Model):
     hora = models.TimeField()
     status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='confirmado')
     observacoes = models.TextField(blank=True, null=True)
+    previsao_chegada = models.IntegerField(blank=True, null=True, help_text="Previsão de chegada em minutos")
     criado_em = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):

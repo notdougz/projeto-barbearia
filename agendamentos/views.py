@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Agendamento, Cliente, Servico
 from datetime import date, datetime, timedelta
-from .forms import ClienteForm, AgendamentoForm
+from .forms import ClienteForm, AgendamentoForm, PrevisaoChegadaForm
+from .services import NotificationService
 
 @login_required
 def painel_barbeiro(request):
@@ -120,12 +121,35 @@ def confirmar_agendamento(request, pk):
 
 @login_required
 def on_the_way_agendamento(request, pk):
-    """Marcar um agendamento como 'À caminho'"""
+    """Marcar um agendamento como 'À caminho' com previsão de chegada"""
     agendamento = get_object_or_404(Agendamento, pk=pk)
-    agendamento.status = 'a_caminho'
-    agendamento.save()
-    messages.success(request, f'Status de {agendamento.cliente.nome} alterado para "À caminho"!')
-    return redirect('painel_barbeiro')
+    
+    if request.method == 'POST':
+        form = PrevisaoChegadaForm(request.POST)
+        if form.is_valid():
+            previsao_minutos = form.cleaned_data['previsao_minutos']
+            
+            # Atualiza o agendamento
+            agendamento.status = 'a_caminho'
+            agendamento.previsao_chegada = previsao_minutos
+            agendamento.save()
+            
+            # Envia notificação para o cliente
+            success, message = NotificationService.notify_client_on_the_way(agendamento, previsao_minutos)
+            
+            if success:
+                messages.success(request, f'Status alterado para "À caminho" e cliente notificado! Previsão: {previsao_minutos} minutos.')
+            else:
+                messages.warning(request, f'Status alterado para "À caminho", mas falha na notificação: {message}')
+            
+            return redirect('painel_barbeiro')
+    else:
+        form = PrevisaoChegadaForm()
+    
+    return render(request, 'agendamentos/previsao_chegada.html', {
+        'agendamento': agendamento,
+        'form': form
+    })
 
 @login_required
 def concluir_agendamento(request, pk):
