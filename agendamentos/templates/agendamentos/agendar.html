@@ -14,7 +14,21 @@
                         
                         <div class="form-group">
                             <label for="{{ form.cliente.id_for_label }}"><span class="icon icon-user"></span>{{ form.cliente.label }}</label>
-                            {{ form.cliente }}
+                            <div class="custom-client-selector">
+                                <div class="client-input" id="client-input">
+                                    <input type="text" id="client-search" placeholder="Digite o nome do cliente..." autocomplete="off">
+                                    <span class="icon icon-search"></span>
+                                </div>
+                                <div class="client-dropdown" id="client-dropdown">
+                                    <div class="client-options" id="client-options"></div>
+                                </div>
+                            </div>
+                            {{ form.cliente.as_hidden }}
+                            <select id="cliente-options" style="display: none;">
+                                {% for choice in form.cliente.field.choices %}
+                                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                {% endfor %}
+                            </select>
                             {% if form.cliente.errors %}
                                 <div class="text-danger">
                                     {{ form.cliente.errors }}
@@ -38,7 +52,25 @@
                             </div>
                             <div class="form-group">
                                 <label for="{{ form.data.id_for_label }}"><span class="icon icon-calendar"></span>{{ form.data.label }}</label>
-                                {{ form.data }}
+                                <div class="custom-date-picker">
+                                    <div class="date-input" id="date-input">
+                                        <span id="date-text">Selecione uma data</span>
+                                        <span class="icon icon-calendar"></span>
+                                    </div>
+                                    <div class="date-dropdown" id="date-dropdown">
+                                        <div class="date-nav">
+                                            <button type="button" id="prev-month">&lt;</button>
+                                            <span id="current-month"></span>
+                                            <button type="button" id="next-month">&gt;</button>
+                                        </div>
+                                        <div class="date-grid" id="date-grid"></div>
+                                        <div class="date-actions">
+                                            <button type="button" id="today-btn">Hoje</button>
+                                            <button type="button" id="clear-btn">Limpar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{ form.data.as_hidden }}
                                 {% if form.data.errors %}
                                     <div class="text-danger">
                                         {{ form.data.errors }}
@@ -49,7 +81,25 @@
                         
                         <div class="form-group">
                             <label for="{{ form.hora.id_for_label }}"><span class="icon icon-time"></span>{{ form.hora.label }}</label>
-                            {{ form.hora }}
+                            <div class="time-selector-wrapper">
+                                <div class="time-display" id="time-display">
+                                    <span id="selected-time">--:--</span>
+                                    <span class="icon icon-time time-icon"></span>
+                                </div>
+                                <div class="time-dropdown" id="time-dropdown">
+                                    <div class="time-columns">
+                                        <div class="time-column hours-column">
+                                            <div class="column-header">Horas</div>
+                                            <div class="time-options hours-options" id="hours-options"></div>
+                                        </div>
+                                        <div class="time-column minutes-column">
+                                            <div class="column-header">Minutos</div>
+                                            <div class="time-options minutes-options" id="minutes-options"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{ form.hora.as_hidden }}
                             {% if form.hora.errors %}
                                 <div class="text-danger">
                                     {{ form.hora.errors }}
@@ -83,11 +133,386 @@
 <script>
 // JavaScript para melhorar a experiência do usuário
 document.addEventListener('DOMContentLoaded', function() {
+    // Seletor customizado de clientes com busca
+    const clientSearch = document.getElementById('client-search');
+    const clientDropdown = document.getElementById('client-dropdown');
+    const clientOptions = document.getElementById('client-options');
+    const hiddenClientField = document.querySelector('input[name="cliente"]');
+    const clientInput = document.getElementById('client-input');
+    
+    let allClients = [];
+    let selectedClient = null;
+
+    // Carregar lista de clientes
+    function loadClients() {
+        // Obter opções do select auxiliar
+        const clientOptionsSelect = document.getElementById('cliente-options');
+        if (clientOptionsSelect) {
+            allClients = Array.from(clientOptionsSelect.options).map(option => ({
+                id: option.value,
+                name: option.textContent
+            })).filter(client => client.id !== ''); // Remover opção vazia
+        }
+    }
+
+    // Filtrar clientes baseado na busca
+    function filterClients(searchTerm) {
+        if (!searchTerm.trim()) {
+            return allClients;
+        }
+        
+        const term = searchTerm.toLowerCase().trim();
+        return allClients.filter(client => 
+            client.name.toLowerCase().startsWith(term)
+        );
+    }
+
+    // Renderizar opções de clientes
+    function renderClientOptions(clients) {
+        clientOptions.innerHTML = '';
+        
+        if (clients.length === 0) {
+            const noResults = document.createElement('div');
+            noResults.className = 'client-option no-results';
+            noResults.textContent = 'Nenhum cliente encontrado';
+            clientOptions.appendChild(noResults);
+            return;
+        }
+
+        clients.forEach(client => {
+            const option = document.createElement('div');
+            option.className = 'client-option';
+            option.textContent = client.name;
+            option.dataset.clientId = client.id;
+            
+            option.addEventListener('click', () => {
+                selectClient(client);
+            });
+            
+            clientOptions.appendChild(option);
+        });
+    }
+
+    // Selecionar cliente
+    function selectClient(client) {
+        selectedClient = client;
+        clientSearch.value = client.name;
+        hiddenClientField.value = client.id;
+        clientDropdown.classList.remove('active');
+        clientInput.classList.add('has-selection');
+    }
+
+    // Event listeners para busca de clientes
+    clientSearch.addEventListener('input', function() {
+        const searchTerm = this.value;
+        const filteredClients = filterClients(searchTerm);
+        
+        if (searchTerm.trim()) {
+            clientDropdown.classList.add('active');
+            renderClientOptions(filteredClients);
+        } else {
+            clientDropdown.classList.remove('active');
+            selectedClient = null;
+            hiddenClientField.value = '';
+            clientInput.classList.remove('has-selection');
+        }
+    });
+
+    clientSearch.addEventListener('focus', function() {
+        if (this.value.trim()) {
+            const filteredClients = filterClients(this.value);
+            renderClientOptions(filteredClients);
+            clientDropdown.classList.add('active');
+        }
+    });
+
+    clientInput.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (clientSearch.value.trim()) {
+            const filteredClients = filterClients(clientSearch.value);
+            renderClientOptions(filteredClients);
+            clientDropdown.classList.toggle('active');
+        }
+    });
+
+    // Suporte para navegação por teclado
+    clientSearch.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            const firstOption = clientOptions.querySelector('.client-option:not(.no-results)');
+            if (firstOption) {
+                firstOption.focus();
+            }
+        }
+    });
+
+    // Fechar dropdown ao clicar fora
+    document.addEventListener('click', function() {
+        clientDropdown.classList.remove('active');
+    });
+
+    clientDropdown.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+
+    // Inicializar seletor de clientes
+    loadClients();
+
+    // Se já existe um cliente selecionado, definir no seletor customizado
+    if (hiddenClientField.value && allClients.length > 0) {
+        const selectedClientData = allClients.find(client => client.id === hiddenClientField.value);
+        if (selectedClientData) {
+            selectClient(selectedClientData);
+        }
+    }
     // Definir data padrão como hoje
     const dataField = document.getElementById('{{ form.data.id_for_label }}');
     if (!dataField.value) {
         const hoje = new Date().toISOString().split('T')[0];
         dataField.value = hoje;
+    }
+
+    // Gerenciar seletor de horário customizado
+    const timeDisplay = document.getElementById('time-display');
+    const timeDropdown = document.getElementById('time-dropdown');
+    const selectedTimeSpan = document.getElementById('selected-time');
+    const hiddenTimeField = document.querySelector('input[name="hora"]');
+    const hoursOptions = document.getElementById('hours-options');
+    const minutesOptions = document.getElementById('minutes-options');
+
+    let selectedHour = null;
+    let selectedMinute = null;
+
+    // Gerar opções de horas (6h às 21h)
+    for (let hour = 6; hour <= 21; hour++) {
+        const hourOption = document.createElement('div');
+        hourOption.className = 'time-option hour-option';
+        hourOption.textContent = hour.toString().padStart(2, '0');
+        hourOption.dataset.hour = hour;
+        hourOption.addEventListener('click', function() {
+            selectHour(hour);
+        });
+        hoursOptions.appendChild(hourOption);
+    }
+
+    // Gerar opções de minutos (0, 10, 20, 30, 40, 50)
+    const minutes = [0, 10, 20, 30, 40, 50];
+    minutes.forEach(minute => {
+        const minuteOption = document.createElement('div');
+        minuteOption.className = 'time-option minute-option';
+        minuteOption.textContent = minute.toString().padStart(2, '0');
+        minuteOption.dataset.minute = minute;
+        minuteOption.addEventListener('click', function() {
+            selectMinute(minute);
+        });
+        minutesOptions.appendChild(minuteOption);
+    });
+
+    // Garantir que os últimos itens sejam visíveis no mobile
+    const ensureLastItemsVisible = () => {
+        const isMobile = window.innerWidth <= 480;
+        if (isMobile) {
+            // Adicionar padding extra no final das listas no mobile
+            const lastHourOption = document.createElement('div');
+            lastHourOption.className = 'time-option hour-option';
+            lastHourOption.style.height = '20px';
+            lastHourOption.style.visibility = 'hidden';
+            hoursOptions.appendChild(lastHourOption);
+
+            const lastMinuteOption = document.createElement('div');
+            lastMinuteOption.className = 'time-option minute-option';
+            lastMinuteOption.style.height = '20px';
+            lastMinuteOption.style.visibility = 'hidden';
+            minutesOptions.appendChild(lastMinuteOption);
+        }
+    };
+
+    // Executar após criar todas as opções
+    ensureLastItemsVisible();
+
+    function selectHour(hour) {
+        selectedHour = hour;
+        updateSelectedTime();
+        updateHourSelection();
+    }
+
+    function selectMinute(minute) {
+        selectedMinute = minute;
+        updateSelectedTime();
+        updateMinuteSelection();
+    }
+
+    function updateSelectedTime() {
+        if (selectedHour !== null && selectedMinute !== null) {
+            const timeString = `${selectedHour.toString().padStart(2, '0')}:${selectedMinute.toString().padStart(2, '0')}`;
+            selectedTimeSpan.textContent = timeString;
+            hiddenTimeField.value = timeString;
+            timeDisplay.classList.add('has-selection');
+        } else {
+            selectedTimeSpan.textContent = '--:--';
+            hiddenTimeField.value = '';
+            timeDisplay.classList.remove('has-selection');
+        }
+    }
+
+    function updateHourSelection() {
+        document.querySelectorAll('.hour-option').forEach(option => {
+            option.classList.remove('selected');
+            if (parseInt(option.dataset.hour) === selectedHour) {
+                option.classList.add('selected');
+            }
+        });
+    }
+
+    function updateMinuteSelection() {
+        document.querySelectorAll('.minute-option').forEach(option => {
+            option.classList.remove('selected');
+            if (parseInt(option.dataset.minute) === selectedMinute) {
+                option.classList.add('selected');
+            }
+        });
+    }
+
+    // Toggle dropdown
+    timeDisplay.addEventListener('click', function(e) {
+        e.stopPropagation();
+        timeDropdown.classList.toggle('active');
+    });
+
+    // Fechar dropdown ao clicar fora
+    document.addEventListener('click', function() {
+        timeDropdown.classList.remove('active');
+    });
+
+    // Prevenir fechamento do dropdown ao clicar dentro dele
+    timeDropdown.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+
+    // Se já existe um valor selecionado, definir no seletor customizado
+    if (hiddenTimeField.value) {
+        const [hour, minute] = hiddenTimeField.value.split(':');
+        selectedHour = parseInt(hour);
+        selectedMinute = parseInt(minute);
+        updateSelectedTime();
+        updateHourSelection();
+        updateMinuteSelection();
+    }
+
+    // Calendário customizado
+    const dateInput = document.getElementById('date-input');
+    const dateDropdown = document.getElementById('date-dropdown');
+    const dateText = document.getElementById('date-text');
+    const hiddenDateField = document.querySelector('input[name="data"]');
+    const currentMonthSpan = document.getElementById('current-month');
+    const dateGrid = document.getElementById('date-grid');
+    const prevMonthBtn = document.getElementById('prev-month');
+    const nextMonthBtn = document.getElementById('next-month');
+    const todayBtn = document.getElementById('today-btn');
+    const clearBtn = document.getElementById('clear-btn');
+
+    let currentDate = new Date();
+    let selectedDate = null;
+
+    const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+
+    function updateCalendar() {
+        currentMonthSpan.textContent = `${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+        
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        const firstDay = new Date(year, month, 1);
+        const startDate = new Date(firstDay);
+        startDate.setDate(startDate.getDate() - firstDay.getDay());
+        
+        dateGrid.innerHTML = '';
+        
+        // Gerar exatamente 42 dias (6 semanas)
+        for (let i = 0; i < 42; i++) {
+            const date = new Date(startDate);
+            date.setDate(startDate.getDate() + i);
+            
+            const dayElement = document.createElement('div');
+            dayElement.className = 'date-day';
+            dayElement.textContent = date.getDate();
+            
+            if (date.getMonth() !== month) {
+                dayElement.classList.add('other-month');
+            }
+            
+            if (isToday(date)) {
+                dayElement.classList.add('today');
+            }
+            
+            if (selectedDate && isSameDate(date, selectedDate)) {
+                dayElement.classList.add('selected');
+            }
+            
+            if (date.getMonth() === month) {
+                dayElement.addEventListener('click', () => selectDate(date));
+            }
+            
+            dateGrid.appendChild(dayElement);
+        }
+    }
+
+    function selectDate(date) {
+        selectedDate = date;
+        const dateString = date.toISOString().split('T')[0];
+        const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+        
+        dateText.textContent = formattedDate;
+        hiddenDateField.value = dateString;
+        dateDropdown.classList.remove('active');
+        updateCalendar();
+    }
+
+    function isToday(date) {
+        const today = new Date();
+        return date.toDateString() === today.toDateString();
+    }
+
+    function isSameDate(date1, date2) {
+        return date1.toDateString() === date2.toDateString();
+    }
+
+    // Event listeners
+    dateInput.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dateDropdown.classList.toggle('active');
+    });
+
+    prevMonthBtn.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        updateCalendar();
+    });
+
+    nextMonthBtn.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        updateCalendar();
+    });
+
+    todayBtn.addEventListener('click', () => selectDate(new Date()));
+    clearBtn.addEventListener('click', () => {
+        selectedDate = null;
+        dateText.textContent = 'Selecione uma data';
+        hiddenDateField.value = '';
+        dateDropdown.classList.remove('active');
+        updateCalendar();
+    });
+
+    document.addEventListener('click', () => dateDropdown.classList.remove('active'));
+    dateDropdown.addEventListener('click', (e) => e.stopPropagation());
+
+    // Inicializar
+    updateCalendar();
+    
+    if (hiddenDateField.value) {
+        const [year, month, day] = hiddenDateField.value.split('-');
+        const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        selectedDate = date;
+        dateText.textContent = `${day}/${month}/${year}`;
+        updateCalendar();
     }
 });
 </script>
