@@ -196,7 +196,8 @@
             "cliente": "{{ agendamento.cliente.nome|escapejs }}",
             "servico": "{{ agendamento.servico|escapejs }}",
             "status": "{{ agendamento.status }}",
-            "observacoes": "{{ agendamento.observacoes|default:''|escapejs }}"
+            "observacoes": "{{ agendamento.observacoes|default:''|escapejs }}",
+            "previsao_chegada": {{ agendamento.previsao_chegada|default:"null" }}
         }{% if not forloop.last %},{% endif %}
         {% endfor %}
     ]{% if not forloop.last %},{% endif %}
@@ -332,6 +333,7 @@
                             <div class="client-name">${appointment.cliente}</div>
                             <div class="service-name">${appointment.servico}</div>
                             ${appointment.observacoes ? `<div class="observations">${appointment.observacoes}</div>` : ''}
+                            ${appointment.status === 'a_caminho' && appointment.previsao_chegada ? `<div class="observations" style="color: #3B82F6; font-weight: 700;">⏰ Previsão: ${appointment.previsao_chegada} minutos</div>` : ''}
                         </div>
                         <div class="appointment-status">
                             <span class="status-badge ${appointment.status === 'a_caminho' ? 'confirmado' : appointment.status}">${getStatusText(appointment.status)}</span>

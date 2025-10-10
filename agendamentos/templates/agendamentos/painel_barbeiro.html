@@ -97,6 +97,17 @@
                         {% endif %}
                     </span>
                 </div>
+                
+                {% if agendamento.status == 'a_caminho' and agendamento.previsao_chegada %}
+                <div class="appointment-info-row">
+                    <span class="appointment-info-label">
+                        <span class="icon icon-time"></span>Previsão de Chegada:
+                    </span>
+                    <span class="appointment-info-value" style="color: #3B82F6; font-weight: 700;">
+                        {{ agendamento.previsao_chegada }} minutos
+                    </span>
+                </div>
+                {% endif %}
             </div>
             
             <div class="appointment-actions">

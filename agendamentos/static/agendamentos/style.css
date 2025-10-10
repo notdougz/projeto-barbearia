@@ -422,6 +422,9 @@ h4 {
     font-size: 20px;
     font-weight: 700;
     color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
 }
 
 .card-header h4 {

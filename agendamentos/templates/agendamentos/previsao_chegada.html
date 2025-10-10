@@ -1,0 +1,83 @@
+{% extends 'agendamentos/base.html' %}
+
+{% block title %}Previsão de Chegada - Dashboard{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; min-height: 60vh;">
+    <div class="card" style="max-width: 500px; width: 100%;">
+        <div class="card-header">
+            <h3><span class="icon icon-on-the-way"></span>Previsão de Chegada</h3>
+        </div>
+        <div class="card-body">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="width: 80px; height: 80px; margin: 0 auto 1rem; background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <span class="icon icon-on-the-way icon-xl" style="filter: brightness(0) invert(1);"></span>
+                </div>
+                <h4>Cliente: {{ agendamento.cliente.nome }}</h4>
+                <p class="text-muted">{{ agendamento.servico.nome }} - {{ agendamento.data|date:"d/m/Y" }} às {{ agendamento.hora|time:"H:i" }}</p>
+            </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="{{ form.previsao_minutos.id_for_label }}">
+                        <span class="icon icon-time"></span>{{ form.previsao_minutos.label }}
+                    </label>
+                    {{ form.previsao_minutos }}
+                    {% if form.previsao_minutos.errors %}
+                        <div class="text-danger">{{ form.previsao_minutos.errors }}</div>
+                    {% endif %}
+                    <small class="form-text text-muted">
+                        <span class="icon icon-info"></span> {{ form.previsao_minutos.help_text }}
+                    </small>
+                </div>
+                
+                <div style="background: #E8F5E9; border: 2px solid var(--primary); border-radius: var(--radius-sm); padding: var(--spacing-lg); margin: var(--spacing-lg) 0;">
+                    <h5 style="margin: 0 0 var(--spacing-sm) 0; color: var(--text-primary);">
+                        <span class="icon icon-info"></span> O que acontecerá:
+                    </h5>
+                    <ul style="margin: 0; padding-left: 1.5rem; color: var(--text-secondary);">
+                        <li>Status será alterado para "À caminho"</li>
+                        <li>Cliente receberá notificação por SMS</li>
+                        <li>Previsão será salva no sistema</li>
+                    </ul>
+                </div>
+                
+                <div class="form-group" style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">
+                        <span class="icon icon-on-the-way"></span>Confirmar e Notificar
+                    </button>
+                    <a href="{% url 'painel_barbeiro' %}" class="btn btn-secondary">
+                        <span class="icon icon-delete"></span>Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Auto-focus no campo de minutos
+document.addEventListener('DOMContentLoaded', function() {
+    const input = document.getElementById('{{ form.previsao_minutos.id_for_label }}');
+    if (input) {
+        input.focus();
+    }
+});
+
+// Validação em tempo real
+document.getElementById('{{ form.previsao_minutos.id_for_label }}').addEventListener('input', function() {
+    const value = parseInt(this.value);
+    const submitBtn = document.querySelector('button[type="submit"]');
+    
+    if (value < 1 || value > 180) {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.5';
+    } else {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+    }
+});
+</script>
+{% endblock %}
