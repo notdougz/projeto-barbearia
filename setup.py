@@ -11,15 +11,33 @@ from django.contrib.auth.models import User
 def main():
     print("=== Verificando superusuário ===")
     
+    # Pegar senha da variável de ambiente ou usar padrão
+    senha_padrao = '123456'
+    senha = os.getenv('SUPERUSER_PASSWORD', senha_padrao)
+    
     try:
-        if not User.objects.filter(username='kevem').exists():
-            User.objects.create_superuser('kevem', 'denbinsk4853@gmail.com', '123456')
-            print("   OK - Superusuário criado: kevem / 123456")
+        user = User.objects.filter(username='kevem').first()
+        
+        if not user:
+            # Criar novo usuário
+            User.objects.create_superuser('kevem', 'denbinsk4853@gmail.com', senha)
+            if senha == senha_padrao:
+                print(f"   OK - Superusuário criado: kevem / {senha}")
+                print("   ⚠️  IMPORTANTE: Mude a senha padrão em produção!")
+            else:
+                print("   OK - Superusuário criado com senha personalizada")
         else:
-            print("   OK - Superusuário já existe")
+            # Atualizar senha se variável de ambiente estiver definida e for diferente da padrão
+            if 'SUPERUSER_PASSWORD' in os.environ and senha != senha_padrao:
+                user.set_password(senha)
+                user.save()
+                print("   OK - Senha do superusuário atualizada")
+            else:
+                print("   OK - Superusuário já existe")
+        
         return True
     except Exception as e:
-        print(f"   AVISO - Não foi possível criar superusuário: {e}")
+        print(f"   AVISO - Não foi possível configurar superusuário: {e}")
         # Não retorna False pois isso não deve impedir a aplicação de iniciar
         return True
 
