@@ -8,9 +8,6 @@ urlpatterns = [
     path('', include('agendamentos.urls')),
 ]
 
-# Servir arquivos estáticos em produção
+# Servir arquivos estáticos
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-else:
-    # Para produção, usar whitenoise
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
