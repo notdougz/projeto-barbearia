@@ -36,6 +36,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="{% url 'lista_servicos' %}" class="nav-link {% if 'servico' in request.resolver_match.url_name %}active{% endif %}">
+                                <span class="icon icon-scissors"></span>
+                                <span class="nav-text">Serviços</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{% url 'agendar' %}" class="nav-link {% if request.resolver_match.url_name == 'agendar' %}active{% endif %}">
                                 <span class="icon icon-calendar"></span>
                                 <span class="nav-text">Novo Agendamento</span>
@@ -92,6 +98,9 @@
                 {% if user.is_authenticated %}
                     <a href="{% url 'lista_clientes' %}" class="mobile-nav-link {% if request.resolver_match.url_name == 'lista_clientes' %}active{% endif %}">
                         <span class="icon icon-user"></span>Clientes
+                    </a>
+                    <a href="{% url 'lista_servicos' %}" class="mobile-nav-link {% if 'servico' in request.resolver_match.url_name %}active{% endif %}">
+                        <span class="icon icon-scissors"></span>Serviços
                     </a>
                     <a href="{% url 'agendar' %}" class="mobile-nav-link {% if request.resolver_match.url_name == 'agendar' %}active{% endif %}">
                         <span class="icon icon-calendar"></span>Novo Agendamento

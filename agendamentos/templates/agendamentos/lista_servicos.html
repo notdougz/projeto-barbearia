@@ -1,0 +1,134 @@
+{% extends 'agendamentos/base.html' %}
+
+{% block title %}Serviços{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>
+        <span class="icon icon-scissors"></span>Serviços
+    </h2>
+    <div class="d-flex gap-2">
+        <a href="{% url 'criar_servico' %}" class="btn btn-primary">
+            <span class="icon icon-add"></span>Novo Serviço
+        </a>
+    </div>
+</div>
+
+{% if servicos %}
+    <!-- Versão Desktop - Tabela -->
+    <div class="card d-none d-md-block">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Descrição</th>
+                            <th>Duração</th>
+                            <th>Preço</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for servico in servicos %}
+                        <tr>
+                            <td>
+                                <strong>{{ servico.nome }}</strong>
+                            </td>
+                            <td>
+                                {% if servico.descricao %}
+                                    {{ servico.descricao|truncatechars:50 }}
+                                {% else %}
+                                    <span class="text-muted">Sem descrição</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-info">{{ servico.duracao }} min</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-success">R$ {{ servico.preco|floatformat:2 }}</span>
+                            </td>
+                            <td>
+                                {% if servico.ativo %}
+                                    <span class="badge bg-success">Ativo</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Inativo</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="{% url 'editar_servico' servico.pk %}" class="btn btn-sm btn-secondary" title="Editar">
+                                        <span class="icon icon-edit"></span>
+                                    </a>
+                                    <a href="{% url 'deletar_servico' servico.pk %}" class="btn btn-sm btn-danger" title="Deletar">
+                                        <span class="icon icon-delete"></span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Versão Mobile - Cards -->
+    <div class="d-block d-md-none">
+        {% for servico in servicos %}
+        <div class="servico-mobile-card {% if servico.ativo %}ativo{% else %}inativo{% endif %}">
+            <div class="servico-mobile-header">
+                <div class="servico-mobile-info">
+                    <div class="servico-mobile-nome">{{ servico.nome }}</div>
+                    <div class="servico-mobile-descricao">
+                        {% if servico.descricao %}
+                            {{ servico.descricao }}
+                        {% else %}
+                            <span class="text-muted">Sem descrição</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="servico-mobile-detalhes">
+                    <div class="servico-mobile-duracao">{{ servico.duracao }} min</div>
+                    <div class="servico-mobile-preco">R$ {{ servico.preco|floatformat:2 }}</div>
+                    <div class="servico-mobile-status">
+                        {% if servico.ativo %}
+                            <span class="status-badge ativo">Ativo</span>
+                        {% else %}
+                            <span class="status-badge inativo">Inativo</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="servico-mobile-footer">
+                <div class="servico-mobile-acoes">
+                    <a href="{% url 'editar_servico' servico.pk %}" class="btn-servico btn-servico-edit">
+                        <span class="icon icon-edit"></span>
+                        <span>Editar</span>
+                    </a>
+                    <a href="{% url 'deletar_servico' servico.pk %}" class="btn-servico btn-servico-delete">
+                        <span class="icon icon-delete"></span>
+                        <span>Deletar</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card">
+        <div class="card-body text-center">
+            <div class="no-appointments">
+                <span class="no-appointments-icon">✂️</span>
+                <h3>Nenhum serviço cadastrado</h3>
+                <p>Comece criando seu primeiro serviço para poder fazer agendamentos.</p>
+                <a href="{% url 'criar_servico' %}" class="btn btn-primary">
+                    <span class="icon icon-add"></span>Criar Primeiro Serviço
+                </a>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends 'agendamentos/base.html' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>
+        <span class="icon icon-scissors"></span>{{ titulo }}
+    </h2>
+    <a href="{% url 'lista_servicos' %}" class="btn btn-secondary">
+        <span class="icon icon-arrow-left"></span>Voltar
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="{{ form.nome.id_for_label }}">
+                    <span class="icon icon-scissors"></span>{{ form.nome.label }}
+                </label>
+                {{ form.nome }}
+                {% if form.nome.help_text %}
+                    <div class="form-text">{{ form.nome.help_text }}</div>
+                {% endif %}
+                {% if form.nome.errors %}
+                    <div class="text-danger">{{ form.nome.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.descricao.id_for_label }}">
+                    <span class="icon icon-note"></span>{{ form.descricao.label }}
+                </label>
+                {{ form.descricao }}
+                {% if form.descricao.help_text %}
+                    <div class="form-text">{{ form.descricao.help_text }}</div>
+                {% endif %}
+                {% if form.descricao.errors %}
+                    <div class="text-danger">{{ form.descricao.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.duracao.id_for_label }}">
+                            <span class="icon icon-time"></span>{{ form.duracao.label }}
+                        </label>
+                        {{ form.duracao }}
+                        {% if form.duracao.help_text %}
+                            <div class="form-text">{{ form.duracao.help_text }}</div>
+                        {% endif %}
+                        {% if form.duracao.errors %}
+                            <div class="text-danger">{{ form.duracao.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.preco.id_for_label }}">
+                            <span class="icon icon-money"></span>{{ form.preco.label }}
+                        </label>
+                        {{ form.preco }}
+                        {% if form.preco.help_text %}
+                            <div class="form-text">{{ form.preco.help_text }}</div>
+                        {% endif %}
+                        {% if form.preco.errors %}
+                            <div class="text-danger">{{ form.preco.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    {{ form.ativo }}
+                    <label class="form-check-label" for="{{ form.ativo.id_for_label }}">
+                        {{ form.ativo.label }}
+                    </label>
+                    {% if form.ativo.help_text %}
+                        <div class="form-text">{{ form.ativo.help_text }}</div>
+                    {% endif %}
+                    {% if form.ativo.errors %}
+                        <div class="text-danger">{{ form.ativo.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group" style="display: flex; gap: var(--spacing-sm); margin-top: var(--spacing-xl);">
+                <button type="submit" class="btn btn-primary">
+                    <span class="icon icon-check"></span>{{ botao_texto }}
+                </button>
+                <a href="{% url 'lista_servicos' %}" class="btn btn-secondary">
+                    <span class="icon icon-arrow-left"></span>Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
