@@ -28,7 +28,7 @@ load_dotenv(BASE_DIR / '.env')
 SECRET_KEY = 'django-insecure-m!77j_upj006#l_h^#p&632r7rb8wc=s6(!29=$q!i&-b_x_t-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
 ALLOWED_HOSTS = [
     'kevembarber.up.railway.app',
@@ -191,7 +191,7 @@ STATICFILES_DIRS = [
 ]
 
 # Configuração para arquivos estáticos no Railway
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
 
 # Configurações do WhiteNoise
 WHITENOISE_USE_FINDERS = True
