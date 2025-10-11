@@ -28,7 +28,7 @@ load_dotenv(BASE_DIR / '.env')
 SECRET_KEY = 'django-insecure-m!77j_upj006#l_h^#p&632r7rb8wc=s6(!29=$q!i&-b_x_t-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
 ALLOWED_HOSTS = [
     'kevembarber.up.railway.app',
@@ -41,6 +41,14 @@ ALLOWED_HOSTS = [
 # Se houver variável de ambiente, usar ela
 if 'ALLOWED_HOSTS' in os.environ:
     ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
+
+# Configuração CSRF para produção
+CSRF_TRUSTED_ORIGINS = [
+    'https://kevembarber.up.railway.app',
+    'https://*.railway.app',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
 
 # Configurações de SMS
 SMS_ENABLED = os.getenv('SMS_ENABLED', 'True').lower() == 'true'  # Default True para desenvolvimento
