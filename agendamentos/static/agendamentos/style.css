@@ -1117,6 +1117,15 @@ select {
 .form-text { display: block; margin-top: 4px; font-size: 13px; color: var(--text-secondary); }
 .action-buttons { display: flex; gap: var(--spacing-sm); flex-wrap: wrap; }
 
+/* Utilitários de display responsivo */
+.d-none { display: none !important; }
+.d-block { display: block !important; }
+
+@media (min-width: 768px) {
+    .d-md-none { display: none !important; }
+    .d-md-block { display: block !important; }
+}
+
 /* ===== DASHBOARD HEADER ===== */
 .dashboard-header {
     display: flex;
@@ -2637,6 +2646,10 @@ a:hover {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000000'%3E%3Cpath d='M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z'/%3E%3C/svg%3E");
 }
 
+.icon-undo {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000000'%3E%3Cpath d='M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z'/%3E%3C/svg%3E");
+}
+
 /* Estatísticas Financeiras */
 .financeiro-stats {
     display: grid;
@@ -3022,6 +3035,497 @@ a:hover {
     .btn-table .icon {
         width: 16px;
         height: 16px;
+    }
+}
+
+/* Cards mobile simplificados para financeiro */
+@media (max-width: 768px) {
+    .financeiro-mobile-card {
+        background: var(--bg-card);
+        border: 2px solid var(--border);
+        border-radius: var(--radius);
+        padding: var(--spacing-md);
+        margin-bottom: var(--spacing-md);
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+        min-height: 80px;
+        position: relative;
+    }
+    
+    .financeiro-mobile-card:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--primary);
+    }
+    
+    /* Card pago - borda verde e indicador visual */
+    .financeiro-mobile-card.pago {
+        border-color: var(--primary);
+        background: var(--bg-card);
+    }
+    
+    .financeiro-mobile-card.pago::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--primary);
+        border-radius: var(--radius) 0 0 var(--radius);
+    }
+    
+    /* Card pendente - borda amarela e indicador visual */
+    .financeiro-mobile-card.pendente {
+        border-color: var(--pendente-color);
+        background: var(--bg-card);
+    }
+    
+    .financeiro-mobile-card.pendente::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--pendente-color);
+        border-radius: var(--radius) 0 0 var(--radius);
+    }
+    
+    .financeiro-mobile-time {
+        background: var(--text-primary);
+        color: var(--bg-card);
+        padding: var(--spacing-xs) var(--spacing-sm);
+        border-radius: var(--radius-sm);
+        font-weight: 700;
+        font-size: 14px;
+        min-width: 60px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+    
+    .financeiro-mobile-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+    
+    .financeiro-mobile-cliente {
+        font-weight: 700;
+        color: var(--text-primary);
+        font-size: 15px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .financeiro-mobile-servico {
+        font-size: 13px;
+        color: var(--text-secondary);
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .financeiro-mobile-valor {
+        background: var(--primary);
+        color: var(--text-primary);
+        padding: var(--spacing-xs) var(--spacing-sm);
+        border-radius: var(--radius-sm);
+        font-weight: 700;
+        font-size: 14px;
+        border: 2px solid var(--text-primary);
+        min-width: 70px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+    
+    .financeiro-mobile-status {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        flex-shrink: 0;
+    }
+    
+    .financeiro-mobile-status-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--text-primary);
+        transition: var(--transition);
+        cursor: pointer;
+    }
+    
+    .financeiro-mobile-status-icon.pago {
+        background: var(--pendente-color)
+    }
+    
+    .financeiro-mobile-status-icon.pendente {
+        background: var(--primary);
+    }
+    
+    .financeiro-mobile-status-icon .icon {
+        width: 18px;
+        height: 18px;
+        filter: brightness(0);
+    }
+    
+    .financeiro-mobile-status-icon:hover {
+        transform: scale(1.1);
+        box-shadow: var(--shadow);
+    }
+    
+    /* Cards mobile para visão geral - mesmo estilo mas com data */
+    .visao-geral-mobile-card {
+        background: var(--bg-card);
+        border: 2px solid var(--border);
+        border-radius: var(--radius);
+        padding: var(--spacing-md);
+        margin-bottom: var(--spacing-md);
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+        min-height: 80px;
+        position: relative;
+    }
+    
+    .visao-geral-mobile-card:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--primary);
+    }
+    
+    /* Card pago - borda verde e indicador visual */
+    .visao-geral-mobile-card.pago {
+        border-color: var(--primary);
+        background: var(--bg-card);
+    }
+    
+    .visao-geral-mobile-card.pago::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--primary);
+        border-radius: var(--radius) 0 0 var(--radius);
+    }
+    
+    /* Card pendente - borda amarela e indicador visual */
+    .visao-geral-mobile-card.pendente {
+        border-color: var(--pendente-color);
+        background: var(--bg-card);
+    }
+    
+    .visao-geral-mobile-card.pendente::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--pendente-color);
+        border-radius: var(--radius) 0 0 var(--radius);
+    }
+    
+    .visao-geral-mobile-data {
+        background: var(--text-primary);
+        color: var(--bg-card);
+        padding: var(--spacing-xs) var(--spacing-sm);
+        border-radius: var(--radius-sm);
+        font-weight: 700;
+        font-size: 14px;
+        min-width: 60px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+    
+    .visao-geral-mobile-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+    
+    .visao-geral-mobile-cliente {
+        font-weight: 700;
+        color: var(--text-primary);
+        font-size: 15px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .visao-geral-mobile-servico {
+        font-size: 13px;
+        color: var(--text-secondary);
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .visao-geral-mobile-valor {
+        background: var(--primary);
+        color: var(--text-primary);
+        padding: var(--spacing-xs) var(--spacing-sm);
+        border-radius: var(--radius-sm);
+        font-weight: 700;
+        font-size: 14px;
+        border: 2px solid var(--text-primary);
+        min-width: 70px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+    
+    .visao-geral-mobile-status {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        flex-shrink: 0;
+    }
+    
+    .visao-geral-mobile-status-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--text-primary);
+        transition: var(--transition);
+        cursor: pointer;
+    }
+    
+    .visao-geral-mobile-status-icon.pago {
+        background: var(--pendente-color);
+    }
+    
+    .visao-geral-mobile-status-icon.pendente {
+        background: var(--primary);
+    }
+    
+    .visao-geral-mobile-status-icon .icon {
+        width: 18px;
+        height: 18px;
+        filter: brightness(0);
+    }
+    
+    .visao-geral-mobile-status-icon:hover {
+        transform: scale(1.1);
+        box-shadow: var(--shadow);
+    }
+    
+    /* Cards mobile para serviços */
+    .servico-mobile-card {
+        background: var(--bg-card);
+        border: 2px solid var(--border);
+        border-radius: var(--radius);
+        padding: var(--spacing-lg);
+        margin-bottom: var(--spacing-lg);
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        position: relative;
+        min-height: 120px;
+    }
+    
+    .servico-mobile-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--primary);
+    }
+    
+    /* Card ativo - borda verde */
+    .servico-mobile-card.ativo {
+        border-color: var(--primary);
+        background: var(--bg-card);
+    }
+    
+    .servico-mobile-card.ativo::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--primary);
+        border-radius: var(--radius) 0 0 var(--radius);
+    }
+    
+    /* Card inativo - borda cinza */
+    .servico-mobile-card.inativo {
+        border-color: var(--border);
+        background: var(--bg-secondary);
+        opacity: 0.7;
+    }
+    
+    .servico-mobile-card.inativo::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--text-muted);
+        border-radius: var(--radius) 0 0 var(--radius);
+    }
+    
+    .servico-mobile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .servico-mobile-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-xs);
+        min-width: 0;
+        margin-right: var(--spacing-md);
+    }
+    
+    .servico-mobile-nome {
+        font-weight: 700;
+        color: var(--text-primary);
+        font-size: 18px;
+        line-height: 1.2;
+    }
+    
+    .servico-mobile-descricao {
+        font-size: 14px;
+        color: var(--text-secondary);
+        font-weight: 500;
+        line-height: 1.4;
+        margin-top: var(--spacing-xs);
+    }
+    
+    .servico-mobile-detalhes {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-sm);
+        flex-shrink: 0;
+        min-width: 100px;
+    }
+    
+    .servico-mobile-duracao {
+        background: var(--text-primary);
+        color: var(--bg-card);
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: var(--radius-sm);
+        font-weight: 700;
+        font-size: 14px;
+        text-align: center;
+        min-width: 70px;
+    }
+    
+    .servico-mobile-preco {
+        background: var(--primary);
+        color: var(--text-primary);
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: var(--radius-sm);
+        font-weight: 700;
+        font-size: 14px;
+        border: 2px solid var(--text-primary);
+        text-align: center;
+        min-width: 80px;
+    }
+    
+    .servico-mobile-status {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .status-badge {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        border-radius: var(--radius-sm);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        min-width: 60px;
+        text-align: center;
+    }
+    
+    .status-badge.ativo {
+        background: var(--primary);
+        color: var(--text-primary);
+        border: 2px solid var(--text-primary);
+    }
+    
+    .status-badge.inativo {
+        background: var(--text-muted);
+        color: var(--bg-card);
+        border: 2px solid var(--text-muted);
+    }
+    
+    .servico-mobile-footer {
+        margin-top: var(--spacing-md);
+        padding-top: var(--spacing-md);
+        border-top: 1px solid var(--border);
+    }
+    
+    .servico-mobile-acoes {
+        display: flex;
+        gap: var(--spacing-sm);
+        width: 100%;
+    }
+    
+    .btn-servico {
+        flex: 1;
+        height: 44px;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--text-primary);
+        transition: var(--transition);
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        gap: var(--spacing-xs);
+    }
+    
+    .btn-servico-edit {
+        background: var(--primary);
+    }
+    
+    .btn-servico-edit:hover {
+        background: var(--primary-hover);
+        transform: scale(1.05);
+        box-shadow: var(--shadow);
+    }
+    
+    .btn-servico-delete {
+        background: var(--danger);
+    }
+    
+    .btn-servico-delete:hover {
+        background: var(--danger-hover);
+        transform: scale(1.05);
+        box-shadow: var(--shadow);
+    }
+    
+    .btn-servico .icon {
+        width: 18px;
+        height: 18px;
+        filter: brightness(0) invert(1);
     }
 }
 

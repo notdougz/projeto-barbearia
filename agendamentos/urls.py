@@ -28,4 +28,10 @@ urlpatterns = [
     path('clientes/novo/', views.criar_cliente, name='criar_cliente'),
     path('clientes/editar/<int:pk>/', views.editar_cliente, name='editar_cliente'),
     path('clientes/deletar/<int:pk>/', views.deletar_cliente, name='deletar_cliente'),
+    
+    # SERVIÇOS
+    path('servicos/', views.lista_servicos, name='lista_servicos'),
+    path('servicos/novo/', views.criar_servico, name='criar_servico'),
+    path('servicos/editar/<int:pk>/', views.editar_servico, name='editar_servico'),
+    path('servicos/deletar/<int:pk>/', views.deletar_servico, name='deletar_servico'),
 ]

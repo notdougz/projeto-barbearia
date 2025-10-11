@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Agendamento, Cliente, Servico
 from datetime import date, datetime, timedelta
-from .forms import ClienteForm, AgendamentoForm, PrevisaoChegadaForm
+from .forms import ClienteForm, AgendamentoForm, PrevisaoChegadaForm, ServicoForm
 from .services import NotificationService
 
 @login_required
@@ -414,3 +414,73 @@ def alterar_status_pagamento(request, pk):
     
     # Redirecionar de volta para a página financeiro mantendo a data
     return redirect(f"{request.META.get('HTTP_REFERER', 'financeiro')}")
+
+# ===== GESTÃO DE SERVIÇOS =====
+
+@login_required
+def lista_servicos(request):
+    """Listar todos os serviços"""
+    servicos = Servico.objects.all().order_by('nome')
+    return render(request, 'agendamentos/lista_servicos.html', {'servicos': servicos})
+
+@login_required
+def criar_servico(request):
+    """Criar um novo serviço"""
+    if request.method == 'POST':
+        form = ServicoForm(request.POST)
+        if form.is_valid():
+            servico = form.save()
+            messages.success(request, f'Serviço "{servico.nome}" criado com sucesso!')
+            return redirect('lista_servicos')
+    else:
+        form = ServicoForm()
+    
+    return render(request, 'agendamentos/servico_form.html', {
+        'form': form, 
+        'titulo': 'Novo Serviço',
+        'botao_texto': 'Criar Serviço'
+    })
+
+@login_required
+def editar_servico(request, pk):
+    """Editar um serviço existente"""
+    servico = get_object_or_404(Servico, pk=pk)
+    
+    if request.method == 'POST':
+        form = ServicoForm(request.POST, instance=servico)
+        if form.is_valid():
+            servico = form.save()
+            messages.success(request, f'Serviço "{servico.nome}" atualizado com sucesso!')
+            return redirect('lista_servicos')
+    else:
+        form = ServicoForm(instance=servico)
+    
+    return render(request, 'agendamentos/servico_form.html', {
+        'form': form, 
+        'servico': servico,
+        'titulo': f'Editar Serviço: {servico.nome}',
+        'botao_texto': 'Salvar Alterações'
+    })
+
+@login_required
+def deletar_servico(request, pk):
+    """Deletar um serviço"""
+    servico = get_object_or_404(Servico, pk=pk)
+    
+    # Verificar se o serviço está sendo usado em agendamentos
+    agendamentos_count = Agendamento.objects.filter(servico=servico).count()
+    
+    if request.method == 'POST':
+        if agendamentos_count > 0:
+            messages.error(request, f'Não é possível deletar o serviço "{servico.nome}" pois ele está sendo usado em {agendamentos_count} agendamento(s).')
+            return redirect('lista_servicos')
+        
+        nome_servico = servico.nome
+        servico.delete()
+        messages.success(request, f'Serviço "{nome_servico}" deletado com sucesso!')
+        return redirect('lista_servicos')
+    
+    return render(request, 'agendamentos/servico_confirm_delete.html', {
+        'servico': servico,
+        'agendamentos_count': agendamentos_count
+    })

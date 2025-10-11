@@ -173,7 +173,8 @@
                         Cortes Pagos ({{ pagos_mes }})
                     </h5>
                     {% if cortes_pagos_mes %}
-                        <div class="cortes-lista">
+                        <!-- Versão Desktop -->
+                        <div class="cortes-lista d-none d-md-block">
                             {% for agendamento in cortes_pagos_mes %}
                             <div class="corte-item pago">
                                 <div class="corte-data">{{ agendamento.data|date:"d/m" }}</div>
@@ -187,6 +188,28 @@
                                         {% csrf_token %}
                                         <button type="submit" class="btn-corte btn-corte-warning" title="Marcar como PENDENTE">
                                             <span class="icon icon-time"></span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Versão Mobile -->
+                        <div class="d-block d-md-none">
+                            {% for agendamento in cortes_pagos_mes %}
+                            <div class="visao-geral-mobile-card pago">
+                                <div class="visao-geral-mobile-data">{{ agendamento.data|date:"d/m" }}</div>
+                                <div class="visao-geral-mobile-info">
+                                    <div class="visao-geral-mobile-cliente">{{ agendamento.cliente.nome }}</div>
+                                    <div class="visao-geral-mobile-servico">{{ agendamento.servico.nome }}</div>
+                                </div>
+                                <div class="visao-geral-mobile-valor">R$ {{ agendamento.servico.preco|floatformat:2 }}</div>
+                                <div class="visao-geral-mobile-status">
+                                    <form action="{% url 'alterar_status_pagamento' agendamento.id %}" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="visao-geral-mobile-status-icon pago" title="Marcar como PENDENTE">
+                                            <span class="icon icon-undo"></span>
                                         </button>
                                     </form>
                                 </div>
@@ -208,7 +231,8 @@
                         Cortes Pendentes ({{ pendentes_mes }})
                     </h5>
                     {% if cortes_pendentes_mes %}
-                        <div class="cortes-lista">
+                        <!-- Versão Desktop -->
+                        <div class="cortes-lista d-none d-md-block">
                             {% for agendamento in cortes_pendentes_mes %}
                             <div class="corte-item pendente">
                                 <div class="corte-data">{{ agendamento.data|date:"d/m" }}</div>
@@ -221,6 +245,28 @@
                                     <form action="{% url 'alterar_status_pagamento' agendamento.id %}" method="post" style="display: inline;">
                                         {% csrf_token %}
                                         <button type="submit" class="btn-corte btn-corte-success" title="Marcar como PAGO">
+                                            <span class="icon icon-check"></span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Versão Mobile -->
+                        <div class="d-block d-md-none">
+                            {% for agendamento in cortes_pendentes_mes %}
+                            <div class="visao-geral-mobile-card pendente">
+                                <div class="visao-geral-mobile-data">{{ agendamento.data|date:"d/m" }}</div>
+                                <div class="visao-geral-mobile-info">
+                                    <div class="visao-geral-mobile-cliente">{{ agendamento.cliente.nome }}</div>
+                                    <div class="visao-geral-mobile-servico">{{ agendamento.servico.nome }}</div>
+                                </div>
+                                <div class="visao-geral-mobile-valor">R$ {{ agendamento.servico.preco|floatformat:2 }}</div>
+                                <div class="visao-geral-mobile-status">
+                                    <form action="{% url 'alterar_status_pagamento' agendamento.id %}" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="visao-geral-mobile-status-icon pendente" title="Marcar como PAGO">
                                             <span class="icon icon-check"></span>
                                         </button>
                                     </form>
@@ -298,7 +344,8 @@
                         Cortes Pagos ({{ pagos_ano }})
                     </h5>
                     {% if cortes_pagos_ano %}
-                        <div class="cortes-lista">
+                        <!-- Versão Desktop -->
+                        <div class="cortes-lista d-none d-md-block">
                             {% for agendamento in cortes_pagos_ano %}
                             <div class="corte-item pago">
                                 <div class="corte-data">{{ agendamento.data|date:"d/m" }}</div>
@@ -318,6 +365,28 @@
                             </div>
                             {% endfor %}
                         </div>
+                        
+                        <!-- Versão Mobile -->
+                        <div class="d-block d-md-none">
+                            {% for agendamento in cortes_pagos_ano %}
+                            <div class="visao-geral-mobile-card pago">
+                                <div class="visao-geral-mobile-data">{{ agendamento.data|date:"d/m" }}</div>
+                                <div class="visao-geral-mobile-info">
+                                    <div class="visao-geral-mobile-cliente">{{ agendamento.cliente.nome }}</div>
+                                    <div class="visao-geral-mobile-servico">{{ agendamento.servico.nome }}</div>
+                                </div>
+                                <div class="visao-geral-mobile-valor">R$ {{ agendamento.servico.preco|floatformat:2 }}</div>
+                                <div class="visao-geral-mobile-status">
+                                    <form action="{% url 'alterar_status_pagamento' agendamento.id %}" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="visao-geral-mobile-status-icon pago" title="Marcar como PENDENTE">
+                                            <span class="icon icon-undo"></span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
                     {% else %}
                         <div class="sem-dados">Nenhum corte pago neste ano</div>
                     {% endif %}
@@ -330,7 +399,8 @@
                         Cortes Pendentes ({{ pendentes_ano }})
                     </h5>
                     {% if cortes_pendentes_ano %}
-                        <div class="cortes-lista">
+                        <!-- Versão Desktop -->
+                        <div class="cortes-lista d-none d-md-block">
                             {% for agendamento in cortes_pendentes_ano %}
                             <div class="corte-item pendente">
                                 <div class="corte-data">{{ agendamento.data|date:"d/m" }}</div>
@@ -350,6 +420,28 @@
                             </div>
                             {% endfor %}
                         </div>
+                        
+                        <!-- Versão Mobile -->
+                        <div class="d-block d-md-none">
+                            {% for agendamento in cortes_pendentes_ano %}
+                            <div class="visao-geral-mobile-card pendente">
+                                <div class="visao-geral-mobile-data">{{ agendamento.data|date:"d/m" }}</div>
+                                <div class="visao-geral-mobile-info">
+                                    <div class="visao-geral-mobile-cliente">{{ agendamento.cliente.nome }}</div>
+                                    <div class="visao-geral-mobile-servico">{{ agendamento.servico.nome }}</div>
+                                </div>
+                                <div class="visao-geral-mobile-valor">R$ {{ agendamento.servico.preco|floatformat:2 }}</div>
+                                <div class="visao-geral-mobile-status">
+                                    <form action="{% url 'alterar_status_pagamento' agendamento.id %}" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="visao-geral-mobile-status-icon pendente" title="Marcar como PAGO">
+                                            <span class="icon icon-check"></span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
                     {% else %}
                         <div class="sem-dados">Nenhum corte pendente neste ano</div>
                     {% endif %}
@@ -359,7 +451,8 @@
         </div>
 {% elif agendamentos %}
     <!-- LISTA DE PAGAMENTOS -->
-    <div class="financeiro-table-container">
+    <!-- Versão Desktop - Tabela -->
+    <div class="financeiro-table-container d-none d-md-block">
         <table class="financeiro-table">
             <thead>
                 <tr>
@@ -420,6 +513,33 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+    
+    <!-- Versão Mobile - Cards Simplificados -->
+    <div class="d-block d-md-none">
+        {% for agendamento in agendamentos %}
+        <div class="financeiro-mobile-card {% if agendamento.status_pagamento == 'pago' %}pago{% else %}pendente{% endif %}">
+            <div class="financeiro-mobile-time">{{ agendamento.hora|time:"H:i" }}</div>
+            <div class="financeiro-mobile-info">
+                <div class="financeiro-mobile-cliente">{{ agendamento.cliente.nome }}</div>
+                <div class="financeiro-mobile-servico">{{ agendamento.servico.nome }}</div>
+            </div>
+            <div class="financeiro-mobile-valor">R$ {{ agendamento.servico.preco|floatformat:2 }}</div>
+            <div class="financeiro-mobile-status">
+                <form action="{% url 'alterar_status_pagamento' agendamento.id %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="financeiro-mobile-status-icon {% if agendamento.status_pagamento == 'pago' %}pago{% else %}pendente{% endif %}" 
+                            title="{% if agendamento.status_pagamento == 'pago' %}Marcar como PENDENTE{% else %}Marcar como PAGO{% endif %}">
+                        {% if agendamento.status_pagamento == 'pago' %}
+                            <span class="icon icon-undo"></span>
+                        {% else %}
+                            <span class="icon icon-check"></span>
+                        {% endif %}
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
     </div>
 {% else %}
     <div class="no-appointments">
