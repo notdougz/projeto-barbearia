@@ -59,7 +59,7 @@ db.sqlite3
 db.sqlite3-journal
 /media
 /staticfiles
-/static
+# /static - NÃO ignore! Arquivos CSS precisam estar no repositório
 
 # Flask stuff:
 instance/

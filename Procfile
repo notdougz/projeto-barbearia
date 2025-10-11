@@ -1,1 +1,1 @@
-web: chmod +x start.sh && ./start.sh
+web: python manage.py migrate --noinput && python manage.py collectstatic --noinput --clear && python setup.py && gunicorn barbearia.wsgi:application --bind 0.0.0.0:$PORT --log-level info
