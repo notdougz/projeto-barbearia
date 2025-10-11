@@ -1,2 +1,1 @@
-release: python setup.py
-web: gunicorn barbearia.wsgi:application
+web: chmod +x start.sh && ./start.sh
