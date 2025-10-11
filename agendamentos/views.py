@@ -4,7 +4,7 @@ from django.contrib import messages
 from .models import Agendamento, Cliente, Servico
 from datetime import date, datetime, timedelta
 from .forms import ClienteForm, AgendamentoForm, PrevisaoChegadaForm, ServicoForm
-from .services import NotificationService
+from .smsdev_service import smsdev_service
 
 @login_required
 def painel_barbeiro(request):
@@ -134,13 +134,18 @@ def on_the_way_agendamento(request, pk):
             agendamento.previsao_chegada = previsao_minutos
             agendamento.save()
             
-            # Envia notificação para o cliente
-            success, message = NotificationService.notify_client_on_the_way(agendamento, previsao_minutos)
+            # Envia SMS para o cliente (usando SMSDev)
+            sms_result = smsdev_service.enviar_barbeiro_a_caminho(agendamento, previsao_minutos)
             
-            if success:
-                messages.success(request, f'Status alterado para "À caminho" e cliente notificado! Previsão: {previsao_minutos} minutos.')
+            if sms_result['sucesso']:
+                messages.success(request, f'Status alterado para "À caminho" e SMS enviado! Previsão: {previsao_minutos} minutos.')
             else:
-                messages.warning(request, f'Status alterado para "À caminho", mas falha na notificação: {message}')
+                messages.warning(request, f'Status alterado para "À caminho", mas falha no SMS: {sms_result["erro"]}')
+            
+            # Log do resultado do SMS
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.info(f"SMS enviado para {agendamento.cliente.nome}: {sms_result}")
             
             return redirect('painel_barbeiro')
     else:

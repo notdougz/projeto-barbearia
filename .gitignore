@@ -1,49 +1,260 @@
+# ========================================
+# GITIGNORE PARA PROJETO DJANGO - BARBEARIA
+# ========================================
+
 # Python
 *.py[cod]
 *$py.class
 *.so
 .Python
-__pycache__/
-*.pyc
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-# Django
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
 *.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
 /media
 /staticfiles
+/static
 
-# Ambiente Virtual
-venv/
-env/
-ENV/
-.venv
+# Flask stuff:
+instance/
+.webassets-cache
 
-# IDEs
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
+# Scrapy stuff:
+.scrapy
 
-# Arquivos de sistema
-Thumbs.db
+# Sphinx documentation
+docs/_build/
 
-# Migrations (opcional - descomente se não quiser versionar migrations)
-# */migrations/*
-# !*/migrations/__init__.py
-
-# Variáveis de ambiente
-.env
-.env.local
-
-# Pytest
-.pytest_cache/
-.coverage
-htmlcov/
+# PyBuilder
+.pybuilder/
+target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
 
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# pdm
+.pdm.toml
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+*.lnk
+
+# Logs específicos do projeto
+sms.log
+*.log
+
+# Arquivos temporários
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Arquivos de configuração sensíveis
+.env.local
+.env.production
+.env.staging
+config.json
+secrets.json
+
+# Arquivos de upload
+uploads/
+media/
+
+# Arquivos de cache
+.cache/
+*.cache
+
+# Arquivos de lock
+package-lock.json
+yarn.lock
+
+# Node modules (caso use algum frontend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Arquivos de backup do banco
+*.sql
+*.dump
+
+# Arquivos de certificados
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Arquivos de configuração do servidor
+nginx.conf
+apache.conf
+*.conf
+
+# Arquivos de deploy
+docker-compose.override.yml
+.dockerignore
+
+# Arquivos de monitoramento
+*.pid
+*.sock
+
+# Arquivos de teste
+test_*.py
+*_test.py
+tests/
+test/
+
+# Arquivos de documentação gerados
+docs/build/
+docs/_build/
+
+# Arquivos de profiling
+*.prof
+*.profile
+
+# Arquivos de debug
+debug.log
+debug_*.log
+
+# Arquivos de migração (opcional - descomente se não quiser versionar)
+# */migrations/*
+# !*/migrations/__init__.py
+
+# Arquivos específicos do projeto
+# Adicione aqui arquivos específicos que não devem ser versionados
