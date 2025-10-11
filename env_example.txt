@@ -1,0 +1,82 @@
+# ========================================
+# ARQUIVO DE CONFIGURAÇÃO DE AMBIENTE - EXEMPLO
+# ========================================
+# IMPORTANTE: Copie este arquivo para .env e preencha com suas credenciais reais
+# NUNCA commite o arquivo .env com credenciais reais!
+
+# ========================================
+# CONFIGURAÇÕES DE SMS
+# ========================================
+# Ative o envio de SMS (True ou False)
+SMS_ENABLED=True
+
+# ========================================
+# SMSDEV - API Brasileira
+# ========================================
+# Para obter suas credenciais:
+# 1. Acesse: https://app.smsdev.com.br
+# 2. Faça login com sua conta
+# 3. Vá em "API" ou "Configurações" no menu lateral
+# 4. Copie seu Token/Key
+# 5. O usuário geralmente é seu email cadastrado
+
+SMSDEV_USUARIO=seu_email@exemplo.com
+SMSDEV_TOKEN=sua_chave_token_aqui
+
+# ========================================
+# CONFIGURAÇÕES DO DJANGO
+# ========================================
+# Chave secreta do Django (gere uma nova para produção)
+SECRET_KEY=sua_chave_secreta_aqui
+
+# Debug mode (False em produção)
+DEBUG=True
+
+# Hosts permitidos (adicione seu domínio em produção)
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+# ========================================
+# CONFIGURAÇÕES DE BANCO DE DADOS
+# ========================================
+# Para usar PostgreSQL em produção, descomente e configure:
+# DATABASE_URL=postgresql://usuario:senha@localhost:5432/nome_do_banco
+
+# Para usar MySQL em produção, descomente e configure:
+# DATABASE_URL=mysql://usuario:senha@localhost:3306/nome_do_banco
+
+# ========================================
+# CONFIGURAÇÕES DE EMAIL (opcional)
+# ========================================
+# Para envio de emails, configure seu provedor:
+# EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+# EMAIL_HOST=smtp.gmail.com
+# EMAIL_PORT=587
+# EMAIL_USE_TLS=True
+# EMAIL_HOST_USER=seu_email@gmail.com
+# EMAIL_HOST_PASSWORD=sua_senha_de_app
+
+# ========================================
+# CONFIGURAÇÕES DE REDIS (opcional)
+# ========================================
+# Para cache e filas, configure Redis:
+# REDIS_URL=redis://localhost:6379/0
+
+# ========================================
+# CONFIGURAÇÕES DE ARQUIVOS ESTÁTICOS
+# ========================================
+# Para produção, configure seu provedor de arquivos:
+# STATIC_URL=https://seu-dominio.com/static/
+# MEDIA_URL=https://seu-dominio.com/media/
+
+# ========================================
+# CONFIGURAÇÕES DE SEGURANÇA
+# ========================================
+# Para produção, configure HTTPS:
+# SECURE_SSL_REDIRECT=True
+# SECURE_HSTS_SECONDS=31536000
+# SECURE_HSTS_INCLUDE_SUBDOMAINS=True
+# SECURE_HSTS_PRELOAD=True
+# SECURE_CONTENT_TYPE_NOSNIFF=True
+# SECURE_BROWSER_XSS_FILTER=True
+# SESSION_COOKIE_SECURE=True
+# CSRF_COOKIE_SECURE=True

@@ -11,9 +11,14 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Carregar variáveis de ambiente do arquivo .env
+load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
@@ -26,6 +31,49 @@ SECRET_KEY = 'django-insecure-m!77j_upj006#l_h^#p&632r7rb8wc=s6(!29=$q!i&-b_x_t-
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+# Configurações de SMS
+SMS_ENABLED = os.getenv('SMS_ENABLED', 'True').lower() == 'true'  # Default True para desenvolvimento
+
+# SMSDev (API Brasileira)
+SMSDEV_USUARIO = os.getenv('SMSDEV_USUARIO', '')  # Seu email cadastrado na SMSDev
+SMSDEV_TOKEN = os.getenv('SMSDEV_TOKEN', '')      # Token obtido na SMSDev
+
+# Configuração de Logs
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'sms.log',
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'agendamentos.smsdev_service': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
 
 
 # Application definition
