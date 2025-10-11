@@ -1,2 +1,2 @@
-release: python migrate.py
+release: python setup.py
 web: gunicorn barbearia.wsgi:application
