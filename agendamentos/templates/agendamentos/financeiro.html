@@ -161,10 +161,85 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Lista Detalhada Mensal -->
+            <div class="lista-detalhada-container">
+                <h4><span class="icon icon-list"></span>Detalhamento Mensal</h4>
+                
+                <!-- Cortes Pagos do Mês -->
+                <div class="cortes-secao">
+                    <h5 class="secao-titulo pagos">
+                        <span class="icon icon-check"></span>
+                        Cortes Pagos ({{ pagos_mes }})
+                    </h5>
+                    {% if cortes_pagos_mes %}
+                        <div class="cortes-lista">
+                            {% for agendamento in cortes_pagos_mes %}
+                            <div class="corte-item pago">
+                                <div class="corte-data">{{ agendamento.data|date:"d/m" }}</div>
+                                <div class="corte-info">
+                                    <span class="corte-cliente">{{ agendamento.cliente.nome }}</span>
+                                    <span class="corte-servico">{{ agendamento.servico.nome }}</span>
+                                </div>
+                                <div class="corte-valor">R$ {{ agendamento.servico.preco|floatformat:2 }}</div>
+                                <div class="corte-acao">
+                                    <form action="{% url 'alterar_status_pagamento' agendamento.id %}" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-corte btn-corte-warning" title="Marcar como PENDENTE">
+                                            <span class="icon icon-time"></span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="no-appointments">
+                            <span class="no-appointments-icon">📋</span>
+                            <p>Nenhum corte pago encontrado para este mês.</p>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Cortes Pendentes do Mês -->
+                <div class="cortes-secao">
+                    <h5 class="secao-titulo pendentes">
+                        <span class="icon icon-time"></span>
+                        Cortes Pendentes ({{ pendentes_mes }})
+                    </h5>
+                    {% if cortes_pendentes_mes %}
+                        <div class="cortes-lista">
+                            {% for agendamento in cortes_pendentes_mes %}
+                            <div class="corte-item pendente">
+                                <div class="corte-data">{{ agendamento.data|date:"d/m" }}</div>
+                                <div class="corte-info">
+                                    <span class="corte-cliente">{{ agendamento.cliente.nome }}</span>
+                                    <span class="corte-servico">{{ agendamento.servico.nome }}</span>
+                                </div>
+                                <div class="corte-valor">R$ {{ agendamento.servico.preco|floatformat:2 }}</div>
+                                <div class="corte-acao">
+                                    <form action="{% url 'alterar_status_pagamento' agendamento.id %}" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-corte btn-corte-success" title="Marcar como PAGO">
+                                            <span class="icon icon-check"></span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="no-appointments">
+                            <span class="no-appointments-icon">📋</span>
+                            <p>Nenhum corte pendente encontrado para este mês.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
         
         <!-- Estatísticas Anuais -->
-        <div id="estatisticas-ano" class="estatisticas-periodo" style="display: none;">
+        <div id="estatisticas-ano" class="estatisticas-periodo">
             <h4><span class="icon icon-calendar"></span>{{ data_selecionada|date:"Y" }}</h4>
             <div class="visao-geral-stats">
                 <div class="visao-stat-card">
@@ -280,98 +355,8 @@
                     {% endif %}
                 </div>
             </div>
-        </div>
-        
-        <!-- Gráfico de Barras Simples -->
-        <div class="grafico-container">
-            <h4><span class="icon icon-chart"></span>Comparativo de Recebimentos</h4>
-            <div class="grafico-barras">
-                <div class="barra-item">
-                    <span class="barra-label">Pendente</span>
-                    <div class="barra-container">
-                        <div class="barra barra-pendente" data-width="{{ percentual_pendente_mes }}"></div>
-                        <span class="barra-valor">{{ percentual_pendente_mes|floatformat:1 }}%</span>
-                    </div>
-                </div>
-                <div class="barra-item">
-                    <span class="barra-label">Recebido</span>
-                    <div class="barra-container">
-                        <div class="barra barra-recebido" data-width="{{ percentual_recebido_mes }}"></div>
-                        <span class="barra-valor">{{ percentual_recebido_mes|floatformat:1 }}%</span>
-                    </div>
-                </div>
             </div>
         </div>
-        
-        <!-- Lista Detalhada Mensal -->
-        <div class="lista-detalhada-container">
-            <h4><span class="icon icon-list"></span>Detalhamento Mensal</h4>
-            
-            <!-- Cortes Pagos do Mês -->
-            <div class="cortes-secao">
-                <h5 class="secao-titulo pagos">
-                    <span class="icon icon-check"></span>
-                    Cortes Pagos ({{ pagos_mes }})
-                </h5>
-                {% if cortes_pagos_mes %}
-                    <div class="cortes-lista">
-                        {% for agendamento in cortes_pagos_mes %}
-                        <div class="corte-item pago">
-                            <div class="corte-data">{{ agendamento.data|date:"d/m" }}</div>
-                            <div class="corte-info">
-                                <span class="corte-cliente">{{ agendamento.cliente.nome }}</span>
-                                <span class="corte-servico">{{ agendamento.servico.nome }}</span>
-                            </div>
-                            <div class="corte-valor">R$ {{ agendamento.servico.preco|floatformat:2 }}</div>
-                            <div class="corte-acao">
-                                <form action="{% url 'alterar_status_pagamento' agendamento.id %}" method="post" style="display: inline;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn-corte btn-corte-warning" title="Marcar como PENDENTE">
-                                        <span class="icon icon-time"></span>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="sem-dados">Nenhum corte pago neste mês</div>
-                {% endif %}
-            </div>
-            
-            <!-- Cortes Pendentes do Mês -->
-            <div class="cortes-secao">
-                <h5 class="secao-titulo pendentes">
-                    <span class="icon icon-time"></span>
-                    Cortes Pendentes ({{ pendentes_mes }})
-                </h5>
-                {% if cortes_pendentes_mes %}
-                    <div class="cortes-lista">
-                        {% for agendamento in cortes_pendentes_mes %}
-                        <div class="corte-item pendente">
-                            <div class="corte-data">{{ agendamento.data|date:"d/m" }}</div>
-                            <div class="corte-info">
-                                <span class="corte-cliente">{{ agendamento.cliente.nome }}</span>
-                                <span class="corte-servico">{{ agendamento.servico.nome }}</span>
-                            </div>
-                            <div class="corte-valor">R$ {{ agendamento.servico.preco|floatformat:2 }}</div>
-                            <div class="corte-acao">
-                                <form action="{% url 'alterar_status_pagamento' agendamento.id %}" method="post" style="display: inline;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn-corte btn-corte-success" title="Marcar como PAGO">
-                                        <span class="icon icon-check"></span>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="sem-dados">Nenhum corte pendente neste mês</div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
 {% elif agendamentos %}
     <!-- LISTA DE PAGAMENTOS -->
     <div class="financeiro-table-container">
@@ -474,18 +459,36 @@ function alterarPeriodo(periodo) {
     const anoDiv = document.getElementById('estatisticas-ano');
     const botoes = document.querySelectorAll('.periodo-btn');
     
+    // Função para alterar período na visão geral
+    
     // Remover classe active de todos os botões
     botoes.forEach(btn => btn.classList.remove('active'));
     
-    if (periodo === 'mes') {
-        mesDiv.style.display = 'block';
-        anoDiv.style.display = 'none';
-        botoes[0].classList.add('active');
-    } else {
-        mesDiv.style.display = 'none';
-        anoDiv.style.display = 'block';
-        botoes[1].classList.add('active');
+    // Função para aplicar mudanças com delay para garantir que seja executada por último
+    function aplicarMudancas() {
+        if (periodo === 'mes') {
+            mesDiv.style.setProperty('display', 'block', 'important');
+            anoDiv.style.setProperty('display', 'none', 'important');
+            botoes[0].classList.add('active');
+            // Mensal ativado, Anual desativado
+        } else {
+            mesDiv.style.setProperty('display', 'none', 'important');
+            anoDiv.style.setProperty('display', 'block', 'important');
+            botoes[1].classList.add('active');
+            // Anual ativado, Mensal desativado
+        }
+        
+        // Verificação final das mudanças aplicadas
+        setTimeout(() => {
+            // Período alterado com sucesso
+        }, 100);
     }
+    
+    // Aplicar mudanças imediatamente
+    aplicarMudancas();
+    
+    // Aplicar mudanças novamente após um pequeno delay para garantir
+    setTimeout(aplicarMudancas, 50);
 }
 
 // Função para alterar mês na visão geral
@@ -636,19 +639,32 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar
     updateCalendar();
     
-    // Aplicar largura das barras do gráfico
-    const barrasPendentes = document.querySelectorAll('.barra-pendente');
-    const barrasRecebidos = document.querySelectorAll('.barra-recebido');
+    // JavaScript para controle de períodos
     
-    barrasPendentes.forEach(barra => {
-        const width = barra.getAttribute('data-width');
-        barra.style.setProperty('--barra-width', width + '%');
-    });
+    // Garantir estado inicial correto dos períodos
+    const mesDiv = document.getElementById('estatisticas-mes');
+    const anoDiv = document.getElementById('estatisticas-ano');
     
-    barrasRecebidos.forEach(barra => {
-        const width = barra.getAttribute('data-width');
-        barra.style.setProperty('--barra-width', width + '%');
-    });
+    if (mesDiv && anoDiv) {
+        // Função para definir estado inicial
+        function definirEstadoInicial() {
+            mesDiv.style.setProperty('display', 'block', 'important');
+            anoDiv.style.setProperty('display', 'none', 'important');
+            
+            // Garantir que apenas o botão mensal esteja ativo
+            const botoes = document.querySelectorAll('.periodo-btn');
+            botoes.forEach(btn => btn.classList.remove('active'));
+            botoes[0].classList.add('active'); // Primeiro botão (Mensal)
+            
+            // Estado inicial definido corretamente
+        }
+        
+        // Aplicar estado inicial imediatamente
+        definirEstadoInicial();
+        
+        // Aplicar novamente após um delay para garantir
+        setTimeout(definirEstadoInicial, 100);
+    }
 });
 </script>
 {% endblock %}
