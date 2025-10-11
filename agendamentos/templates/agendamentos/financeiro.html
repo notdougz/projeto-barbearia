@@ -2,6 +2,7 @@
 
 {% block title %}Financeiro - {{ data_selecionada|date:"d/m/Y" }}{% endblock %}
 
+
 {% block content %}
 
 <div class="date-selector">
@@ -41,7 +42,9 @@
 <!-- Estatísticas Financeiras -->
 <div class="financeiro-stats">
     <div class="stat-card stat-total">
-        <div class="stat-icon">💰</div>
+        <div class="stat-icon">
+            <span class="icon icon-money"></span>
+        </div>
         <div class="stat-content">
             <div class="stat-label">Total do Dia</div>
             <div class="stat-value">R$ {{ valor_total|floatformat:2 }}</div>
@@ -50,7 +53,9 @@
     </div>
     
     <div class="stat-card stat-recebido">
-        <div class="stat-icon">✅</div>
+        <div class="stat-icon">
+            <span class="icon icon-check"></span>
+        </div>
         <div class="stat-content">
             <div class="stat-label">Recebido</div>
             <div class="stat-value">R$ {{ valor_recebido|floatformat:2 }}</div>
@@ -59,7 +64,9 @@
     </div>
     
     <div class="stat-card stat-pendente">
-        <div class="stat-icon">⏳</div>
+        <div class="stat-icon">
+            <span class="icon icon-time"></span>
+        </div>
         <div class="stat-content">
             <div class="stat-label">Pendente</div>
             <div class="stat-value">R$ {{ valor_pendente|floatformat:2 }}</div>
@@ -108,10 +115,12 @@
         
         <!-- Estatísticas Mensais -->
         <div id="estatisticas-mes" class="estatisticas-periodo">
-            <h4>📅 {{ data_selecionada|date:"F/Y" }}</h4>
+            <h4><span class="icon icon-calendar"></span>{{ data_selecionada|date:"F/Y" }}</h4>
             <div class="visao-geral-stats">
                 <div class="visao-stat-card">
-                    <div class="visao-stat-icon">💰</div>
+                    <div class="visao-stat-icon">
+                        <span class="icon icon-money"></span>
+                    </div>
                     <div class="visao-stat-content">
                         <div class="visao-stat-label">Total do Mês</div>
                         <div class="visao-stat-value">R$ {{ total_mes|floatformat:2 }}</div>
@@ -120,7 +129,9 @@
                 </div>
                 
                 <div class="visao-stat-card">
-                    <div class="visao-stat-icon">✅</div>
+                    <div class="visao-stat-icon">
+                        <span class="icon icon-check"></span>
+                    </div>
                     <div class="visao-stat-content">
                         <div class="visao-stat-label">Recebido</div>
                         <div class="visao-stat-value">R$ {{ recebido_mes|floatformat:2 }}</div>
@@ -129,7 +140,9 @@
                 </div>
                 
                 <div class="visao-stat-card">
-                    <div class="visao-stat-icon">⏳</div>
+                    <div class="visao-stat-icon">
+                        <span class="icon icon-time"></span>
+                    </div>
                     <div class="visao-stat-content">
                         <div class="visao-stat-label">Pendente</div>
                         <div class="visao-stat-value">R$ {{ pendente_mes|floatformat:2 }}</div>
@@ -138,7 +151,9 @@
                 </div>
                 
                 <div class="visao-stat-card">
-                    <div class="visao-stat-icon">📊</div>
+                    <div class="visao-stat-icon">
+                        <span class="icon icon-chart"></span>
+                    </div>
                     <div class="visao-stat-content">
                         <div class="visao-stat-label">Taxa de Recebimento</div>
                         <div class="visao-stat-value">{{ taxa_recebimento_mes|floatformat:1 }}%</div>
@@ -150,10 +165,12 @@
         
         <!-- Estatísticas Anuais -->
         <div id="estatisticas-ano" class="estatisticas-periodo" style="display: none;">
-            <h4>📆 {{ data_selecionada|date:"Y" }}</h4>
+            <h4><span class="icon icon-calendar"></span>{{ data_selecionada|date:"Y" }}</h4>
             <div class="visao-geral-stats">
                 <div class="visao-stat-card">
-                    <div class="visao-stat-icon">💰</div>
+                    <div class="visao-stat-icon">
+                        <span class="icon icon-money"></span>
+                    </div>
                     <div class="visao-stat-content">
                         <div class="visao-stat-label">Total do Ano</div>
                         <div class="visao-stat-value">R$ {{ total_ano|floatformat:2 }}</div>
@@ -162,7 +179,9 @@
                 </div>
                 
                 <div class="visao-stat-card">
-                    <div class="visao-stat-icon">✅</div>
+                    <div class="visao-stat-icon">
+                        <span class="icon icon-check"></span>
+                    </div>
                     <div class="visao-stat-content">
                         <div class="visao-stat-label">Recebido</div>
                         <div class="visao-stat-value">R$ {{ recebido_ano|floatformat:2 }}</div>
@@ -171,7 +190,9 @@
                 </div>
                 
                 <div class="visao-stat-card">
-                    <div class="visao-stat-icon">⏳</div>
+                    <div class="visao-stat-icon">
+                        <span class="icon icon-time"></span>
+                    </div>
                     <div class="visao-stat-content">
                         <div class="visao-stat-label">Pendente</div>
                         <div class="visao-stat-value">R$ {{ pendente_ano|floatformat:2 }}</div>
@@ -180,7 +201,9 @@
                 </div>
                 
                 <div class="visao-stat-card">
-                    <div class="visao-stat-icon">📊</div>
+                    <div class="visao-stat-icon">
+                        <span class="icon icon-chart"></span>
+                    </div>
                     <div class="visao-stat-content">
                         <div class="visao-stat-label">Taxa de Recebimento</div>
                         <div class="visao-stat-value">{{ taxa_recebimento_ano|floatformat:1 }}%</div>
@@ -191,7 +214,7 @@
             
             <!-- Lista Detalhada Anual -->
             <div class="lista-detalhada-container">
-                <h4>📋 Detalhamento Anual</h4>
+                <h4><span class="icon icon-list"></span>Detalhamento Anual</h4>
                 
                 <!-- Cortes Pagos do Ano -->
                 <div class="cortes-secao">
@@ -261,19 +284,19 @@
         
         <!-- Gráfico de Barras Simples -->
         <div class="grafico-container">
-            <h4>📈 Comparativo de Recebimentos</h4>
+            <h4><span class="icon icon-chart"></span>Comparativo de Recebimentos</h4>
             <div class="grafico-barras">
                 <div class="barra-item">
                     <span class="barra-label">Pendente</span>
                     <div class="barra-container">
-                        <div class="barra" style="width: {{ percentual_pendente_mes }}%; background: var(--pendente-color);"></div>
+                        <div class="barra barra-pendente" data-width="{{ percentual_pendente_mes }}"></div>
                         <span class="barra-valor">{{ percentual_pendente_mes|floatformat:1 }}%</span>
                     </div>
                 </div>
                 <div class="barra-item">
                     <span class="barra-label">Recebido</span>
                     <div class="barra-container">
-                        <div class="barra" style="width: {{ percentual_recebido_mes }}%; background: var(--primary);"></div>
+                        <div class="barra barra-recebido" data-width="{{ percentual_recebido_mes }}"></div>
                         <span class="barra-valor">{{ percentual_recebido_mes|floatformat:1 }}%</span>
                     </div>
                 </div>
@@ -282,7 +305,7 @@
         
         <!-- Lista Detalhada Mensal -->
         <div class="lista-detalhada-container">
-            <h4>📋 Detalhamento Mensal</h4>
+            <h4><span class="icon icon-list"></span>Detalhamento Mensal</h4>
             
             <!-- Cortes Pagos do Mês -->
             <div class="cortes-secao">
@@ -386,9 +409,9 @@
                     <td class="col-status">
                         <span class="status-badge {% if agendamento.status_pagamento == 'pago' %}badge-pago{% else %}badge-pendente{% endif %}">
                             {% if agendamento.status_pagamento == 'pago' %}
-                                ✓ PAGO
+                                <span class="icon icon-check"></span> PAGO
                             {% else %}
-                                ⏳ PENDENTE
+                                <span class="icon icon-time"></span> PENDENTE
                             {% endif %}
                         </span>
                     </td>
@@ -414,8 +437,10 @@
         </table>
     </div>
 {% else %}
-    <div class="no-appointments" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-        <div style="font-size: 3rem; margin-bottom: 1rem;">💰</div>
+    <div class="no-appointments">
+        <div class="no-appointments-icon">
+            <span class="icon icon-money"></span>
+        </div>
         <p>Nenhum agendamento 
             {% if filtro_pagamento == 'pendente' %}pendente
             {% elif filtro_pagamento == 'pago' %}pago
@@ -487,6 +512,8 @@ function alterarMes(direcao) {
 
 // JavaScript para o calendário customizado
 document.addEventListener('DOMContentLoaded', function() {
+    // Adicionar classe específica para a página financeiro
+    document.body.classList.add('financeiro-page');
     // Calendário customizado
     const dateInput = document.getElementById('date-input');
     const dateDropdown = document.getElementById('date-dropdown');
@@ -608,6 +635,20 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Inicializar
     updateCalendar();
+    
+    // Aplicar largura das barras do gráfico
+    const barrasPendentes = document.querySelectorAll('.barra-pendente');
+    const barrasRecebidos = document.querySelectorAll('.barra-recebido');
+    
+    barrasPendentes.forEach(barra => {
+        const width = barra.getAttribute('data-width');
+        barra.style.setProperty('--barra-width', width + '%');
+    });
+    
+    barrasRecebidos.forEach(barra => {
+        const width = barra.getAttribute('data-width');
+        barra.style.setProperty('--barra-width', width + '%');
+    });
 });
 </script>
 {% endblock %}

@@ -2660,12 +2660,16 @@ a:hover {
 .stat-card:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
-    border-color: var(--primary);
 }
 
 .stat-icon {
-    font-size: 48px;
+    font-size: 56px;
     line-height: 1;
+}
+
+.stat-icon .icon {
+    width: 56px;
+    height: 56px;
 }
 
 .stat-content {
@@ -2699,27 +2703,12 @@ a:hover {
     border-color: var(--primary);
 }
 
-.stat-total:hover {
-    border-color: var(--primary);
-    background: var(--primary-light);
-}
-
 .stat-recebido {
     border-color: var(--primary);
 }
 
-.stat-recebido:hover {
-    border-color: var(--primary-hover);
-    background: var(--primary-light);
-}
-
 .stat-pendente {
     border-color: var(--pendente-color);
-}
-
-.stat-pendente:hover {
-    border-color: var(--pendente-hover);
-    background: var(--pendente-light);
 }
 
 /* Filtros de Pagamento */
@@ -2887,17 +2876,29 @@ a:hover {
 
 .valor-badge {
     display: inline-block;
-    padding: var(--spacing-xs) var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-lg);
     background: var(--primary);
     color: var(--text-primary);
     border-radius: var(--radius-sm);
     font-weight: 700;
-    font-size: 15px;
+    font-size: 16px;
     border: 2px solid var(--text-primary);
+    text-align: center;
+    min-width: 100px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+    line-height: 1.2;
+}
+
+.valor-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
 }
 
 .col-status {
     width: 130px;
+    text-align: center;
+    border-radius: var(--radius-sm);
 }
 
 .status-badge {
@@ -2985,7 +2986,12 @@ a:hover {
     }
     
     .stat-icon {
-        font-size: 40px;
+        font-size: 48px;
+    }
+    
+    .stat-icon .icon {
+        width: 48px;
+        height: 48px;
     }
     
     .pagamento-filters {
@@ -3169,7 +3175,6 @@ a:hover {
     align-items: center;
     gap: var(--spacing-sm);
     background: var(--bg-secondary);
-    border: 2px solid var(--border);
     border-radius: var(--radius-sm);
     padding: var(--spacing-xs);
 }
@@ -3464,19 +3469,7 @@ a:hover {
     color: var(--text-primary);
     margin-bottom: var(--spacing-md);
     padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--radius-sm);
     background: var(--bg-card);
-    border: 2px solid var(--border);
-}
-
-.secao-titulo.pagos {
-    border-color: var(--primary);
-    background: var(--primary-light);
-}
-
-.secao-titulo.pendentes {
-    border-color: var(--pendente-color);
-    background: var(--pendente-light);
 }
 
 .secao-titulo .icon {
@@ -3555,14 +3548,22 @@ a:hover {
 
 .corte-valor {
     font-weight: 700;
-    font-size: 15px;
+    font-size: 16px;
     color: var(--text-primary);
-    padding: var(--spacing-xs) var(--spacing-md);
-    background: var(--bg-card);
-    border-radius: var(--radius-sm);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background: var(--primary);
+    border-radius: var(--radius-md);
     border: 2px solid var(--text-primary);
-    min-width: 80px;
+    min-width: 100px;
     text-align: center;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+    line-height: 1.2;
+}
+
+.corte-valor:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
 }
 
 .corte-acao {
@@ -3572,7 +3573,7 @@ a:hover {
 }
 
 .btn-corte {
-    background: none;
+    background: --primary;
     border: 2px solid var(--border);
     border-radius: var(--radius-sm);
     padding: var(--spacing-xs) var(--spacing-sm);
@@ -3592,18 +3593,21 @@ a:hover {
 .btn-corte-success {
     color: var(--primary);
     border-color: var(--primary);
-    background: var(--primary-light);
+    background: var(--primary);
 }
 
 .btn-corte-success:hover {
-    background: var(--primary);
-    color: white;
+    transform: scale(1.1);
+    box-shadow: var(--shadow);
 }
 
 .btn-corte-warning {
-    color: var(--pendente-color);
+    color: var(--primary);
     border-color: var(--pendente-color);
-    background: var(--pendente-light);
+    background: var(--pendente-color);
+}
+.btn-corte-warning .icon-time {
+    color: var(--text-primary);
 }
 
 .btn-corte-warning:hover {
@@ -3619,6 +3623,59 @@ a:hover {
     background: var(--bg-card);
     border-radius: var(--radius-sm);
     border: 2px dashed var(--border);
+}
+
+/* Estilos para barras do gráfico */
+.barra-pendente {
+    width: var(--barra-width, 0%);
+    background: var(--pendente-color);
+}
+
+.barra-recebido {
+    width: var(--barra-width, 0%);
+    background: var(--primary);
+}
+
+.no-appointments {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+}
+
+.no-appointments-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+/* Estilos específicos para a página financeiro */
+.financeiro-page .badge-pendente .icon {
+    color: var(--text-primary) !important;
+    filter: none !important;
+}
+
+.financeiro-page .btn-corte-warning .icon {
+    color: var(--text-primary) !important;
+    filter: none !important;
+}
+
+.financeiro-page .status-badge .icon {
+    filter: none !important;
+}
+
+.financeiro-page .btn-table .icon {
+    filter: none !important;
+}
+
+/* Ícone de tempo preto específico para a página financeiro */
+.financeiro-page .icon-time {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000000'%3E%3Cpath d='M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z'/%3E%3Cpath d='M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z'/%3E%3C/svg%3E") !important;
+}
+
+/* Garantir que todos os ícones de tempo na página financeiro sejam pretos */
+.financeiro-page .badge-pendente .icon-time,
+.financeiro-page .btn-corte-warning .icon-time,
+.financeiro-page .status-badge .icon-time {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000000'%3E%3Cpath d='M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z'/%3E%3Cpath d='M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z'/%3E%3C/svg%3E") !important;
 }
 
 /* Scrollbar para listas de cortes */
@@ -3716,11 +3773,12 @@ a:hover {
         font-size: 16px !important;
         font-weight: 700 !important;
         padding: var(--spacing-sm) var(--spacing-lg) !important;
-        background: var(--bg-card) !important;
+        background: var(--primary) !important;
         border: 2px solid var(--text-primary) !important;
         border-radius: var(--radius-md) !important;
         color: var(--text-primary) !important;
         min-width: 120px !important;
+        box-shadow: var(--shadow-sm) !important;
         margin: var(--spacing-sm) 0 !important;
         text-align: center !important;
     }
@@ -3787,10 +3845,12 @@ a:hover {
     }
     
     .corte-valor {
-        font-size: 14px;
-        padding: var(--spacing-xs) var(--spacing-md);
+        font-size: 15px;
+        padding: var(--spacing-sm) var(--spacing-lg);
         min-width: 100px;
         margin: var(--spacing-xs) 0;
+        background: var(--primary);
+        box-shadow: var(--shadow-sm);
     }
     
     .btn-corte {
