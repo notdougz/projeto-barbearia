@@ -1407,21 +1407,42 @@ a:hover {
     }
 
     /* Seletor de clientes no mobile */
+    .custom-client-selector {
+        position: relative;
+    }
+    
     .custom-client-selector .client-dropdown {
-        position: fixed;
-        top: auto;
-        bottom: 20px;
-        left: 20px;
-        right: 20px;
-        max-height: 300px;
-        border-radius: var(--radius-sm);
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        max-height: 200px;
+        border-radius: 0 0 var(--radius-sm) var(--radius-sm);
         border: 2px solid var(--primary);
+        border-top: none;
         box-shadow: var(--shadow-lg);
-        z-index: 9999;
+        z-index: 1000;
+        background: var(--bg-card);
     }
 
     .custom-client-selector .client-options {
-        max-height: 260px;
+        max-height: 180px;
+        overflow-y: auto;
+    }
+    
+    /* Garantir que o dropdown não saia da tela */
+    .custom-client-selector .client-dropdown {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    
+    /* Melhorar a experiência no mobile */
+    .client-option {
+        padding: 1rem;
+        font-size: 1rem;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
     }
 
     .time-options {

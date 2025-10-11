@@ -210,6 +210,20 @@ document.addEventListener('DOMContentLoaded', function() {
         if (searchTerm.trim()) {
             clientDropdown.classList.add('active');
             renderClientOptions(filteredClients);
+            
+            // No mobile, garantir que o dropdown seja visível
+            if (window.innerWidth <= 768) {
+                setTimeout(() => {
+                    const dropdownRect = clientDropdown.getBoundingClientRect();
+                    const viewportHeight = window.innerHeight;
+                    
+                    // Se o dropdown sair da tela, ajustar posição
+                    if (dropdownRect.bottom > viewportHeight - 20) {
+                        const overflow = dropdownRect.bottom - viewportHeight + 20;
+                        clientDropdown.style.maxHeight = `${Math.max(150, 200 - overflow)}px`;
+                    }
+                }, 10);
+            }
         } else {
             clientDropdown.classList.remove('active');
             selectedClient = null;
