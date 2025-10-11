@@ -172,19 +172,16 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Configuração para servir arquivos estáticos em produção
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
+# Django automaticamente coleta arquivos de app/static/ de cada app
+# Não precisamos de STATICFILES_DIRS pois os arquivos estão em agendamentos/static/
 
 # WhiteNoise para servir arquivos estáticos
-# Usando StaticFilesStorage simples para evitar problemas com manifest
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
 
