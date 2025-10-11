@@ -49,7 +49,7 @@ Sistema completo de agendamento para barbearia desenvolvido em Django, com funci
 
 ## 🚀 Tecnologias Utilizadas
 
-- **Backend:** Django 5.2.7
+- **Backend:** Django, Python
 - **Frontend:** HTML5, CSS3, JavaScript
 - **Banco de Dados:** SQLite (desenvolvimento) / PostgreSQL (produção)
 - **SMS:** SMSDev API
@@ -67,7 +67,7 @@ Sistema completo de agendamento para barbearia desenvolvido em Django, com funci
 
 1. **Clone o repositório**
 ```bash
-git clone https://github.com/seu-usuario/projeto-barbeiro.git
+git clone https://github.com/notdougz/projeto-barbeiro.git
 cd projeto-barbeiro
 ```
 
@@ -136,11 +136,6 @@ SMSDEV_TOKEN=sua_chave_token
 4. **Marque "À caminho"** para enviar SMS automático
 5. **Conclua atendimentos** após finalização
 
-### Para Clientes
-1. **Entre em contato** com a barbearia
-2. **Receba confirmação** por SMS
-3. **Receba notificação** quando barbeiro estiver a caminho
-4. **Acompanhe previsão** de chegada
 
 ## 🎨 Interface
 
@@ -200,15 +195,8 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 **Seu Nome**
 - LinkedIn: [seu-linkedin](https://linkedin.com/in/seu-perfil)
-- GitHub: [seu-github](https://github.com/seu-usuario)
-- Email: seu-email@exemplo.com
-
-## 🙏 Agradecimentos
-
-- Django Framework
-- SMSDev pela API de SMS
-- Comunidade Python
-- Todos os contribuidores
+- GitHub: [seu-github](https://github.com/notdougz)
+- Email: doug.dev@hotmail.com
 
 ---
 
