@@ -164,9 +164,9 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Configuração para servir arquivos estáticos em produção
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
+# STATICFILES_DIRS = [
+#     BASE_DIR / 'static',
+# ]
 
 # Configuração básica para arquivos estáticos
 # STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
