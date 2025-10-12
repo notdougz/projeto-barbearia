@@ -334,8 +334,8 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 **Douglas Oliveira**
 
-- LinkedIn: [seu-linkedin](https://linkedin.com/in/seu-perfil)
-- GitHub: [seu-github](https://github.com/notdougz)
+- LinkedIn: [Douglas Oliveira](https://www.linkedin.com/in/douglas-oliveira-627088188/)
+- GitHub: [notdougz](https://github.com/notdougz)
 - Email: doug.dev@hotmail.com
 
 ---
