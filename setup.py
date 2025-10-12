@@ -23,7 +23,7 @@ def main():
             User.objects.create_superuser('kevem', 'denbinsk4853@gmail.com', senha)
             if senha == senha_padrao:
                 print(f"   OK - Superusuário criado: kevem / {senha}")
-                print("   ⚠️  IMPORTANTE: Mude a senha padrão em produção!")
+                print("     IMPORTANTE: Mude a senha padrão em produção!")
             else:
                 print("   OK - Superusuário criado com senha personalizada")
         else:
