@@ -4,6 +4,28 @@
 ![Python](https://img.shields.io/badge/Python-3.12-blue)
 ![SMS](https://img.shields.io/badge/SMS-SMSDev-orange)
 ![Status](https://img.shields.io/badge/Status-Produção-brightgreen)
+![Deploy](https://img.shields.io/badge/Deploy-Railway-purple)
+
+---
+
+## 📑 Índice
+
+- [Sobre o Projeto](#-sobre-o-projeto)
+- [Funcionalidades](#-funcionalidades)
+- [Tecnologias Utilizadas](#-tecnologias-utilizadas)
+- [Instalação](#-instalação)
+- [Configuração](#️-configuração)
+- [Como Usar](#-como-usar)
+- [Screenshots](#-screenshots)
+- [Interface](#-interface)
+- [Segurança](#-segurança)
+- [Melhorias Futuras](#-melhorias-futuras)
+- [Sistema em Produção](#-sistema-em-produção)
+- [Contribuição](#-contribuição)
+- [Licença](#-licença)
+- [Desenvolvedor](#-desenvolvedor)
+
+---
 
 ## 📋 Sobre o Projeto
 
@@ -12,6 +34,7 @@ Sistema completo de agendamento para barbearia desenvolvido em Django, com funci
 ## ✨ Funcionalidades
 
 ### 🎯 Gestão de Agendamentos
+
 - ✅ Cadastro e edição de agendamentos
 - ✅ Visualização por data com calendário
 - ✅ Status em tempo real (Agendado, Confirmado, À caminho, Concluído)
@@ -19,46 +42,54 @@ Sistema completo de agendamento para barbearia desenvolvido em Django, com funci
 - ✅ Histórico completo de atendimentos
 
 ### 👥 Gestão de Clientes
+
 - ✅ Cadastro completo de clientes
 - ✅ Informações de contato e endereço
 - ✅ Histórico de serviços realizados
 - ✅ Busca e filtros avançados
 
 ### 💼 Gestão de Serviços
+
 - ✅ Cadastro de serviços oferecidos
 - ✅ Definição de preços
 - ✅ Tempo estimado por serviço
 - ✅ Categorização de serviços
 
 ### 📱 Notificações por SMS
+
 - ✅ Integração com SMSDev (API brasileira)
 - ✅ Notificação automática "barbeiro a caminho"
 - ✅ Previsão de chegada personalizada
 - ✅ Logs detalhados de envio
 
 ### 📊 Relatórios Financeiros
+
 - ✅ Relatório mensal de faturamento
 - ✅ Análise por serviço
 - ✅ Controle de pagamentos
 - ✅ Exportação de dados
 
 ### 🔐 Sistema de Autenticação
+
 - ✅ Login seguro para barbeiros
 - ✅ Controle de acesso
 - ✅ Sessões seguras
 
 ## 🚀 Tecnologias Utilizadas
 
-- **Backend:** Django, Python
+- **Backend:** Django 5.2.7, Python 3.12
 - **Frontend:** HTML5, CSS3, JavaScript
 - **Banco de Dados:** SQLite (desenvolvimento) / PostgreSQL (produção)
 - **SMS:** SMSDev API
 - **Autenticação:** Django Auth System
-- **Deploy:** Configurado para produção
+- **Deploy:** Railway (https://railway.app)
+- **Servidor:** Gunicorn
+- **Assets:** WhiteNoise (arquivos estáticos)
 
 ## 📦 Instalação
 
 ### Pré-requisitos
+
 - Python 3.8+
 - pip
 - Git
@@ -66,12 +97,14 @@ Sistema completo de agendamento para barbearia desenvolvido em Django, com funci
 ### Passo a Passo
 
 1. **Clone o repositório**
+
 ```bash
 git clone https://github.com/notdougz/projeto-barbeiro.git
 cd projeto-barbeiro
 ```
 
 2. **Crie e ative o ambiente virtual**
+
 ```bash
 python -m venv venv
 # Windows
@@ -81,27 +114,32 @@ source venv/bin/activate
 ```
 
 3. **Instale as dependências**
+
 ```bash
 pip install -r requirements.txt
 ```
 
 4. **Configure as variáveis de ambiente**
+
 ```bash
 cp env_example.txt .env
 # Edite o arquivo .env com suas configurações
 ```
 
 5. **Execute as migrações**
+
 ```bash
 python manage.py migrate
 ```
 
 6. **Crie um superusuário**
+
 ```bash
 python manage.py createsuperuser
 ```
 
 7. **Inicie o servidor**
+
 ```bash
 python manage.py runserver
 ```
@@ -113,6 +151,7 @@ python manage.py runserver
 1. **Cadastre-se no SMSDev:** https://app.smsdev.com.br
 2. **Obtenha suas credenciais** no painel da API
 3. **Configure no arquivo .env:**
+
 ```env
 SMS_ENABLED=True
 SMSDEV_USUARIO=seu_email@exemplo.com
@@ -121,37 +160,114 @@ SMSDEV_TOKEN=sua_chave_token
 
 ### Configuração para Produção
 
+Para instruções detalhadas de deploy, consulte o arquivo [DEPLOY_GUIDE.md](DEPLOY_GUIDE.md).
+
+#### Deploy no Railway
+
+1. **Crie uma conta no Railway:** https://railway.app
+2. **Conecte seu repositório GitHub**
+3. **Configure as variáveis de ambiente:**
+   - `SECRET_KEY`: Chave secreta do Django
+   - `DEBUG`: False
+   - `ALLOWED_HOSTS`: seu-dominio.up.railway.app
+   - `SMSDEV_USUARIO`: seu email do SMSDev
+   - `SMSDEV_TOKEN`: seu token do SMSDev
+   - `SMS_ENABLED`: True
+4. **Railway detectará automaticamente** o Procfile e requirements.txt
+5. **Seu site estará no ar!**
+
+#### Configuração Alternativa (VPS/Servidor Próprio)
+
 1. **Configure o banco de dados PostgreSQL**
 2. **Configure variáveis de ambiente de produção**
 3. **Configure servidor web (Nginx + Gunicorn)**
-4. **Configure SSL/HTTPS**
+4. **Configure SSL/HTTPS com Let's Encrypt**
 5. **Configure domínio personalizado**
 
 ## 📱 Como Usar
 
 ### Para Barbeiros
+
 1. **Faça login** no sistema
 2. **Visualize agendamentos** do dia
 3. **Confirme atendimentos** quando necessário
 4. **Marque "À caminho"** para enviar SMS automático
 5. **Conclua atendimentos** após finalização
 
+## 📸 Screenshots
+
+### Tela de Login
+
+![Tela de Login](docs/images/login.png)
+
+> Interface moderna e responsiva para acesso ao sistema
+
+### Painel Principal (Dashboard)
+
+![Painel Principal](docs/images/dashboard.png)
+
+> Visão geral dos agendamentos com calendário interativo
+
+### Lista de Agendamentos
+
+![Lista de Agendamentos](docs/images/agendamentos.png)
+
+> Gerenciamento completo de agendamentos com filtros e status em tempo real
+
+### Cadastro de Cliente
+
+![Cadastro de Cliente](docs/images/cadastro-cliente.png)
+
+> Formulário completo para cadastro de novos clientes
+
+### Lista de Clientes
+
+![Lista de Clientes](docs/images/lista-clientes.png)
+
+> Visualização e busca de clientes cadastrados
+
+### Gerenciamento de Serviços
+
+![Gerenciamento de Serviços](docs/images/servicos.png)
+
+> Cadastro e controle dos serviços oferecidos pela barbearia
+
+### Relatório Financeiro
+
+![Relatório Financeiro](docs/images/financeiro.png)
+
+> Dashboard com análise de faturamento mensal
+
+### Previsão de Chegada
+
+![Previsão de Chegada](docs/images/previsao-chegada.png)
+
+> Sistema de notificação com previsão de chegada do barbeiro
+
+### Interface Mobile
+
+![Interface Mobile](docs/images/mobile.png)
+
+> Sistema totalmente responsivo para dispositivos móveis
 
 ## 🎨 Interface
 
 ### Painel Principal
+
 - Calendário interativo
 - Lista de agendamentos do dia
 - Status visual dos atendimentos
 - Botões de ação rápida
 
 ### Gestão de Clientes
+
 - Formulário completo de cadastro
 - Lista paginada com busca
 - Histórico de serviços
 - Edição e exclusão segura
 
 ### Relatórios
+
 - Dashboard financeiro
 - Gráficos de faturamento
 - Análise por período
@@ -171,11 +287,34 @@ SMSDEV_TOKEN=sua_chave_token
 - [ ] App mobile para clientes
 - [ ] Integração com WhatsApp
 - [ ] Sistema de avaliações
-- [ ] Agendamento online
-- [ ] Pagamento integrado
-- [ ] Dashboard analítico
+- [ ] Agendamento online para clientes
+- [ ] Pagamento integrado (PIX, cartão)
+- [ ] Dashboard analítico avançado
 - [ ] Notificações push
 - [ ] Integração com Google Calendar
+- [ ] Sistema de fidelidade
+- [ ] Confirmação automática por SMS
+- [ ] Multi-barbeiro (gestão de múltiplos profissionais)
+- [ ] API REST para integrações
+
+## 🌟 Sistema em Produção
+
+O sistema está **hospedado e funcionando** no Railway:
+
+- **URL:** https://kevembarber.up.railway.app/
+- **Status:** 🟢 Ativo
+- **Uptime:** Monitorado 24/7
+- **SSL:** Certificado HTTPS ativo
+- **Performance:** Otimizado com cache e compressão
+
+### Características do Deploy:
+
+- ✅ Deploy automático via Git
+- ✅ Banco de dados PostgreSQL
+- ✅ Arquivos estáticos servidos via WhiteNoise
+- ✅ Variáveis de ambiente seguras
+- ✅ Logs centralizados
+- ✅ Rollback rápido em caso de problemas
 
 ## 🤝 Contribuição
 
@@ -193,7 +332,8 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ## 👨‍💻 Desenvolvedor
 
-**Seu Nome**
+**Douglas Oliveira**
+
 - LinkedIn: [seu-linkedin](https://linkedin.com/in/seu-perfil)
 - GitHub: [seu-github](https://github.com/notdougz)
 - Email: doug.dev@hotmail.com
