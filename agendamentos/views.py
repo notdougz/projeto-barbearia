@@ -211,7 +211,10 @@ def agendamentos_mensais(request):
     
     # Gerar semanas do calendário
     calendar_weeks = []
-    current_date = primeiro_dia - timedelta(days=primeiro_dia.weekday())  # Começar no domingo da primeira semana
+    # Ajustar para começar no domingo (weekday() retorna 0=segunda, 6=domingo)
+    # Para começar no domingo, precisamos subtrair (weekday() + 1) % 7
+    days_to_subtract = (primeiro_dia.weekday() + 1) % 7
+    current_date = primeiro_dia - timedelta(days=days_to_subtract)
     
     for week in range(6):  # Máximo 6 semanas
         week_days = []
