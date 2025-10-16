@@ -85,6 +85,8 @@ Sistema completo de agendamento para barbearia desenvolvido em Django, com funci
 - **Deploy:** Railway (https://railway.app)
 - **Servidor:** Gunicorn
 - **Assets:** WhiteNoise (arquivos estáticos)
+- **Testes:** Django TestCase, pytest, coverage.py
+- **Qualidade:** Mock/Patch para simulação de APIs
 
 ## 📦 Instalação
 
@@ -142,6 +144,20 @@ python manage.py createsuperuser
 
 ```bash
 python manage.py runserver
+```
+
+8. **Execute os testes (opcional)**
+
+```bash
+# Executar testes básicos
+python manage.py test
+
+# Ou com pytest
+pytest
+
+# Com relatório de cobertura
+coverage run --source='.' manage.py test
+coverage html
 ```
 
 ## ⚙️ Configuração
@@ -273,6 +289,101 @@ Para instruções detalhadas de deploy, consulte o arquivo [DEPLOY_GUIDE.md](DEP
 - Análise por período
 - Exportação de dados
 
+## 🧪 Testes Automatizados
+
+### ✅ Cobertura de Testes
+
+O projeto possui uma **suíte completa de testes automatizados** com **65% de cobertura de código**, garantindo qualidade e confiabilidade do sistema.
+
+### 🔧 Ferramentas de Teste
+
+- **Django TestCase**: Framework principal de testes
+- **pytest**: Executor de testes avançado
+- **coverage.py**: Análise de cobertura de código
+- **Mock/Patch**: Simulação de dependências externas
+
+### 📋 Tipos de Teste Implementados
+
+#### 🏗️ **Testes de Modelos**
+
+- ✅ Criação e validação de clientes
+- ✅ Gestão de serviços e preços
+- ✅ Agendamentos e status
+- ✅ Relacionamentos entre entidades
+- ✅ Validações de campos obrigatórios
+
+#### 📝 **Testes de Formulários**
+
+- ✅ Validação de dados de entrada
+- ✅ Campos obrigatórios e opcionais
+- ✅ Formatação de dados (telefones, preços)
+- ✅ Filtros de serviços ativos
+- ✅ Validação de previsão de chegada
+
+#### 🌐 **Testes de Views**
+
+- ✅ Autenticação e autorização
+- ✅ Redirecionamentos de segurança
+- ✅ Criação e edição de registros
+- ✅ Listagens e filtros
+- ✅ Integração com templates
+
+#### 📱 **Testes de Serviços**
+
+- ✅ Integração SMSDev (API externa)
+- ✅ Limpeza e validação de telefones
+- ✅ Tratamento de erros de API
+- ✅ Simulação de cenários de falha
+- ✅ Configurações de credenciais
+
+### 🚀 Como Executar os Testes
+
+```bash
+# Executar todos os testes
+python manage.py test
+
+# Ou usando pytest
+pytest
+
+# Executar com cobertura
+coverage run --source='.' manage.py test
+coverage report
+coverage html  # Gera relatório HTML em htmlcov/
+
+# Executar testes específicos
+python manage.py test agendamentos.tests.ClienteModelTest
+pytest agendamentos/tests.py::ClienteModelTest
+
+# Executar apenas testes unitários
+pytest -m unit
+
+# Executar apenas testes de integração
+pytest -m integration
+```
+
+### 📊 Relatórios de Cobertura
+
+- **Relatório HTML**: Disponível em `htmlcov/index.html`
+- **Cobertura Atual**: 65% do código
+- **Arquivos Cobertos**: Modelos, formulários, views, serviços SMS
+- **Testes Totais**: 50+ casos de teste
+
+### 🎯 Estratégia de Testes
+
+1. **Testes Unitários**: Validação isolada de componentes
+2. **Testes de Integração**: Interação entre componentes
+3. **Testes de API**: Serviços externos (SMSDev)
+4. **Testes de Interface**: Views e templates
+5. **Mocks**: Simulação de dependências externas
+
+### 📈 Benefícios
+
+- ✅ **Qualidade**: Detecção precoce de bugs
+- ✅ **Refatoração Segura**: Mudanças sem quebrar funcionalidades
+- ✅ **Documentação**: Testes servem como documentação viva
+- ✅ **CI/CD**: Integração contínua e deploy confiável
+- ✅ **Manutenibilidade**: Código mais robusto e confiável
+
 ## 🔒 Segurança
 
 - ✅ Autenticação segura
@@ -283,6 +394,8 @@ Para instruções detalhadas de deploy, consulte o arquivo [DEPLOY_GUIDE.md](DEP
 - ✅ Controle de acesso
 
 ## 📈 Melhorias Futuras
+
+### 🚀 Funcionalidades
 
 - [ ] App mobile para clientes
 - [ ] Integração com WhatsApp
@@ -296,6 +409,15 @@ Para instruções detalhadas de deploy, consulte o arquivo [DEPLOY_GUIDE.md](DEP
 - [ ] Confirmação automática por SMS
 - [ ] Multi-barbeiro (gestão de múltiplos profissionais)
 - [ ] API REST para integrações
+
+### 🧪 Testes
+
+- [ ] Aumentar cobertura para 80%+
+- [ ] Testes de performance
+- [ ] Testes end-to-end (E2E)
+- [ ] Integração com GitHub Actions
+- [ ] Testes de carga e stress
+- [ ] Testes de acessibilidade
 
 ## 🌟 Sistema em Produção
 
