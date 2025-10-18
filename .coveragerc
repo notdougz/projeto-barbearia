@@ -1,0 +1,74 @@
+[run]
+# Diretórios a serem excluídos da cobertura
+omit =
+    */venv/*
+    */env/*
+    */migrations/*
+    */htmlcov/*
+    */staticfiles/*
+    */static/*
+    */media/*
+    manage.py
+    */settings.py
+    */wsgi.py
+    */asgi.py
+    */conftest.py
+    */test_*.py
+    */tests.py
+    */__init__.py
+    */admin.py
+    */apps.py
+    */urls.py
+    */fixtures/*
+    */templates/*
+    */__pycache__/*
+    */node_modules/*
+    */coverage/*
+    */logs/*
+    */tmp/*
+    */temp/*
+
+# Configurações de relatório
+[report]
+# Pular linhas que não foram executadas
+skip_covered = False
+
+# Mostrar linhas que faltam cobertura
+show_missing = True
+
+# Ordenar por cobertura decrescente
+sort = Cover
+
+# Definir limite mínimo de cobertura
+fail_under = 80
+
+# Excluir linhas específicas dos relatórios
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+
+    # Don't complain about missing debug-only code:
+    def __repr__
+    if self\.debug
+
+    # Don't complain if tests don't hit defensive assertion code:
+    raise AssertionError
+    raise NotImplementedError
+
+    # Don't complain if non-runnable code isn't run:
+    if 0:
+    if __name__ == .__main__.:
+
+    # Don't complain about abstract methods, they're supposed to be overridden:
+    @(abc\.)?abstractmethod
+
+# Configurações HTML
+[html]
+# Diretório para relatório HTML
+directory = htmlcov
+
+# Título do relatório
+title = Cobertura de Testes - Projeto Barbearia
+
+# Mostrar contexto ao redor das linhas não cobertas
+show_contexts = True
