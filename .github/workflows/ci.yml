@@ -36,12 +36,42 @@ jobs:
         run: |
           python manage.py migrate --noinput
 
-      # Passo 5: Executar apenas UM teste simples
-      - name: Executar teste simples
+      # Passo 5: Executar testes dos modelos principais
+      - name: Executar testes de modelos
         run: |
-          python manage.py test agendamentos.tests.ClienteModelTest.test_criar_cliente_com_dados_validos
+          python manage.py test agendamentos.tests.ClienteModelTest
+          python manage.py test agendamentos.tests.ServicoModelTest
+          python manage.py test agendamentos.tests.AgendamentoModelTest
 
-      # Passo 6: Verificar se Django funciona
+      # Passo 6: Executar testes de formulários
+      - name: Executar testes de formulários
+        run: |
+          python manage.py test agendamentos.tests.ClienteFormTest
+          python manage.py test agendamentos.tests.ServicoFormTest
+          python manage.py test agendamentos.tests.AgendamentoFormTest
+
+      # Passo 7: Executar testes de views principais
+      - name: Executar testes de views
+        run: |
+          python manage.py test agendamentos.tests.ViewsTest
+
+      # Passo 8: Verificar se Django funciona
       - name: Verificar Django
         run: |
           python manage.py check --deploy
+
+      # Passo 9: Executar cobertura básica
+      - name: Executar cobertura
+        run: |
+          python -m pytest --cov=agendamentos --cov-report=xml --cov-report=html agendamentos/tests.py::ClienteModelTest agendamentos/tests.py::ServicoModelTest agendamentos/tests.py::AgendamentoModelTest
+
+      # Passo 10: Upload da cobertura de testes
+      - name: Upload cobertura de testes
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: |
+            htmlcov/
+            coverage.xml
+          retention-days: 30
