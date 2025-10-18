@@ -233,11 +233,11 @@ docker-compose.override.yml
 *.pid
 *.sock
 
-# Arquivos de teste
-test_*.py
-*_test.py
-tests/
-test/
+# Arquivos de teste (comentado - testes devem ser versionados)
+# test_*.py
+# *_test.py
+# tests/
+# test/
 
 # Arquivos de documentação gerados
 docs/build/
