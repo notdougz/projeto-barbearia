@@ -1,4 +1,4 @@
-name: 🧪 CI - Testes e Qualidade
+name: CI - Testes e Qualidade
 
 # Quando executar este workflow
 on:
