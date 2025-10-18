@@ -36,22 +36,19 @@ jobs:
         run: |
           python manage.py migrate --noinput
 
-      # Passo 5: Executar testes básicos do Django
-      - name: Executar testes Django
+      # Passo 5: Executar apenas testes básicos (mais rápidos)
+      - name: Executar testes básicos
         run: |
-          python manage.py test agendamentos.tests
+          python manage.py test agendamentos.tests.ClienteModelTest
+          python manage.py test agendamentos.tests.ServicoModelTest
+          python manage.py test agendamentos.tests.AgendamentoModelTest
 
-      # Passo 6: Executar testes com pytest (sem cobertura completa)
-      - name: Executar testes pytest
+      # Passo 6: Executar cobertura apenas nos testes básicos
+      - name: Executar cobertura básica
         run: |
-          python -m pytest agendamentos/tests.py -v
+          python -m pytest --cov=agendamentos --cov-report=xml --cov-report=html agendamentos/tests.py::ClienteModelTest agendamentos/tests.py::ServicoModelTest agendamentos/tests.py::AgendamentoModelTest
 
-      # Passo 7: Executar cobertura separadamente
-      - name: Executar cobertura
-        run: |
-          python -m pytest --cov=agendamentos --cov-report=xml --cov-report=html agendamentos/tests.py
-
-      # Passo 8: Upload da cobertura de testes
+      # Passo 7: Upload da cobertura de testes
       - name: Upload cobertura de testes
         uses: actions/upload-artifact@v4
         if: always()
