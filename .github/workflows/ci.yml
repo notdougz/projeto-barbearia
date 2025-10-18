@@ -36,12 +36,17 @@ jobs:
         run: |
           python manage.py migrate --noinput
 
-      # Passo 5: Executar testes
-      - name: Executar testes
+      # Passo 5: Executar testes básicos
+      - name: Executar testes básicos
+        run: |
+          python manage.py test
+
+      # Passo 6: Executar testes com pytest
+      - name: Executar testes com pytest
         run: |
           python -m pytest --cov=agendamentos --cov-report=xml --cov-report=html -v
 
-      # Passo 6: Upload da cobertura de testes
+      # Passo 7: Upload da cobertura de testes
       - name: Upload cobertura de testes
         uses: actions/upload-artifact@v4
         if: always()
