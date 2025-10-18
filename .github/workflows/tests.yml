@@ -43,7 +43,7 @@ jobs:
 
       # Passo 6: Upload dos resultados dos testes
       - name: Upload resultados dos testes
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: test-results
