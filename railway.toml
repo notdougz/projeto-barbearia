@@ -18,8 +18,5 @@ startCommand = "python manage.py migrate --noinput && python manage.py collectst
 DEBUG = "False"
 DJANGO_SETTINGS_MODULE = "barbearia.settings"
 
-# Health check
-[deploy.healthcheckPath]
-path = "/"
-timeout = 300
-interval = 30
+# Health check (apenas o path)
+healthcheckPath = "/"
