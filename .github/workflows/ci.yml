@@ -1,0 +1,141 @@
+name: 🧪 CI - Testes e Qualidade
+
+# Quando executar este workflow
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+# Jobs que serão executados
+jobs:
+  # Job 1: Executar testes
+  test:
+    name: 🧪 Executar Testes
+    runs-on: ubuntu-latest
+
+    # Estratégia para diferentes versões do Python
+    strategy:
+      matrix:
+        python-version: [3.11, 3.12]
+
+    steps:
+      # Passo 1: Fazer checkout do código
+      - name: 📥 Checkout do código
+        uses: actions/checkout@v4
+
+      # Passo 2: Configurar Python
+      - name: 🐍 Configurar Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # Passo 3: Cache das dependências
+      - name: 💾 Cache das dependências
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # Passo 4: Instalar dependências
+      - name: 📦 Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Passo 5: Executar migrações
+      - name: 🗄️ Executar migrações
+        run: |
+          python manage.py migrate --noinput
+
+      # Passo 6: Executar testes
+      - name: 🧪 Executar testes
+        run: |
+          python -m pytest --cov=agendamentos --cov-report=xml --cov-report=html
+
+      # Passo 7: Upload da cobertura de testes
+      - name: 📊 Upload cobertura de testes
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+  # Job 2: Verificações de qualidade do código
+  quality:
+    name: 🔍 Qualidade do Código
+    runs-on: ubuntu-latest
+
+    steps:
+      # Passo 1: Checkout
+      - name: 📥 Checkout do código
+        uses: actions/checkout@v4
+
+      # Passo 2: Configurar Python
+      - name: 🐍 Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      # Passo 3: Instalar dependências
+      - name: 📦 Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Passo 4: Verificar formatação do código
+      - name: 🎨 Verificar formatação (Black)
+        run: |
+          pip install black
+          black --check --diff .
+
+      # Passo 5: Verificar imports
+      - name: 📋 Verificar imports (isort)
+        run: |
+          pip install isort
+          isort --check-only --diff .
+
+      # Passo 6: Verificar linting
+      - name: 🔧 Verificar linting (flake8)
+        run: |
+          pip install flake8
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+  # Job 3: Verificações de segurança
+  security:
+    name: 🔒 Verificações de Segurança
+    runs-on: ubuntu-latest
+
+    steps:
+      # Passo 1: Checkout
+      - name: 📥 Checkout do código
+        uses: actions/checkout@v4
+
+      # Passo 2: Configurar Python
+      - name: 🐍 Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      # Passo 3: Instalar dependências
+      - name: 📦 Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Passo 4: Verificar vulnerabilidades
+      - name: 🔍 Verificar vulnerabilidades (bandit)
+        run: |
+          bandit -r agendamentos/ -f json -o bandit-report.json || true
+          bandit -r agendamentos/ -ll
+
+      # Passo 5: Verificar dependências
+      - name: 📦 Verificar dependências (safety)
+        run: |
+          pip install safety
+          safety check --json --output safety-report.json || true
+          safety check

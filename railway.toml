@@ -1,0 +1,25 @@
+# Railway Configuration
+# Este arquivo configura o deploy automático no Railway
+
+# Configurações do projeto
+[build]
+builder = "nixpacks"
+
+# Configurações do Python
+[build.environment]
+PYTHON_VERSION = "3.11"
+
+# Configurações de deploy
+[deploy]
+startCommand = "python manage.py migrate --noinput && python manage.py collectstatic --noinput --clear && python setup.py && gunicorn barbearia.wsgi:application --bind 0.0.0.0:$PORT --log-level info"
+
+# Configurações de ambiente
+[deploy.environment]
+DEBUG = "False"
+DJANGO_SETTINGS_MODULE = "barbearia.settings"
+
+# Health check
+[deploy.healthcheckPath]
+path = "/"
+timeout = 300
+interval = 30

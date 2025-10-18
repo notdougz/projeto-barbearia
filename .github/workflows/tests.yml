@@ -1,0 +1,62 @@
+name: 🧪 Testes Automáticos
+
+# Quando executar este workflow
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+# Jobs que serão executados
+jobs:
+  # Job principal: Executar testes
+  test:
+    name: 🧪 Executar Testes
+    runs-on: ubuntu-latest
+
+    steps:
+      # Passo 1: Fazer checkout do código
+      - name: 📥 Baixar código
+        uses: actions/checkout@v4
+
+      # Passo 2: Configurar Python
+      - name: 🐍 Configurar Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      # Passo 3: Cache das dependências (opcional, mas acelera)
+      - name: 💾 Cache das dependências
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # Passo 4: Instalar dependências
+      - name: 📦 Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Passo 5: Executar migrações do banco
+      - name: 🗄️ Executar migrações
+        run: |
+          python manage.py migrate --noinput
+
+      # Passo 6: Executar testes
+      - name: 🧪 Executar testes
+        run: |
+          python -m pytest --cov=agendamentos --cov-report=xml --cov-report=html -v
+
+      # Passo 7: Upload dos resultados dos testes
+      - name: 📊 Upload resultados dos testes
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-results
+          path: |
+            htmlcov/
+            coverage.xml
+          retention-days: 30

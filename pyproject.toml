@@ -1,0 +1,102 @@
+# Configuração do Black (formatador de código Python)
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | htmlcov
+  | staticfiles
+)/
+'''
+
+# Configuração do isort (organizador de imports)
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_django = "django"
+known_first_party = "agendamentos"
+sections = ["FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+skip_glob = ["*/migrations/*", "*/venv/*", "*/staticfiles/*", "*/htmlcov/*"]
+
+# Configuração do flake8 (linter)
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "W503"]
+exclude = [
+    ".git",
+    "__pycache__",
+    "venv",
+    ".venv",
+    "staticfiles",
+    "htmlcov",
+    "migrations",
+]
+
+# Configuração do pytest
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "barbearia.settings"
+python_files = ["tests.py", "test_*.py", "*_tests.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--tb=short",
+    "--strict-markers",
+    "--disable-warnings",
+    "--cov=agendamentos",
+    "--cov-report=html",
+    "--cov-report=term",
+    "--cov-report=xml",
+]
+testpaths = ["agendamentos"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+    "performance: marks tests as performance tests",
+    "security: marks tests as security tests",
+    "api: marks tests as API tests",
+    "validation: marks tests as validation tests",
+    "database: marks tests as database tests",
+    "ui: marks tests as UI tests",
+    "edge_cases: marks tests as edge case tests",
+]
+
+# Configuração do coverage
+[tool.coverage.run]
+source = ["agendamentos"]
+omit = [
+    "*/migrations/*",
+    "*/venv/*",
+    "*/staticfiles/*",
+    "*/htmlcov/*",
+    "*/tests/*",
+    "*/test_*.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]

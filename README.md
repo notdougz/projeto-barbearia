@@ -481,6 +481,50 @@ pytest -v --tb=short
 - ✅ **Performance**: Otimização garantida
 - ✅ **Escalabilidade**: Testes com grandes volumes de dados
 
+## 🚀 CI/CD - Integração e Deploy Contínuo
+
+### ✅ GitHub Actions Configurado
+
+O projeto possui **CI/CD completo** configurado com GitHub Actions:
+
+- 🧪 **Testes Automáticos**: Executa 250 testes em cada push
+- 🔍 **Qualidade do Código**: Verifica formatação, linting e segurança
+- 🚀 **Deploy Automático**: Deploy para Railway quando testes passam
+- 📊 **Relatórios**: Cobertura de código e resultados detalhados
+
+### 📋 Workflows Disponíveis
+
+- `tests.yml` - Execução básica de testes
+- `ci.yml` - CI completo com qualidade e segurança
+- `deploy.yml` - Deploy automático para produção
+
+### 🔧 Como Usar
+
+1. **Configure secrets no GitHub**:
+
+   - `RAILWAY_TOKEN`: Token do Railway
+   - `RAILWAY_SERVICE_NAME`: Nome do serviço
+   - `RAILWAY_DOMAIN`: Domínio da aplicação
+
+2. **Faça push no código**:
+
+   ```bash
+   git add .
+   git commit -m "feat: nova funcionalidade"
+   git push origin main
+   ```
+
+3. **Monitore no GitHub Actions**:
+   - Vá para **Actions** no seu repositório
+   - Veja o progresso dos testes
+   - Baixe relatórios de cobertura
+
+### 📚 Documentação Completa
+
+Para instruções detalhadas sobre CI/CD, consulte: [docs/CI_CD_GUIDE.md](docs/CI_CD_GUIDE.md)
+
+---
+
 ## 🔒 Segurança
 
 - ✅ Autenticação segura

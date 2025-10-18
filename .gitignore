@@ -257,3 +257,24 @@ debug_*.log
 
 # Arquivos específicos do projeto
 # Adicione aqui arquivos específicos que não devem ser versionados
+
+# CI/CD e GitHub Actions
+.github/workflows/*.yml.bak
+.github/workflows/*.yaml.bak
+.github/actions/
+.github/secrets/
+
+# Relatórios de CI/CD
+bandit-report.json
+safety-report.json
+test-results/
+coverage-reports/
+
+# Arquivos de configuração local do Railway
+.railway/
+railway.json
+railway.toml.local
+
+# Arquivos de deploy local
+deploy.log
+deploy-*.log
