@@ -4,15 +4,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('agendamentos', '0004_alter_agendamento_status'),
+        ("agendamentos", "0004_alter_agendamento_status"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='agendamento',
-            name='previsao_chegada',
-            field=models.IntegerField(blank=True, help_text='Previsão de chegada em minutos', null=True),
+            model_name="agendamento",
+            name="previsao_chegada",
+            field=models.IntegerField(
+                blank=True, help_text="Previsão de chegada em minutos", null=True
+            ),
         ),
     ]

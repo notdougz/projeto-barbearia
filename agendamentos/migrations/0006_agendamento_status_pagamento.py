@@ -4,15 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('agendamentos', '0005_agendamento_previsao_chegada'),
+        ("agendamentos", "0005_agendamento_previsao_chegada"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='agendamento',
-            name='status_pagamento',
-            field=models.CharField(choices=[('pendente', 'Pendente'), ('pago', 'Pago')], default='pendente', max_length=10),
+            model_name="agendamento",
+            name="status_pagamento",
+            field=models.CharField(
+                choices=[("pendente", "Pendente"), ("pago", "Pago")],
+                default="pendente",
+                max_length=10,
+            ),
         ),
     ]

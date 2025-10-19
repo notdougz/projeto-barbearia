@@ -1,4 +1,4 @@
-name: Testes Automáticos
+name: Testes Básicos
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  test:
-    name: Executar Testes
+  quick-test:
+    name: Testes Rápidos
     runs-on: ubuntu-latest
 
     steps:
@@ -37,3 +37,12 @@ jobs:
       - name: Verificar Django
         run: |
           python manage.py check --deploy
+
+      - name: Teste de cobertura rápida
+        run: |
+          coverage run --source='agendamentos' manage.py test agendamentos.tests.ClienteModelTest agendamentos.tests.ServicoModelTest
+          coverage report
+
+      - name: Verificar formatação básica
+        run: |
+          black --check agendamentos/
