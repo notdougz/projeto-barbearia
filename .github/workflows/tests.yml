@@ -41,7 +41,7 @@ jobs:
       - name: Teste de cobertura rápida
         run: |
           coverage run --source='agendamentos' manage.py test agendamentos.tests.ClienteModelTest agendamentos.tests.ServicoModelTest
-          coverage report
+          coverage report --fail-under=30
 
       - name: Verificar formatação básica
         run: |
