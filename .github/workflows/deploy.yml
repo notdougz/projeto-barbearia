@@ -38,6 +38,7 @@ jobs:
           echo "🔐 Configurando token do Railway..."
           echo "Token configurado com sucesso!"
         env:
+          # Railway token from GitHub secrets
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
 
       # Passo 5: Deploy
@@ -47,6 +48,7 @@ jobs:
           railway up --service ${{ secrets.RAILWAY_SERVICE_NAME }}
           echo "✅ Deploy concluído!"
         env:
+          # Railway token from GitHub secrets
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
 
       # Passo 6: Verificar deploy
