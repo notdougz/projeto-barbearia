@@ -10,64 +10,67 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
+
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Carregar variáveis de ambiente do arquivo .env
-load_dotenv(BASE_DIR / '.env')
+load_dotenv(BASE_DIR / ".env")
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-dev-key-MUDE-ISSO-EM-PRODUCAO')
+SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-dev-key-MUDE-ISSO-EM-PRODUCAO")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = [
-    'kevembarber.up.railway.app',
-    '*.railway.app',
-    'localhost',
-    '127.0.0.1',
-    'web-production-ca5a0.up.railway.app',
+    "kevembarber.up.railway.app",
+    "*.railway.app",
+    "localhost",
+    "127.0.0.1",
+    "web-production-ca5a0.up.railway.app",
 ]
 
 # Se houver variável de ambiente, usar ela
-if 'ALLOWED_HOSTS' in os.environ:
-    ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
+if "ALLOWED_HOSTS" in os.environ:
+    ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(",")
 
 # Configuração CSRF para produção
 CSRF_TRUSTED_ORIGINS = [
-    'https://kevembarber.up.railway.app',
-    'https://*.railway.app',
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
+    "https://kevembarber.up.railway.app",
+    "https://*.railway.app",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
 ]
 
 # Configurações de SMS
-SMS_ENABLED = os.getenv('SMS_ENABLED', 'True').lower() == 'true'  # Default True para desenvolvimento
+SMS_ENABLED = (
+    os.getenv("SMS_ENABLED", "True").lower() == "true"
+)  # Default True para desenvolvimento
 
 # SMSDev (API Brasileira)
-SMSDEV_USUARIO = os.getenv('SMSDEV_USUARIO', '')  # Seu email cadastrado na SMSDev
-SMSDEV_TOKEN = os.getenv('SMSDEV_TOKEN', '')      # Token obtido na SMSDev
+SMSDEV_USUARIO = os.getenv("SMSDEV_USUARIO", "")  # Seu email cadastrado na SMSDev
+SMSDEV_TOKEN = os.getenv("SMSDEV_TOKEN", "")  # Token obtido na SMSDev
 
 # Configuração básica de Logs
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
         },
     },
-    'root': {
-        'handlers': ['console'],
+    "root": {
+        "handlers": ["console"],
     },
 }
 
@@ -75,62 +78,61 @@ LOGGING = {
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'agendamentos',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "agendamentos",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'barbearia.urls'
+ROOT_URLCONF = "barbearia.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'barbearia.wsgi.application'
+WSGI_APPLICATION = "barbearia.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 # Configuração do banco de dados
-if os.getenv('DATABASE_URL'):
+if os.getenv("DATABASE_URL"):
     # PostgreSQL para produção (Railway)
     import dj_database_url
-    DATABASES = {
-        'default': dj_database_url.parse(os.getenv('DATABASE_URL'))
-    }
+
+    DATABASES = {"default": dj_database_url.parse(os.getenv("DATABASE_URL"))}
 else:
     # SQLite para desenvolvimento local
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
         }
     }
 
@@ -140,16 +142,16 @@ else:
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -157,9 +159,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'pt-br'
+LANGUAGE_CODE = "pt-br"
 
-TIME_ZONE = 'America/Sao_Paulo'
+TIME_ZONE = "America/Sao_Paulo"
 
 USE_I18N = True
 
@@ -169,8 +171,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Django automaticamente coleta arquivos de app/static/ de cada app
 # Não precisamos de STATICFILES_DIRS pois os arquivos estão em agendamentos/static/
@@ -188,15 +190,14 @@ STORAGES = {
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Configuração para login com email
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
+    "django.contrib.auth.backends.ModelBackend",
 ]
 
 # Configurações de Login/Logout
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'home'
-LOGIN_URL = 'login'
-
+LOGIN_REDIRECT_URL = "home"
+LOGOUT_REDIRECT_URL = "home"
+LOGIN_URL = "login"

@@ -269,6 +269,8 @@ bandit-report.json
 safety-report.json
 test-results/
 coverage-reports/
+*.report
+*.reports
 
 # Arquivos de configuração local do Railway
 .railway/

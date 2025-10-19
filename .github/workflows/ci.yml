@@ -7,6 +7,53 @@ on:
     branches: [main]
 
 jobs:
+  quality:
+    name: Análise de Qualidade
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Verificar formatação com Black
+        run: |
+          black --check .
+
+      - name: Verificar organização de imports com isort
+        run: |
+          isort --check-only .
+
+      - name: Verificar linting com flake8
+        run: |
+          flake8 .
+
+      - name: Verificar segurança com bandit
+        run: |
+          bandit -r agendamentos/ -f json -o bandit-report.json || true
+
+      - name: Verificar vulnerabilidades com safety
+        run: |
+          safety check --json --output safety-report.json || true
+
+      - name: Upload relatórios de segurança
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-reports
+          path: |
+            bandit-report.json
+            safety-report.json
+
   test:
     name: Executar Testes
     runs-on: ubuntu-latest
@@ -29,11 +76,53 @@ jobs:
         run: |
           python manage.py migrate --noinput
 
-      - name: Executar testes básicos
+      - name: Executar todos os testes com cobertura
         run: |
-          python manage.py test agendamentos.tests.ClienteModelTest
-          python manage.py test agendamentos.tests.ServicoModelTest
+          python -m pytest --cov=agendamentos --cov-report=xml --cov-report=html --cov-report=term
 
-      - name: Verificar Django
+      - name: Verificar shelve do Django
         run: |
           python manage.py check --deploy
+
+      - name: Upload relatório de cobertura
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: htmlcov/
+
+      - name: Upload relatório XML de cobertura
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          flags: shell
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+  build:
+    name: Build e Verificação
+    runs-on: ubuntu-latest
+    needs: [quality, test]
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Coletar arquivos estáticos
+        run: |
+          python manage.py collectstatic --noinput
+
+      - name: Verificar build
+        run: |
+          echo "✅ Build realizado com sucesso!"
+          echo "✅ Qualidade de código aprovada"
+          echo "✅ Todos os testes passaram"
