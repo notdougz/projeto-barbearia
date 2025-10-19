@@ -2,11 +2,13 @@
 import os
 
 import django
-from django.contrib.auth.models import User
 
 # Configurar Django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "barbearia.settings")
 django.setup()
+
+# Importar modelos após configurar Django
+from django.contrib.auth.models import User
 
 
 def main():
