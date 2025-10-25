@@ -97,6 +97,12 @@ h2 {
     align-items: center;
     gap: var(--spacing-md);
     text-align: center;
+    display: flex;
+}
+
+/* Espaçamento específico para ícones em h2 */
+h2 .icon {
+    margin-right: var(--spacing-sm);
 }
 
 h4 {
