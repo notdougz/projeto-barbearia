@@ -187,6 +187,18 @@ STORAGES = {
     },
 }
 
+# WhiteNoise: servir arquivos na raiz (ex.: /robots.txt, /favicon.ico)
+WHITENOISE_ROOT = BASE_DIR / "static_root"
+
+# Cookies/Segurança (especialmente atrás de proxy/HTTPS em produção)
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+CSRF_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SAMESITE = "Lax"
+
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
