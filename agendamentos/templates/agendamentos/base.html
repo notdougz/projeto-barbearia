@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Dashboard - Sistema Profissional{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'agendamentos/style.css' %}">
@@ -32,30 +32,30 @@
                         </a>
                     </li>
                     {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a href="{% url 'lista_clientes' %}" class="nav-link {% if request.resolver_match.url_name == 'lista_clientes' %}active{% endif %}">
-                                <span class="icon icon-user"></span>
-                                <span class="nav-text">Clientes</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'lista_servicos' %}" class="nav-link {% if 'servico' in request.resolver_match.url_name %}active{% endif %}">
-                                <span class="icon icon-scissors"></span>
-                                <span class="nav-text">Serviços</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'agendar' %}" class="nav-link {% if request.resolver_match.url_name == 'agendar' %}active{% endif %}">
-                                <span class="icon icon-calendar"></span>
-                                <span class="nav-text">Novo Agendamento</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'financeiro' %}" class="nav-link {% if request.resolver_match.url_name == 'financeiro' %}active{% endif %}">
-                                <span class="icon icon-money"></span>
-                                <span class="nav-text">Financeiro</span>
-                            </a>
-                        </li>
+                    <li class="nav-item">
+                        <a href="{% url 'lista_clientes' %}" class="nav-link {% if request.resolver_match.url_name == 'lista_clientes' %}active{% endif %}">
+                            <span class="icon icon-user"></span>
+                            <span class="nav-text">Clientes</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'lista_servicos' %}" class="nav-link {% if 'servico' in request.resolver_match.url_name %}active{% endif %}">
+                            <span class="icon icon-scissors"></span>
+                            <span class="nav-text">Serviços</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'agendar' %}" class="nav-link {% if request.resolver_match.url_name == 'agendar' %}active{% endif %}">
+                            <span class="icon icon-calendar"></span>
+                            <span class="nav-text">Novo Agendamento</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'financeiro' %}" class="nav-link {% if request.resolver_match.url_name == 'financeiro' %}active{% endif %}">
+                            <span class="icon icon-money"></span>
+                            <span class="nav-text">Financeiro</span>
+                        </a>
+                    </li>
                     {% endif %}
                 </ul>
             </nav>
@@ -85,7 +85,7 @@
             </div>
 
             <!-- Mobile Menu Toggle -->
-            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Abrir menu de navegação">
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
