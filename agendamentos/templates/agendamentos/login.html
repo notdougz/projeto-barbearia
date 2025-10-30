@@ -3,20 +3,20 @@
 {% block title %}Login - Dashboard{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: center; align-items: center; min-height: 60vh;">
-    <div class="card" style="max-width: 420px; width: 100%;">
-        <div class="card-header">
-            <h3 style="text-align: center;">Acesso Profissional</h3>
+<div class="login-container">
+    <div class="card login-card">
+        <div class="card-header login-header">
+            <h3>Acesso Profissional</h3>
         </div>
         <div class="card-body">
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <div style="width: 80px; height: 80px; margin: 0 auto 1rem; background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-glow);">
+            <div class="login-welcome-section">
+                <div class="login-icon-wrapper">
                     <span class="icon icon-barber icon-xl"></span>
                 </div>
-                <h2 style="text-align: center; margin-bottom: 0.5rem;">
+                <h2>
                     Bem-vindo, Kevem!
                 </h2>
-                <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
+                <p class="login-subtitle">
                     Sistema de Agendamento
                 </p>
             </div>
@@ -47,12 +47,12 @@
                            required>
                 </div>
                 
-                <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 1rem;">
+                <button type="submit" class="btn btn-primary btn-lg login-button">
                     <span class="icon icon-barber"></span>Entrar no Sistema
                 </button>
             </form>
             
-            <div style="text-align: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--bg-tertiary);">
+            <div class="login-footer">
                 <p class="text-muted">
                     Sistema exclusivo para profissionais
                 </p>

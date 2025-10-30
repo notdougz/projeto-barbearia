@@ -3,8 +3,8 @@
 {% block title %}{% if agendamento %}Editar Agendamento{% else %}Novo Agendamento{% endif %} - Dashboard{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: center;">
-    <div class="card" style="max-width: 600px; width: 100%;">
+<div class="agendar-container">
+    <div class="card agendar-card">
         <div class="card-header">
             <h3>{% if agendamento %}<span class="icon icon-edit"></span>Editar Agendamento{% else %}<span class="icon icon-calendar"></span>Novo Agendamento{% endif %}</h3>
         </div>
@@ -24,7 +24,7 @@
                                 </div>
                             </div>
                             {{ form.cliente.as_hidden }}
-                            <select id="cliente-options" style="display: none;">
+                            <select id="cliente-options" class="cliente-options-hidden">
                                 {% for choice in form.cliente.field.choices %}
                                     <option value="{{ choice.0 }}">{{ choice.1 }}</option>
                                 {% endfor %}
@@ -40,7 +40,7 @@
                             </small>
                         </div>
                         
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="agendar-form-grid">
                             <div class="form-group">
                                 <label for="{{ form.servico.id_for_label }}"><span class="icon icon-scissors"></span>{{ form.servico.label }}</label>
                                 {{ form.servico }}
@@ -117,8 +117,8 @@
                             {% endif %}
                         </div>
                         
-                        <div class="form-group" style="display: flex; gap: 1rem; margin-top: 2rem;">
-                            <button type="submit" class="btn btn-primary" style="flex: 1;">
+                        <div class="form-group agendar-button-group">
+                            <button type="submit" class="btn btn-primary agendar-button-submit">
                                 {% if agendamento %}<span class="icon icon-edit"></span>Atualizar Agendamento{% else %}<span class="icon icon-add"></span>Criar Agendamento{% endif %}
                             </button>
                             <a href="{% url 'painel_barbeiro' %}" class="btn btn-secondary"><span class="icon icon-delete"></span>Cancelar</a>

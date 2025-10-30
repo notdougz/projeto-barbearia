@@ -2515,6 +2515,7 @@ a:hover {
     z-index: 1000;
     display: none;
     margin-top: 4px;
+    -webkit-backdrop-filter: none;
     backdrop-filter: none;
 }
 
@@ -4403,4 +4404,93 @@ a:hover {
         font-size: 16px;
         margin-bottom: var(--spacing-md);
     }
+}
+
+/* ===== LOGIN PAGE STYLES ===== */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+}
+
+.login-card {
+    max-width: 420px;
+    width: 100%;
+}
+
+.login-header h3 {
+    text-align: center;
+}
+
+.login-welcome-section {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.login-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1rem;
+    background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-glow);
+}
+
+.login-welcome-section h2 {
+    text-align: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+.login-subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.login-button {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.login-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--bg-tertiary);
+}
+
+/* ===== AGENDAR PAGE STYLES ===== */
+.agendar-container {
+    display: flex;
+    justify-content: center;
+}
+
+.agendar-card {
+    max-width: 600px;
+    width: 100%;
+}
+
+.agendar-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.agendar-button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.agendar-button-submit {
+    flex: 1;
+}
+
+.cliente-options-hidden {
+    display: none;
 }
