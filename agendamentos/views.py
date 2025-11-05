@@ -2,6 +2,7 @@ from datetime import date, datetime, timedelta
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import AgendamentoForm, ClienteForm, PrevisaoChegadaForm, ServicoForm
@@ -41,8 +42,16 @@ def criar_cliente(request):
     if request.method == "POST":
         form = ClienteForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect("lista_clientes")
+            try:
+                form.save()
+                messages.success(request, "Cliente cadastrado com sucesso!")
+                return redirect("lista_clientes")
+            except IntegrityError:
+                # Caso ainda ocorra erro de integridade (proteção adicional)
+                messages.error(
+                    request,
+                    "Erro ao cadastrar cliente. Verifique se o telefone ou nome já está cadastrado.",
+                )
     else:
         form = ClienteForm()
     return render(
@@ -58,8 +67,16 @@ def editar_cliente(request, pk):
     if request.method == "POST":
         form = ClienteForm(request.POST, instance=cliente)
         if form.is_valid():
-            form.save()
-            return redirect("lista_clientes")
+            try:
+                form.save()
+                messages.success(request, "Cliente atualizado com sucesso!")
+                return redirect("lista_clientes")
+            except IntegrityError:
+                # Caso ainda ocorra erro de integridade (proteção adicional)
+                messages.error(
+                    request,
+                    "Erro ao atualizar cliente. Verifique se o telefone ou nome já está cadastrado para outro cliente.",
+                )
     else:
         form = ClienteForm(instance=cliente)
     return render(

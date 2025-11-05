@@ -30,6 +30,49 @@ class ClienteForm(forms.ModelForm):
             ),
         }
 
+    def clean_telefone(self):
+        """Valida se o telefone já existe para outro cliente"""
+        telefone = self.cleaned_data.get("telefone")
+        
+        if telefone:  # Só valida se telefone foi informado
+            # Remove espaços e caracteres especiais para comparação
+            telefone_limpo = telefone.strip()
+            
+            # Verifica se já existe outro cliente com este telefone
+            # Exclui o próprio cliente caso seja uma edição
+            queryset = Cliente.objects.filter(telefone=telefone_limpo)
+            if self.instance.pk:  # Se estiver editando, exclui o próprio registro
+                queryset = queryset.exclude(pk=self.instance.pk)
+            
+            if queryset.exists():
+                cliente_existente = queryset.first()
+                raise forms.ValidationError(
+                    f"Já existe um cliente cadastrado com este telefone: {cliente_existente.nome}"
+                )
+        
+        return telefone
+
+    def clean_nome(self):
+        """Valida se o nome já existe para outro cliente"""
+        nome = self.cleaned_data.get("nome")
+        
+        if nome:
+            # Remove espaços extras e compara em minúsculas
+            nome_limpo = nome.strip()
+            
+            # Verifica se já existe outro cliente com este nome (case-insensitive)
+            queryset = Cliente.objects.filter(nome__iexact=nome_limpo)
+            if self.instance.pk:  # Se estiver editando, exclui o próprio registro
+                queryset = queryset.exclude(pk=self.instance.pk)
+            
+            if queryset.exists():
+                cliente_existente = queryset.first()
+                raise forms.ValidationError(
+                    f"Já existe um cliente cadastrado com este nome: {cliente_existente.nome}"
+                )
+        
+        return nome
+
 
 class AgendamentoForm(forms.ModelForm):
     class Meta:
