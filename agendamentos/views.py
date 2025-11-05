@@ -532,36 +532,36 @@ def alterar_status_pagamento(request, pk):
     agendamento.save()
 
     # Preservar parâmetros da URL atual (data e filtro)
-    referer = request.META.get('HTTP_REFERER', '')
+    referer = request.META.get("HTTP_REFERER", "")
     params = {}
-    
+
     # Tentar extrair parâmetros da URL de referência
     if referer:
         parsed_url = urlparse(referer)
         query_params = parse_qs(parsed_url.query)
-        if 'data' in query_params:
-            params['data'] = query_params['data'][0]
-        if 'filtro' in query_params:
-            params['filtro'] = query_params['filtro'][0]
-    
+        if "data" in query_params:
+            params["data"] = query_params["data"][0]
+        if "filtro" in query_params:
+            params["filtro"] = query_params["filtro"][0]
+
     # Se não encontrou parâmetros na referência, usar os da requisição atual
     if not params:
-        if request.GET.get('data'):
-            params['data'] = request.GET.get('data')
-        if request.GET.get('filtro'):
-            params['filtro'] = request.GET.get('filtro')
-    
+        if request.GET.get("data"):
+            params["data"] = request.GET.get("data")
+        if request.GET.get("filtro"):
+            params["filtro"] = request.GET.get("filtro")
+
     # Se ainda não tem parâmetros, usar valores padrão
-    if 'data' not in params:
-        params['data'] = agendamento.data.strftime('%Y-%m-%d')
-    if 'filtro' not in params:
-        params['filtro'] = 'todos'
-    
+    if "data" not in params:
+        params["data"] = agendamento.data.strftime("%Y-%m-%d")
+    if "filtro" not in params:
+        params["filtro"] = "todos"
+
     # Construir URL de redirecionamento
-    financeiro_url = reverse('financeiro')
+    financeiro_url = reverse("financeiro")
     if params:
         financeiro_url = f"{financeiro_url}?{urlencode(params)}"
-    
+
     return redirect(financeiro_url)
 
 
