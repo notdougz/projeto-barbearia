@@ -63,6 +63,7 @@
                                             <span id="current-month"></span>
                                             <button type="button" id="next-month">&gt;</button>
                                         </div>
+                                        <div class="date-weekdays" id="date-weekdays"></div>
                                         <div class="date-grid" id="date-grid"></div>
                                         <div class="date-actions">
                                             <button type="button" id="today-btn">Hoje</button>
@@ -429,6 +430,21 @@ document.addEventListener('DOMContentLoaded', function() {
     let selectedDate = null;
 
     const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    const weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+    // Criar cabeçalho com dias da semana
+    function createWeekdaysHeader() {
+        const weekdaysContainer = document.getElementById('date-weekdays');
+        if (!weekdaysContainer) return;
+        
+        weekdaysContainer.innerHTML = '';
+        weekdays.forEach(day => {
+            const dayElement = document.createElement('div');
+            dayElement.className = 'date-weekday';
+            dayElement.textContent = day;
+            weekdaysContainer.appendChild(dayElement);
+        });
+    }
 
     function updateCalendar() {
         currentMonthSpan.textContent = `${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
@@ -519,6 +535,7 @@ document.addEventListener('DOMContentLoaded', function() {
     dateDropdown.addEventListener('click', (e) => e.stopPropagation());
 
     // Inicializar
+    createWeekdaysHeader();
     updateCalendar();
     
     if (hiddenDateField.value) {

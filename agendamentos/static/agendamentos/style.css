@@ -1386,6 +1386,15 @@ a:hover {
         padding: var(--spacing-sm);
     }
 
+    .date-selector .custom-date-picker .date-weekdays {
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+
+    .date-selector .custom-date-picker .date-weekday {
+        font-size: 11px;
+        padding: 4px 0;
+    }
+
     .date-selector .custom-date-picker .date-day {
         min-height: 32px;
         max-height: 36px;
@@ -2364,6 +2373,27 @@ a:hover {
     overflow: hidden;
 }
 
+.date-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0px;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.date-weekday {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    padding: 4px 0;
+    letter-spacing: 0.5px;
+}
+
 .date-day {
     aspect-ratio: 1;
     display: flex;
@@ -2445,6 +2475,15 @@ a:hover {
     .date-grid {
         max-height: 320px;
         padding: var(--spacing-sm);
+    }
+    
+    .date-weekdays {
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+    
+    .date-weekday {
+        font-size: 11px;
+        padding: 6px 0;
     }
     
     .date-day {
