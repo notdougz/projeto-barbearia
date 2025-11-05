@@ -1,6 +1,58 @@
+import re
+
 from django import forms
 
 from .models import Agendamento, Cliente, Servico
+
+
+def normalizar_telefone_brasileiro(telefone):
+    """
+    Normaliza números de telefone brasileiros para o formato internacional +55XXXXXXXXXXX
+    Adiciona automaticamente o +55 se não estiver presente.
+    
+    Aceita vários formatos de entrada:
+    - 11999999999 -> +5511999999999
+    - (11) 99999-9999 -> +5511999999999
+    - +5511999999999 -> +5511999999999 (já está correto)
+    - 5511999999999 -> +5511999999999
+    - +55 11 99999-9999 -> +5511999999999
+    
+    Args:
+        telefone (str): Número de telefone em qualquer formato
+        
+    Returns:
+        str: Número no formato +55XXXXXXXXXXX ou None se inválido
+    """
+    if not telefone:
+        return None
+    
+    # Remove todos os caracteres não numéricos, exceto +
+    telefone_limpo = re.sub(r'[^\d+]', '', telefone.strip())
+    
+    # Se já começa com +55, retorna como está (após limpar caracteres extras)
+    if telefone_limpo.startswith('+55'):
+        telefone_limpo = '+55' + telefone_limpo[3:].replace('+', '')
+        # Verifica se tem tamanho válido após o +55 (10 ou 11 dígitos)
+        if len(telefone_limpo) in [13, 14]:  # +55 + 10 ou 11 dígitos
+            return telefone_limpo
+    
+    # Se começa com 55 (sem o +), adiciona o +
+    if telefone_limpo.startswith('55') and len(telefone_limpo) >= 12:
+        telefone_limpo = '+' + telefone_limpo
+        # Verifica se tem tamanho válido
+        if len(telefone_limpo) in [13, 14]:
+            return telefone_limpo
+    
+    # Se não tem código do país, assume que é número brasileiro
+    # Remove zeros à esquerda do DDD se houver
+    telefone_limpo = telefone_limpo.lstrip('0')
+    
+    # Verifica se tem 10 ou 11 dígitos (DDD + número)
+    if len(telefone_limpo) == 10 or len(telefone_limpo) == 11:
+        return '+55' + telefone_limpo
+    
+    # Se não couber em nenhum padrão, retorna None (inválido)
+    return None
 
 
 class ClienteForm(forms.ModelForm):
@@ -12,7 +64,11 @@ class ClienteForm(forms.ModelForm):
                 attrs={"class": "form-control", "placeholder": "Nome completo"}
             ),
             "telefone": forms.TextInput(
-                attrs={"class": "form-control", "placeholder": "+5511999999999"}
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "11999999999 ou +5511999999999",
+                    "help_text": "Digite o número com ou sem +55. O sistema adicionará automaticamente."
+                }
             ),
             "endereco": forms.Textarea(
                 attrs={
@@ -31,16 +87,21 @@ class ClienteForm(forms.ModelForm):
         }
 
     def clean_telefone(self):
-        """Valida se o telefone já existe para outro cliente"""
+        """Normaliza e valida o telefone brasileiro, adicionando +55 automaticamente"""
         telefone = self.cleaned_data.get("telefone")
         
         if telefone:  # Só valida se telefone foi informado
-            # Remove espaços e caracteres especiais para comparação
-            telefone_limpo = telefone.strip()
+            # Normaliza o telefone para formato internacional (+55XXXXXXXXXXX)
+            telefone_normalizado = normalizar_telefone_brasileiro(telefone)
             
-            # Verifica se já existe outro cliente com este telefone
+            if not telefone_normalizado:
+                raise forms.ValidationError(
+                    "Número de telefone inválido. Digite o número com DDD (ex: 11999999999 ou +5511999999999)"
+                )
+            
+            # Verifica se já existe outro cliente com este telefone normalizado
             # Exclui o próprio cliente caso seja uma edição
-            queryset = Cliente.objects.filter(telefone=telefone_limpo)
+            queryset = Cliente.objects.filter(telefone=telefone_normalizado)
             if self.instance.pk:  # Se estiver editando, exclui o próprio registro
                 queryset = queryset.exclude(pk=self.instance.pk)
             
@@ -49,6 +110,9 @@ class ClienteForm(forms.ModelForm):
                 raise forms.ValidationError(
                     f"Já existe um cliente cadastrado com este telefone: {cliente_existente.nome}"
                 )
+            
+            # Retorna o telefone normalizado (com +55)
+            return telefone_normalizado
         
         return telefone
 

@@ -25,6 +25,9 @@
                     {% if form.telefone.errors %}
                         <div class="text-danger">{{ form.telefone.errors }}</div>
                     {% endif %}
+                    <small class="form-text text-muted">
+                        <span class="icon icon-info"></span> Digite o número com DDD (ex: 11999999999). O sistema adiciona o +55 automaticamente.
+                    </small>
                 </div>
                 
                 <div class="form-group">
