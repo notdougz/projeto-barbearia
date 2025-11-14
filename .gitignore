@@ -257,6 +257,7 @@ debug_*.log
 
 # Arquivos específicos do projeto
 # Adicione aqui arquivos específicos que não devem ser versionados
+docs/VISAO_GERAL_PROJETO.md
 
 # CI/CD e GitHub Actions
 .github/workflows/*.yml.bak

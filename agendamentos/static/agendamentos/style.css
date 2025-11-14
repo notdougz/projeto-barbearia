@@ -646,6 +646,15 @@ select {
     color: var(--bg-card);
 }
 
+.btn-secondary .icon-delete {
+    filter: brightness(0);
+    transition: filter 0.2s ease;
+}
+
+.btn-secondary:hover .icon-delete {
+    filter: brightness(0) invert(1);
+}
+ 
 .btn-success {
     background: var(--primary);
     color: var(--bg-card);
@@ -678,7 +687,7 @@ select {
 }
 
 .btn-danger:hover .icon-delete {
-    filter: brightness(0);
+    filter: brightness(0)
 }
 
 .btn-info {
@@ -3570,13 +3579,24 @@ a:hover {
     }
     
     .btn-servico-edit {
-        background: var(--primary);
+        background: var(--bg-card);
+        color: var(--text-primary);
     }
-    
+
+    .btn-servico-edit .icon-edit {
+        filter: none !important;
+        transition: filter 0.2s ease;
+    }
+
+    .btn-servico-edit:hover .icon-edit {
+        filter: brightness(0) invert(1) !important;
+    }
+
     .btn-servico-edit:hover {
         background: var(--primary-hover);
         transform: scale(1.05);
         box-shadow: var(--shadow);
+        color: var(--danger)
     }
     
     .btn-servico-delete {
