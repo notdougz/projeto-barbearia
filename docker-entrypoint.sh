@@ -1,13 +1,18 @@
 #!/bin/bash
+# TESTE: Força flush imediato de output
+export PYTHONUNBUFFERED=1
+
 # Não usar set -e aqui pois queremos que o gunicorn inicie mesmo se houver erros nas etapas anteriores
 set -o pipefail  # Apenas falha em pipes, não em comandos individuais
 
-# Logs iniciais
+# TESTE CRÍTICO: Este log DEVE aparecer nos logs do Railway
 echo "=========================================="
-echo "=== Iniciando Container ==="
+echo "=== DOCKER-ENTRYPOINT.SH EXECUTADO ==="
 echo "=========================================="
 echo "Data/Hora: $(date)"
 echo "Diretório de trabalho: $(pwd)"
+echo "Script: $0"
+echo "Argumentos: $@"
 echo "Variáveis de ambiente importantes:"
 echo "  - PORT: ${PORT:-não definida (usará 8000)}"
 echo "  - DATABASE_URL: ${DATABASE_URL:+definida}"

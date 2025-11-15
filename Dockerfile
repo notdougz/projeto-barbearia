@@ -44,5 +44,7 @@ RUN chmod +x /docker-entrypoint.sh
 # Script de entrada que aguarda o banco estar pronto e executa migrações
 # O docker-entrypoint.sh inicia o gunicorn automaticamente
 # A variável PORT será detectada automaticamente (Railway usa $PORT, senão usa 8000)
+# Usa ENTRYPOINT e CMD para garantir que seja executado
 ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD []
 
