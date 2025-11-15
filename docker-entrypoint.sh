@@ -1,10 +1,24 @@
 #!/bin/bash
 set -e
 
-# Função para aguardar o banco de dados estar pronto
+# Logs iniciais
+echo "=========================================="
+echo "=== Iniciando Container ==="
+echo "=========================================="
+echo "Data/Hora: $(date)"
+echo "Diretório de trabalho: $(pwd)"
+echo "Variáveis de ambiente importantes:"
+echo "  - PORT: ${PORT:-não definida (usará 8000)}"
+echo "  - DATABASE_URL: ${DATABASE_URL:+definida}"
+echo "=========================================="
+
+# Função para aguardar o banco de dados estar pronto (com timeout)
 wait_for_db() {
     if [ -n "$DATABASE_URL" ]; then
         echo "Aguardando banco de dados PostgreSQL estar pronto..."
+        MAX_ATTEMPTS=30  # Máximo de 30 tentativas (60 segundos)
+        ATTEMPT=0
+        
         until python -c "
 import sys
 import os
@@ -20,7 +34,8 @@ try:
             port=parsed.port or 5432,
             user=parsed.username,
             password=parsed.password,
-            dbname=parsed.path[1:]
+            dbname=parsed.path[1:],
+            connect_timeout=5
         )
         conn.close()
         print('Banco de dados está pronto!')
@@ -32,9 +47,19 @@ except Exception as e:
     print(f'Aguardando... {e}')
     sys.exit(1)
 " 2>/dev/null; do
-            echo "Banco de dados não está pronto ainda. Aguardando..."
+            ATTEMPT=$((ATTEMPT + 1))
+            if [ $ATTEMPT -ge $MAX_ATTEMPTS ]; then
+                echo "ERRO: Timeout aguardando banco de dados após $MAX_ATTEMPTS tentativas"
+                echo "Continuando com a inicialização mesmo assim..."
+                break
+            fi
+            echo "Banco de dados não está pronto ainda. Tentativa $ATTEMPT/$MAX_ATTEMPTS..."
             sleep 2
         done
+        
+        if [ $ATTEMPT -lt $MAX_ATTEMPTS ]; then
+            echo "Banco de dados conectado com sucesso!"
+        fi
     else
         echo "Usando SQLite (sem necessidade de aguardar banco externo)"
     fi
@@ -94,20 +119,30 @@ python setup.py || echo "AVISO: Setup falhou, mas continuando..."
 
 # Determina a porta (Railway usa $PORT, senão usa 8000)
 PORT=${PORT:-8000}
-echo "=== Iniciando Gunicorn na porta $PORT ==="
+echo "=========================================="
+echo "=== Iniciando Gunicorn ==="
+echo "=========================================="
+echo "Porta: $PORT"
+echo "Workers: 3"
+echo "Timeout: 120s"
+echo "Log Level: info"
+echo "=========================================="
 
 # Executa o comando passado como argumento, ou inicia gunicorn se nenhum comando foi passado
 if [ $# -eq 0 ]; then
     # Se nenhum comando foi passado, inicia gunicorn
+    echo "Iniciando Gunicorn..."
     exec gunicorn barbearia.wsgi:application \
         --bind "0.0.0.0:$PORT" \
         --workers 3 \
         --timeout 120 \
         --log-level info \
         --access-logfile - \
-        --error-logfile -
+        --error-logfile - \
+        --preload
 else
     # Executa o comando passado como argumento
+    echo "Executando comando customizado: $@"
     exec "$@"
 fi
 

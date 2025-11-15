@@ -2,16 +2,9 @@
 # Este arquivo configura o deploy automático no Railway
 
 # Configurações do projeto
-[build]
-builder = "nixpacks"
-
-# Configurações do Python
-[build.environment]
-PYTHON_VERSION = "3.11"
-
-# Configurações de deploy
-[deploy]
-startCommand = "chmod +x start.sh && ./start.sh"
+# Railway detecta automaticamente o Dockerfile, então não precisa especificar builder
+# [build]
+# builder = "dockerfile"  # Railway detecta automaticamente
 
 # Configurações de ambiente
 [deploy.environment]
