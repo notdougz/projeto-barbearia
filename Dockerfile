@@ -41,7 +41,8 @@ EXPOSE 8000
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
+# Script de entrada que aguarda o banco estar pronto e executa migrações
+# O docker-entrypoint.sh inicia o gunicorn automaticamente
+# A variável PORT será detectada automaticamente (Railway usa $PORT, senão usa 8000)
 ENTRYPOINT ["/docker-entrypoint.sh"]
-# Usa $PORT se disponível (Railway), senão usa 8000
-CMD sh -c "gunicorn --bind 0.0.0.0:${PORT:-8000} --workers 3 barbearia.wsgi:application"
 

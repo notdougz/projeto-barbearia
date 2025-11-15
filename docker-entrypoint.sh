@@ -88,6 +88,26 @@ fi
 echo "Coletando arquivos estáticos..."
 python manage.py collectstatic --noinput || true
 
-# Executa o comando passado como argumento
-exec "$@"
+# Executa setup
+echo "Executando setup..."
+python setup.py || echo "AVISO: Setup falhou, mas continuando..."
+
+# Determina a porta (Railway usa $PORT, senão usa 8000)
+PORT=${PORT:-8000}
+echo "=== Iniciando Gunicorn na porta $PORT ==="
+
+# Executa o comando passado como argumento, ou inicia gunicorn se nenhum comando foi passado
+if [ $# -eq 0 ]; then
+    # Se nenhum comando foi passado, inicia gunicorn
+    exec gunicorn barbearia.wsgi:application \
+        --bind "0.0.0.0:$PORT" \
+        --workers 3 \
+        --timeout 120 \
+        --log-level info \
+        --access-logfile - \
+        --error-logfile -
+else
+    # Executa o comando passado como argumento
+    exec "$@"
+fi
 
