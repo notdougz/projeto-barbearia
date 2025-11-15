@@ -1,0 +1,56 @@
+services:
+  # Serviço do banco de dados PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: barbearia_db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-barbearia}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - barbearia_network
+
+  # Serviço da aplicação Django
+  web:
+    build: .
+    container_name: barbearia_web
+    command: gunicorn --bind 0.0.0.0:8000 --workers 3 barbearia.wsgi:application
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      # Se DATABASE_URL não estiver definida no .env, usa a conexão com o container db
+      DATABASE_URL: ${DATABASE_URL:-postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-barbearia}}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - barbearia_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  static_volume:
+    driver: local
+  media_volume:
+    driver: local
+
+networks:
+  barbearia_network:
+    driver: bridge
+

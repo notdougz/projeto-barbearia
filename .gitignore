@@ -2,7 +2,9 @@
 # GITIGNORE PARA PROJETO DJANGO - BARBEARIA
 # ========================================
 
-# Python
+# ========================================
+# PYTHON
+# ========================================
 *.py[cod]
 *$py.class
 *.so
@@ -19,6 +21,35 @@ parts/
 sdist/
 var/
 wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
 share/python-wheels/
 *.egg-info/
 .installed.cfg
@@ -47,32 +78,282 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+.pytest_cache/
+.coverage
+htmlcov/
 
 # Translations
 *.mo
 *.pot
 
-# Django stuff:
+# ========================================
+# DJANGO
+# ========================================
 *.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-/media
-/staticfiles
+db.sqlite3-*
 
-# Flask stuff:
-instance/
-.webassets-cache
+# Arquivos estáticos coletados
+/staticfiles/
+/static_root/
+staticfiles/
+static_root/
 
-# Scrapy stuff:
-.scrapy
+# Arquivos de mídia
+/media/
+media/
+uploads/
 
-# Sphinx documentation
+# ========================================
+# AMBIENTE VIRTUAL E VARIÁVEIS DE AMBIENTE
+# ========================================
+.env
+.env.*
+!.env.example
+!.env_example.txt
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# ========================================
+# DOCKER
+# ========================================
+# Arquivos de override do docker-compose
+docker-compose.override.yml
+docker-compose.*.yml
+!docker-compose.yml
+
+# Volumes do Docker
+postgres_data/
+*.volume
+
+# Arquivos de build do Docker
+.dockerignore.bak
+
+# ========================================
+# BANCO DE DADOS
+# ========================================
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.backup
+*.bak
+
+# ========================================
+# IDEs E EDITORES
+# ========================================
+# PyCharm
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# VS Code
+.vscode/
+*.code-workspace
+.vscode-test
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+*.swp
+*.swo
+*.swn
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# ========================================
+# SISTEMA OPERACIONAL
+# ========================================
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.AppleDouble
+.LSOverride
+Icon
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.directory
+.Trash-*
+.nfs*
+
+# ========================================
+# ARQUIVOS SENSÍVEIS E CREDENCIAIS
+# ========================================
+# Arquivos de configuração com credenciais
+config.json
+secrets.json
+secrets.yaml
+secrets.yml
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.cert
+credentials.json
+service-account.json
+
+# Arquivos de ambiente específicos
+.env.local
+.env.production
+.env.staging
+.env.development
+.env.test
+
+# ========================================
+# LOGS E TEMPORÁRIOS
+# ========================================
+*.log
+*.log.*
+logs/
+*.tmp
+*.temp
+*.bak
+*.backup
+*.swp
+*.swo
+sms.log
+debug.log
+debug_*.log
+deploy.log
+deploy-*.log
+
+# ========================================
+# CACHE
+# ========================================
+.cache/
+*.cache
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.ruff_cache/
+
+# ========================================
+# FERRAMENTAS DE DESENVOLVIMENTO
+# ========================================
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# Rope
+.ropeproject
+
+# ========================================
+# DEPLOY E PRODUÇÃO
+# ========================================
+# Railway
+.railway/
+railway.json
+railway.toml.local
+
+# Heroku
+.heroku/
+
+# Arquivos de configuração do servidor
+nginx.conf
+apache.conf
+*.conf
+!pytest.ini
+!setup.cfg
+
+# ========================================
+# CI/CD
+# ========================================
+.github/workflows/*.yml.bak
+.github/workflows/*.yaml.bak
+.github/actions/
+.github/secrets/
+bandit-report.json
+safety-report.json
+test-results/
+coverage-reports/
+*.report
+*.reports
+
+# ========================================
+# OUTROS
+# ========================================
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
 docs/_build/
-
-# PyBuilder
-.pybuilder/
-target/
+docs/build/
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -96,188 +377,39 @@ poetry.lock
 # PEP 582
 __pypackages__/
 
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# pytype static type analyzer
-.pytype/
-
-# Cython debug symbols
-cython_debug/
-
-# PyCharm
-.idea/
-
-# VS Code
-.vscode/
-*.code-workspace
-
-# Sublime Text
-*.sublime-project
-*.sublime-workspace
-
-# Vim
-*.swp
-*.swo
-*~
-
-# Emacs
-*~
-\#*\#
-/.emacs.desktop
-/.emacs.desktop.lock
-*.elc
-auto-save-list
-tramp
-.\#*
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Windows
-*.lnk
-
-# Logs específicos do projeto
-sms.log
-*.log
-
-# Arquivos temporários
-*.tmp
-*.temp
-*.bak
-*.backup
-
-# Arquivos de configuração sensíveis
-.env.local
-.env.production
-.env.staging
-config.json
-secrets.json
-
-# Arquivos de upload
-uploads/
-media/
-
-# Arquivos de cache
-.cache/
-*.cache
-
-# Arquivos de lock
-package-lock.json
-yarn.lock
-
-# Node modules (caso use algum frontend)
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Arquivos de backup do banco
-*.sql
-*.dump
-
-# Arquivos de certificados
-*.pem
-*.key
-*.crt
-*.p12
-*.pfx
-
-# Arquivos de configuração do servidor
-nginx.conf
-apache.conf
-*.conf
-
-# Arquivos de deploy
-docker-compose.override.yml
-.dockerignore
+# Arquivos de profiling
+*.prof
+*.profile
 
 # Arquivos de monitoramento
 *.pid
 *.sock
 
-# Arquivos de teste (comentado - testes devem ser versionados)
-# test_*.py
-# *_test.py
-# tests/
-# test/
+# Arquivos de lock (Node.js - caso use)
+package-lock.json
+yarn.lock
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+node_modules/
+
+# Flask stuff
+instance/
+.webassets-cache
+
+# Scrapy stuff
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
 
 # Arquivos de documentação gerados
 docs/build/
 docs/_build/
 
-# Arquivos de profiling
-*.prof
-*.profile
-
-# Arquivos de debug
-debug.log
-debug_*.log
-
-# Arquivos de migração (opcional - descomente se não quiser versionar)
-# */migrations/*
-# !*/migrations/__init__.py
-
-# Arquivos específicos do projeto
-# Adicione aqui arquivos específicos que não devem ser versionados
+# Arquivos específicos do projeto que não devem ser versionados
 docs/VISAO_GERAL_PROJETO.md
-
-# CI/CD e GitHub Actions
-.github/workflows/*.yml.bak
-.github/workflows/*.yaml.bak
-.github/actions/
-.github/secrets/
-
-# Relatórios de CI/CD
-bandit-report.json
-safety-report.json
-test-results/
-coverage-reports/
-*.report
-*.reports
-
-# Arquivos de configuração local do Railway
-.railway/
-railway.json
-railway.toml.local
-
-# Arquivos de deploy local
-deploy.log
-deploy-*.log

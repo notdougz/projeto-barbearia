@@ -48,6 +48,16 @@ ALLOWED_HOSTS=localhost,127.0.0.1
 # DATABASE_URL=mysql://usuario:senha@localhost:3306/nome_do_banco
 
 # ========================================
+# CONFIGURAÇÕES PARA DOCKER (opcional)
+# ========================================
+# Se estiver usando docker-compose, estas variáveis serão usadas automaticamente:
+# POSTGRES_DB=barbearia
+# POSTGRES_USER=postgres
+# POSTGRES_PASSWORD=postgres
+# 
+# O DATABASE_URL será configurado automaticamente pelo docker-compose se não estiver definido aqui.
+
+# ========================================
 # CONFIGURAÇÕES DE EMAIL (opcional)
 # ========================================
 # Para envio de emails, configure seu provedor:
