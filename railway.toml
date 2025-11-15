@@ -1,10 +1,13 @@
 # Railway Configuration
 # Este arquivo configura o deploy automático no Railway
 
-# Configurações do projeto
-# Railway detecta automaticamente o Dockerfile, então não precisa especificar builder
-# [build]
-# builder = "dockerfile"  # Railway detecta automaticamente
+# FORÇA uso do Dockerfile (não usa Procfile ou nixpacks)
+[build]
+builder = "dockerfile"
+
+# IMPORTANTE: Não definir startCommand aqui!
+# O Dockerfile já define o ENTRYPOINT que será usado
+# Se houver startCommand definido no painel do Railway, REMOVA!
 
 # Configurações de ambiente
 [deploy.environment]
