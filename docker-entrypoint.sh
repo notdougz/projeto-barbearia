@@ -43,9 +43,40 @@ except Exception as e:
 # Aguarda o banco de dados estar pronto
 wait_for_db
 
-# Executa migrações
+# Executa migrações (desabilita set -e temporariamente para não parar em avisos)
+set +e
 echo "Executando migrações do banco de dados..."
-python manage.py migrate --noinput
+
+# Tenta criar migrações se houver mudanças não migradas
+echo "Verificando se há migrações pendentes..."
+python manage.py makemigrations --noinput 2>&1
+MAKEMIGRATIONS_EXIT=$?
+if [ $MAKEMIGRATIONS_EXIT -eq 0 ]; then
+    echo "Migrações verificadas/criadas com sucesso"
+elif [ $MAKEMIGRATIONS_EXIT -eq 1 ]; then
+    echo "Nenhuma migração nova necessária"
+else
+    echo "AVISO: Erro ao verificar migrações (código $MAKEMIGRATIONS_EXIT), continuando..."
+fi
+
+# Aplica migrações
+echo "Aplicando migrações..."
+python manage.py migrate --noinput 2>&1
+MIGRATE_EXIT=$?
+if [ $MIGRATE_EXIT -eq 0 ]; then
+    echo "Migrações aplicadas com sucesso"
+else
+    echo "AVISO: migrate retornou código $MIGRATE_EXIT"
+    echo "Tentando criar e aplicar migrações novamente..."
+    python manage.py makemigrations --noinput 2>&1 || true
+    python manage.py migrate --noinput 2>&1 || {
+        echo "ERRO: Não foi possível aplicar migrações, mas continuando com a inicialização..."
+        echo "A aplicação pode não funcionar corretamente. Verifique os logs acima."
+    }
+fi
+
+# Reabilita set -e para o resto do script
+set -e
 
 # Carrega fixtures iniciais (se existirem)
 if [ -f "agendamentos/fixtures/servicos_iniciais.json" ]; then

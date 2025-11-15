@@ -42,5 +42,6 @@ COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "barbearia.wsgi:application"]
+# Usa $PORT se disponível (Railway), senão usa 8000
+CMD sh -c "gunicorn --bind 0.0.0.0:${PORT:-8000} --workers 3 barbearia.wsgi:application"
 
