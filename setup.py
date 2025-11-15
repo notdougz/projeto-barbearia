@@ -39,10 +39,14 @@ def main():
             else:
                 print("   OK - Superusuário já existe")
 
+        print("=== Setup concluído com sucesso ===")
         return True
     except Exception as e:
         print(f"   AVISO - Não foi possível configurar superusuário: {e}")
+        import traceback
+        traceback.print_exc()
         # Não retorna False pois isso não deve impedir a aplicação de iniciar
+        print("=== Continuando inicialização apesar do aviso ===")
         return True
 
 
