@@ -66,7 +66,7 @@ class ClienteForm(forms.ModelForm):
             "telefone": forms.TextInput(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "11999999999 ou +5511999999999",
+                    "placeholder": "11999999999 ou +55 11 99999-9999",
                     "help_text": "Digite o número com ou sem +55. O sistema adicionará automaticamente.",
                 }
             ),

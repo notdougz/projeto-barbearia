@@ -26,7 +26,7 @@
                         <div class="text-danger">{{ form.telefone.errors }}</div>
                     {% endif %}
                     <small class="form-text text-muted">
-                        <span class="icon icon-info"></span> Digite o número com DDD (ex: 11999999999). O sistema adiciona o +55 automaticamente.
+                        <span class="icon icon-info"></span> Você pode colar o número do WhatsApp (ex: +55 11 99999-9999). O sistema formatará automaticamente.
                     </small>
                 </div>
                 
@@ -62,4 +62,54 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Encontra o campo de telefone
+    const telefoneField = document.getElementById('{{ form.telefone.id_for_label }}');
+    
+    if (telefoneField) {
+        // Remove qualquer limite de caracteres que possa estar cortando
+        telefoneField.removeAttribute('maxlength');
+        
+        // Função para limpar e normalizar o telefone
+        function limparTelefone(valor) {
+            if (!valor) return '';
+            // Remove espaços, hífens, parênteses e outros caracteres, mantendo apenas números e +
+            return valor.replace(/[\s\-\(\)]/g, '');
+        }
+        
+        // Evento de paste (colar)
+        telefoneField.addEventListener('paste', function(e) {
+            // Aguarda um pouco para o valor ser colado no campo
+            setTimeout(function() {
+                const valorAtual = telefoneField.value;
+                const valorLimpo = limparTelefone(valorAtual);
+                telefoneField.value = valorLimpo;
+            }, 10);
+        });
+        
+        // Evento de input (digitação) - limpa espaços e hífens em tempo real
+        telefoneField.addEventListener('input', function(e) {
+            const valorAtual = telefoneField.value;
+            const valorLimpo = limparTelefone(valorAtual);
+            
+            // Só atualiza se houver mudança (evita loop)
+            if (valorAtual !== valorLimpo) {
+                telefoneField.value = valorLimpo;
+            }
+        });
+        
+        // Evento de blur (quando sai do campo) - garante que está limpo
+        telefoneField.addEventListener('blur', function(e) {
+            const valorAtual = telefoneField.value;
+            const valorLimpo = limparTelefone(valorAtual);
+            
+            if (valorAtual !== valorLimpo) {
+                telefoneField.value = valorLimpo;
+            }
+        });
+    }
+});
+</script>
 {% endblock %}
